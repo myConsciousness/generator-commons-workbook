@@ -14,7 +14,8 @@ package org.thinkit.generator.rule.dtogenerator;
 
 import com.google.common.flogger.FluentLogger;
 
-import org.thinkit.generator.dtogenerator.DtoClassResource;
+import org.thinkit.generator.common.dto.dtogenerator.ClassResource;
+import org.thinkit.generator.common.rule.dtogenerator.ClassResourceFormatter;
 
 import lombok.NonNull;
 
@@ -47,7 +48,7 @@ public class DtoClassResourceFacade {
      * 指定されたファイルパスに定義された情報を基にDTOクラスのリソースを生成します。<br>
      * 引数に{@code null}が指定された場合は実行時に必ず失敗します。<br>
      * <br>
-     * {@link ClassDefinitionMatrixFormatter#getDtoClassResource()}で取得する連想配列は<br>
+     * {@link ClassResourceFormatter#getClassResource()}で取得する連想配列は<br>
      * 以下の情報を格納しています。<br>
      * 1, Key ・・・ クラス名<br>
      * 2, Value ・・・ クラス名に紐づくDTOクラスのリソース<br>
@@ -57,8 +58,7 @@ public class DtoClassResourceFacade {
      *
      * @exception NullPointerException 引数として{@code null}が渡された場合
      */
-    public static DtoClassResource createResource(@NonNull String filePath) {
-        logger.atInfo().log("START");
+    public static ClassResource createResource(@NonNull String filePath) {
 
         final ClassDefinitionMatrixReader classDefinitionMatrixReader = new ClassDefinitionMatrixReader(filePath);
 
@@ -67,15 +67,14 @@ public class DtoClassResourceFacade {
             return null;
         }
 
-        final ClassDefinitionMatrixFormatter classDefinitionMatrixFormatter = new ClassDefinitionMatrixFormatter(
+        final ClassResourceFormatter classResourceFormatter = new ClassResourceFormatter(
                 classDefinitionMatrixReader.getClassDefinitionMatrix());
 
-        if (!classDefinitionMatrixFormatter.execute()) {
+        if (!classResourceFormatter.execute()) {
             logger.atSevere().log("クラス定義情報の整形処理が異常終了しました。");
             return null;
         }
 
-        logger.atInfo().log("END");
-        return classDefinitionMatrixFormatter.getDtoClassResource();
+        return classResourceFormatter.getClassResource();
     }
 }

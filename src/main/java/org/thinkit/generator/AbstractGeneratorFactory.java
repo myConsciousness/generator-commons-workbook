@@ -12,7 +12,8 @@
 
 package org.thinkit.generator;
 
-import org.thinkit.generator.catalog.GeneratorDivision;
+import org.thinkit.generator.common.catalog.GeneratorDivision;
+import org.thinkit.generator.common.Generator;
 
 import lombok.NonNull;
 

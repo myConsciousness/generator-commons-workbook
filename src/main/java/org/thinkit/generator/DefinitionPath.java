@@ -167,7 +167,6 @@ public final class DefinitionPath {
      * @return 既定の出力先パス
      */
     private String getDefaultOutputPath() {
-        logger.atInfo().log("START");
 
         final Platform platform = Platform.getPlatform();
         logger.atInfo().log("プログラム実行時のプラットフォーム = (%s)", platform);
@@ -188,7 +187,6 @@ public final class DefinitionPath {
         outputPath.append(System.getenv(defaultOutputPathManager.getEnvironmentVariableName()))
                 .append(FluentFile.getFileSeparator()).append(defaultOutputPathManager.getOutputDirectory());
 
-        logger.atInfo().log("END");
         return outputPath.toString();
     }
 }

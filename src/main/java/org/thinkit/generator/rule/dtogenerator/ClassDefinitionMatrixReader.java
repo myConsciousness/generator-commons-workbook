@@ -18,7 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.thinkit.common.rule.AbstractRule;
 import org.thinkit.common.util.workbook.FluentSheet;
 import org.thinkit.common.util.workbook.FluentWorkbook;
-import org.thinkit.generator.dtogenerator.ClassDefinitionMatrix;
+import org.thinkit.generator.common.dto.dtogenerator.ClassDefinitionMatrix;
 import org.thinkit.generator.rule.Sheet;
 
 import lombok.AccessLevel;
@@ -91,7 +91,6 @@ final class ClassDefinitionMatrixReader extends AbstractRule {
 
     @Override
     public boolean execute() {
-        logger.atInfo().log("START");
 
         final FluentWorkbook workbook = new FluentWorkbook.Builder().fromFile(this.getFilePath()).build();
         final FluentSheet sheet = workbook.sheet(SheetName.定義書.name());
@@ -125,7 +124,6 @@ final class ClassDefinitionMatrixReader extends AbstractRule {
         this.classDefinitionMatrix = classDefinitionMatrix;
 
         logger.atInfo().log("クラス定義情報マトリクス = (%s)", classDefinitionMatrix);
-        logger.atInfo().log("END");
         return true;
     }
 }

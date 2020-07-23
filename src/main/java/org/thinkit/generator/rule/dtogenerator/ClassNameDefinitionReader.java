@@ -27,8 +27,8 @@ import org.thinkit.common.rule.Content;
 import org.thinkit.common.util.workbook.FluentSheet;
 import org.thinkit.common.util.workbook.FluentWorkbook;
 import org.thinkit.common.util.workbook.Matrix;
-import org.thinkit.generator.catalog.dtogenerator.DtoCellItem;
-import org.thinkit.generator.dtogenerator.ClassNameDefinition;
+import org.thinkit.generator.common.catalog.dtogenerator.DtoItem;
+import org.thinkit.generator.common.dto.dtogenerator.ClassNameDefinition;
 import org.thinkit.generator.rule.Sheet;
 
 import lombok.EqualsAndHashCode;
@@ -141,23 +141,21 @@ final class ClassNameDefinitionReader extends AbstractRule {
 
     @Override
     public boolean execute() {
-        logger.atInfo().log("START");
 
         if (this.sheet == null) {
             final FluentWorkbook workbook = new FluentWorkbook.Builder().fromFile(this.filePath).build();
             this.sheet = workbook.sheet(SheetName.定義書.name());
         }
 
-        final Map<DtoCellItem, String> definitions = this.getNameDefinitions(sheet);
-        final ClassNameDefinition classNameDefinition = new ClassNameDefinition(definitions.get(DtoCellItem.VERSION),
-                definitions.get(DtoCellItem.PROJECT_NAME), definitions.get(DtoCellItem.PACKAGE_NAME),
-                definitions.get(DtoCellItem.PHYSICAL_NAME), definitions.get(DtoCellItem.LOGICAL_NAME),
-                definitions.get(DtoCellItem.DESCRIPTION));
+        final Map<DtoItem, String> definitions = this.getNameDefinitions(sheet);
+        final ClassNameDefinition classNameDefinition = new ClassNameDefinition(definitions.get(DtoItem.VERSION),
+                definitions.get(DtoItem.PROJECT_NAME), definitions.get(DtoItem.PACKAGE_NAME),
+                definitions.get(DtoItem.PHYSICAL_NAME), definitions.get(DtoItem.LOGICAL_NAME),
+                definitions.get(DtoItem.DESCRIPTION));
 
         this.classNameDefinition = classNameDefinition;
 
         logger.atInfo().log("クラス名定義情報 = (%s)", classNameDefinition);
-        logger.atInfo().log("END");
         return true;
     }
 
@@ -167,11 +165,10 @@ final class ClassNameDefinitionReader extends AbstractRule {
      * @param sheet Sheetオブジェクト
      * @return セルに定義されたクラス名情報
      */
-    private EnumMap<DtoCellItem, String> getNameDefinitions(FluentSheet sheet) {
-        logger.atInfo().log("START");
+    private EnumMap<DtoItem, String> getNameDefinitions(FluentSheet sheet) {
 
         final List<Map<String, String>> contents = super.getContents();
-        final EnumMap<DtoCellItem, String> classNameDefinitions = new EnumMap<>(DtoCellItem.class);
+        final EnumMap<DtoItem, String> classNameDefinitions = new EnumMap<>(DtoItem.class);
 
         for (Map<String, String> elements : contents) {
             final String cellItemName = elements.get(ContentAttribute.セル項目名.name());
@@ -181,24 +178,21 @@ final class ClassNameDefinitionReader extends AbstractRule {
             logger.atInfo().log("取得した領域内の値 = (%s)", sequence);
 
             final int itemCode = Integer.parseInt(elements.get(ContentAttribute.セル項目コード.name()));
-            classNameDefinitions.put(Catalog.getEnum(DtoCellItem.class, itemCode), sequence);
+            classNameDefinitions.put(Catalog.getEnum(DtoItem.class, itemCode), sequence);
         }
 
         logger.atInfo().log("コンテンツ情報 = (%s)", classNameDefinitions);
-        logger.atInfo().log("END");
         return classNameDefinitions;
     }
 
     @Override
     protected List<Attribute> getAttributes() {
-        logger.atInfo().log("START");
 
         final List<Attribute> attributes = new ArrayList<>(2);
         attributes.add(ContentAttribute.セル項目コード);
         attributes.add(ContentAttribute.セル項目名);
 
         logger.atInfo().log("クラス名定義情報のアトリビュート = (%s)", attributes);
-        logger.atInfo().log("END");
         return attributes;
     }
 }

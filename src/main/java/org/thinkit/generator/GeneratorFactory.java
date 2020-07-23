@@ -12,8 +12,10 @@
 
 package org.thinkit.generator;
 
-import org.thinkit.generator.catalog.GeneratorDivision;
+import org.thinkit.generator.common.catalog.GeneratorDivision;
+import org.thinkit.generator.common.Generator;
 import org.thinkit.generator.dtogenerator.DtoGenerator;
+
 
 import lombok.NonNull;
 

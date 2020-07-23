@@ -18,6 +18,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.thinkit.common.catalog.Delimiter;
 import org.thinkit.common.util.file.FluentFile;
 
+import org.thinkit.generator.common.Generator;
+
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -72,7 +74,6 @@ public abstract class AbstractGenerator implements Generator {
 
     @Override
     public boolean execute() {
-        logger.atInfo().log("START");
 
         try {
             if (!this.run()) {
@@ -85,7 +86,6 @@ public abstract class AbstractGenerator implements Generator {
             return false;
         }
 
-        logger.atInfo().log("END");
         return true;
     }
 

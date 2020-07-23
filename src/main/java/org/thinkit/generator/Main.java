@@ -16,7 +16,8 @@ import com.google.common.flogger.FluentLogger;
 
 import org.apache.commons.lang3.StringUtils;
 import org.thinkit.common.catalog.Catalog;
-import org.thinkit.generator.catalog.GeneratorDivision;
+import org.thinkit.generator.common.catalog.GeneratorDivision;
+import org.thinkit.generator.common.Generator;
 
 /**
  * Generatorプロジェクトのエントリーポイントクラスです。<br>
@@ -53,7 +54,6 @@ final class Main {
      * @exception IllegalArgumentException 生成器の実行に必要な引数が渡されなかった場合
      */
     public static void main(String[] args) {
-        logger.atInfo().log("START");
 
         if (args.length < 2) {
             logger.atSevere().log("Necessary to pass command line arguments in order to execute the process.");
@@ -83,8 +83,6 @@ final class Main {
             logger.atSevere().log("An unexpected error has occurred.");
             return;
         }
-
-        logger.atInfo().log("END");
     }
 
     /**

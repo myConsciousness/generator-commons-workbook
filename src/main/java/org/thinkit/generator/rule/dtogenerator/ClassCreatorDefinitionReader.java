@@ -27,8 +27,8 @@ import org.thinkit.common.rule.Content;
 import org.thinkit.common.util.workbook.FluentSheet;
 import org.thinkit.common.util.workbook.FluentWorkbook;
 import org.thinkit.common.util.workbook.Matrix;
-import org.thinkit.generator.catalog.dtogenerator.DtoCellItem;
-import org.thinkit.generator.dtogenerator.ClassCreatorDefinition;
+import org.thinkit.generator.common.catalog.dtogenerator.DtoItem;
+import org.thinkit.generator.common.dto.dtogenerator.ClassCreatorDefinition;
 import org.thinkit.generator.rule.Sheet;
 
 import lombok.EqualsAndHashCode;
@@ -140,22 +140,20 @@ final class ClassCreatorDefinitionReader extends AbstractRule {
 
     @Override
     public boolean execute() {
-        logger.atInfo().log("START");
 
         if (this.sheet == null) {
             final FluentWorkbook workbook = new FluentWorkbook.Builder().fromFile(this.filePath).build();
             this.sheet = workbook.sheet(SheetName.定義書.name());
         }
 
-        final EnumMap<DtoCellItem, String> creatorDefinitions = this.getCreatorDefinitions(this.sheet);
+        final EnumMap<DtoItem, String> creatorDefinitions = this.getCreatorDefinitions(this.sheet);
         final ClassCreatorDefinition classCreatorDefinition = new ClassCreatorDefinition(
-                creatorDefinitions.get(DtoCellItem.CREATOR), creatorDefinitions.get(DtoCellItem.CREATION_TIME),
-                creatorDefinitions.get(DtoCellItem.UPDTATE_TIME));
+                creatorDefinitions.get(DtoItem.CREATOR), creatorDefinitions.get(DtoItem.CREATION_TIME),
+                creatorDefinitions.get(DtoItem.UPDTATE_TIME));
 
         this.classCreatorDefinition = classCreatorDefinition;
 
         logger.atInfo().log("クラス作成者情報 = (%s)", classCreatorDefinition);
-        logger.atInfo().log("END");
         return true;
     }
 
@@ -165,38 +163,33 @@ final class ClassCreatorDefinitionReader extends AbstractRule {
      * @param sheet Sheetオブジェクト
      * @return セルに定義された作成者情報
      */
-    private EnumMap<DtoCellItem, String> getCreatorDefinitions(FluentSheet sheet) {
-        logger.atInfo().log("START");
+    private EnumMap<DtoItem, String> getCreatorDefinitions(FluentSheet sheet) {
 
         final List<Map<String, String>> contents = super.getContents();
-        final EnumMap<DtoCellItem, String> creatorDefinitions = new EnumMap<>(DtoCellItem.class);
+        final EnumMap<DtoItem, String> creatorDefinitions = new EnumMap<>(DtoItem.class);
 
         for (Map<String, String> elements : contents) {
             final String cellItemName = elements.get(ContentAttribute.セル項目名.name());
             final Matrix baseIndexes = sheet.findCellIndex(cellItemName);
 
             final String sequence = sheet.getRegionSequence(baseIndexes.getColumn(), baseIndexes.getRow());
-            logger.atInfo().log("取得した領域内の値 = (%s)", sequence);
 
             final int itemCode = Integer.parseInt(elements.get(ContentAttribute.セル項目コード.name()));
-            creatorDefinitions.put(Catalog.getEnum(DtoCellItem.class, itemCode), sequence);
+            creatorDefinitions.put(Catalog.getEnum(DtoItem.class, itemCode), sequence);
         }
 
         logger.atInfo().log("コンテンツ情報 = (%s)", creatorDefinitions);
-        logger.atInfo().log("END");
         return creatorDefinitions;
     }
 
     @Override
     protected List<Attribute> getAttributes() {
-        logger.atInfo().log("START");
 
         final List<Attribute> attributes = new ArrayList<>(2);
         attributes.add(ContentAttribute.セル項目コード);
         attributes.add(ContentAttribute.セル項目名);
 
         logger.atInfo().log("クラス作成者情報のアトリビュート = (%s)", attributes);
-        logger.atInfo().log("END");
         return attributes;
     }
 }

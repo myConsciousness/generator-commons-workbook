@@ -27,9 +27,9 @@ import org.thinkit.common.rule.Content;
 import org.thinkit.common.util.workbook.FluentSheet;
 import org.thinkit.common.util.workbook.FluentWorkbook;
 import org.thinkit.common.util.workbook.Matrix;
-import org.thinkit.generator.catalog.dtogenerator.DtoCellItem;
-import org.thinkit.generator.dtogenerator.ClassDefinition;
-import org.thinkit.generator.dtogenerator.ClassItemDefinition;
+import org.thinkit.generator.common.catalog.dtogenerator.DtoItem;
+import org.thinkit.generator.common.dto.dtogenerator.ClassDefinition;
+import org.thinkit.generator.common.dto.dtogenerator.ClassItemDefinition;
 import org.thinkit.generator.rule.Sheet;
 
 import lombok.EqualsAndHashCode;
@@ -152,7 +152,6 @@ final class ClassDefinitionReader extends AbstractRule {
 
     @Override
     public boolean execute() {
-        logger.atInfo().log("START");
 
         if (this.sheet == null) {
             final FluentWorkbook workbook = new FluentWorkbook.Builder().fromFile(this.filePath).build();
@@ -168,7 +167,6 @@ final class ClassDefinitionReader extends AbstractRule {
 
         this.classDefinitionList = classDefinitionList;
 
-        logger.atInfo().log("END");
         return true;
     }
 
@@ -180,11 +178,10 @@ final class ClassDefinitionReader extends AbstractRule {
      * @see #getClassDefinitionRecursively(List, List, List, int, int)
      */
     private List<ClassDefinition> getClassDefinitionList(FluentSheet sheet) {
-        logger.atInfo().log("START");
 
         final List<Map<String, String>> contents = super.getContents();
 
-        final String baseCellItem = this.getContentItem(contents, DtoCellItem.LOGICAL_DELETE);
+        final String baseCellItem = this.getContentItem(contents, DtoItem.LOGICAL_DELETE);
         final Matrix baseIndexes = sheet.findCellIndex(baseCellItem);
 
         final List<Map<String, String>> matrixList = sheet.getMatrixList(baseIndexes.getColumn(), baseIndexes.getRow());
@@ -195,7 +192,7 @@ final class ClassDefinitionReader extends AbstractRule {
                 RECURSIVE_START_INDEX, RECURSIVE_BASE_LAYER));
 
         logger.atInfo().log("クラス定義情報群 = (%s)", classDefinitionList);
-        logger.atInfo().log("END");
+
         return classDefinitionList;
     }
 
@@ -209,7 +206,6 @@ final class ClassDefinitionReader extends AbstractRule {
      */
     private int craeteClassDefinitionRecursively(
             @NonNull final RecursiveRequiredParameters recursiveRequiredParameters) {
-        logger.atInfo().log("START");
 
         final List<Map<String, String>> matrixList = recursiveRequiredParameters.getMatrixList();
         final List<Map<String, String>> contents = recursiveRequiredParameters.getContents();
@@ -227,7 +223,7 @@ final class ClassDefinitionReader extends AbstractRule {
         for (int i = startIndex, size = matrixList.size(); i < size; i++) {
             final Map<String, String> record = matrixList.get(i);
 
-            final String itemNameLogicalDelete = this.getCellItemName(contents, DtoCellItem.LOGICAL_DELETE);
+            final String itemNameLogicalDelete = this.getCellItemName(contents, DtoItem.LOGICAL_DELETE);
             final boolean logicalDelete = this.convertStringToBoolean(record.get(itemNameLogicalDelete));
 
             if (logicalDelete) {
@@ -237,7 +233,7 @@ final class ClassDefinitionReader extends AbstractRule {
                 continue;
             }
 
-            final String itemNameLayer = this.getCellItemName(contents, DtoCellItem.LAYER);
+            final String itemNameLayer = this.getCellItemName(contents, DtoItem.LAYER);
             final int layer = Integer.parseInt(record.get(itemNameLayer));
             logger.atInfo().log("レコードから取得した項目層 = (%s)", layer);
 
@@ -290,16 +286,14 @@ final class ClassDefinitionReader extends AbstractRule {
      */
     private void createClassDefinition(final List<Map<String, String>> content, final Map<String, String> record,
             final ClassDefinition classDefinition) {
-        logger.atInfo().log("START");
 
-        final String className = record.get(this.getCellItemName(content, DtoCellItem.VARIABLE_NAME));
-        final String description = record.get(this.getCellItemName(content, DtoCellItem.DESCRIPTION));
+        final String className = record.get(this.getCellItemName(content, DtoItem.VARIABLE_NAME));
+        final String description = record.get(this.getCellItemName(content, DtoItem.DESCRIPTION));
 
         classDefinition.setClassName(className);
         classDefinition.setDescription(description);
 
         logger.atInfo().log("クラス定義情報 = (%s)", classDefinition.toString());
-        logger.atInfo().log("END");
     }
 
     /**
@@ -311,22 +305,20 @@ final class ClassDefinitionReader extends AbstractRule {
      */
     private void createClassItemDefinition(List<Map<String, String>> content, Map<String, String> record,
             List<ClassItemDefinition> classItemDefinitionList) {
-        logger.atInfo().log("START");
 
-        final String variableName = record.get(this.getCellItemName(content, DtoCellItem.VARIABLE_NAME));
-        final String dataType = record.get(this.getCellItemName(content, DtoCellItem.DATA_TYPE));
-        final String initialValue = record.get(this.getCellItemName(content, DtoCellItem.INITIAL_VALUE));
+        final String variableName = record.get(this.getCellItemName(content, DtoItem.VARIABLE_NAME));
+        final String dataType = record.get(this.getCellItemName(content, DtoItem.DATA_TYPE));
+        final String initialValue = record.get(this.getCellItemName(content, DtoItem.INITIAL_VALUE));
         final boolean invariant = this
-                .convertStringToBoolean(record.get(this.getCellItemName(content, DtoCellItem.INVARIANT)));
-        final String description = record.get(this.getCellItemName(content, DtoCellItem.DESCRIPTION));
+                .convertStringToBoolean(record.get(this.getCellItemName(content, DtoItem.INVARIANT)));
+        final String description = record.get(this.getCellItemName(content, DtoItem.DESCRIPTION));
 
         final ClassItemDefinition classItemDefinition = new ClassItemDefinition(variableName, dataType, initialValue,
                 invariant, description);
 
         classItemDefinitionList.add(classItemDefinition);
 
-        logger.atInfo().log("クラス項目定義情報 = (%s)", classItemDefinition.toString());
-        logger.atInfo().log("END");
+        logger.atInfo().log("クラス項目定義情報 = (%s)", classItemDefinition);
     }
 
     /**
@@ -349,18 +341,16 @@ final class ClassDefinitionReader extends AbstractRule {
      * コンテンツリストから引数として指定されたセル項目オブジェクトのコード値と紐づくセル項目名を取得し返却します。
      *
      * @param content     コンテンツリスト
-     * @param dtoCellItem 取得対象のセル項目コードが定義されたオブジェクト
+     * @param dtoItem 取得対象のセル項目コードが定義されたオブジェクト
      * @return 引数として指定されたセル項目コードに紐づくセル項目名
      * @exception IllegalArgumentException コンテンツリストが空の場合、またはセル項目オブジェクトがnullの場合
      */
-    private String getCellItemName(List<Map<String, String>> content, DtoCellItem dtoCellItem) {
-        logger.atInfo().log("START");
-
+    private String getCellItemName(List<Map<String, String>> content, DtoItem dtoItem) {
         Objects.requireNonNull(content, "Content must not be null.");
-        Objects.requireNonNull(dtoCellItem, "DtoCellItem must not be null.");
+        Objects.requireNonNull(dtoItem, "DtoItem must not be null.");
         assert !content.isEmpty();
 
-        final int cellItemCode = dtoCellItem.getCode();
+        final int cellItemCode = dtoItem.getCode();
         logger.atInfo().log("引数として渡されたセル項目コード = (%s)", cellItemCode);
 
         for (Map<String, String> elements : content) {
@@ -368,13 +358,11 @@ final class ClassDefinitionReader extends AbstractRule {
             logger.atInfo().log("コンテンツから取得したセル項目コード = (%s)", code);
 
             if (cellItemCode == code) {
-                logger.atInfo().log("END");
                 return elements.get(ContentAttribute.セル項目名.name());
             }
         }
 
         logger.atWarning().log("指定されたセル項目コードに紐づく要素がコンテンツに定義されていません。");
-        logger.atInfo().log("END");
         return "";
     }
 
@@ -382,38 +370,33 @@ final class ClassDefinitionReader extends AbstractRule {
      * 指定されたセル項目に紐づくコンテンツ項目を取得し返却します。
      *
      * @param nodeList     コンテンツ項目リスト
-     * @param cellItemName 取得対象のセル項目
+     * @param dtoItem 取得対象のセル項目
      * @return 取得対象のセル項目に紐づくコンテンツ項目
      */
-    private String getContentItem(List<Map<String, String>> nodeList, DtoCellItem cellItemName) {
-        logger.atInfo().log("START");
+    private String getContentItem(List<Map<String, String>> nodeList, DtoItem dtoItem) {
 
         for (Map<String, String> node : nodeList) {
             final int cellItemCode = Integer.parseInt(node.get(ContentAttribute.セル項目コード.getString()));
 
-            if (cellItemName.getCode() == cellItemCode) {
+            if (dtoItem.getCode() == cellItemCode) {
                 final String contentItem = node.get(ContentAttribute.セル項目名.getString());
                 logger.atInfo().log("取得したコンテンツ項目 = (%s)", contentItem);
-                logger.atInfo().log("END");
                 return contentItem;
             }
         }
 
         logger.atInfo().log("指定されたコンテンツ項目を取得できませんでした。");
-        logger.atInfo().log("END");
         return "";
     }
 
     @Override
     protected List<Attribute> getAttributes() {
-        logger.atInfo().log("START");
 
         final List<Attribute> attributes = new ArrayList<>(2);
         attributes.add(ContentAttribute.セル項目コード);
         attributes.add(ContentAttribute.セル項目名);
 
         logger.atInfo().log("クラス項目定義情報のアトリビュート = (%s)", attributes);
-        logger.atInfo().log("END");
         return attributes;
     }
 
