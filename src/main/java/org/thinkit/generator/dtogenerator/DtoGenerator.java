@@ -50,7 +50,6 @@ public final class DtoGenerator extends AbstractGenerator {
 
     @Override
     protected boolean run() {
-        logger.atInfo().log("START");
 
         final ClassResource classResource = DtoClassResourceFacade.createResource(super.getFilePath());
 
@@ -70,7 +69,6 @@ public final class DtoGenerator extends AbstractGenerator {
             FluentFile.writerOf(outputPath).write(key, Extension.java(), value);
         });
 
-        logger.atInfo().log("END");
         return true;
     }
 }

@@ -26,23 +26,22 @@ import lombok.NonNull;
 import lombok.ToString;
 
 /**
- * 定義書のファイルパスと出力先パスを管理するクラスです。<br>
- * <br>
- * 以下の静的メソッドを呼び出すことで{@link DefinitionPath}のインスタンスを生成することができます。<br>
- * <br>
+ * 定義書のファイルパスと出力先パスを管理するクラスです。
+ * <p>
+ * 以下の静的メソッドを呼び出すことで {@link DefinitionPath} のインスタンスを生成することができます。
+ * <p>
  * {@link #of(String)} <br>
- * <br>
  * {@link #of(String, String)} <br>
- * <br>
- * {@link DefinitionPath}のインスタンス生成時に設定されたファイルパスは<br>
- * {@link #getFilePath()}を呼び出すことで取得できます。<br>
- * <br>
- * {@link DefinitionPath}のインスタンス生成時に出力先パスの設定は必須ではありませんが、<br>
- * 出力先パスが設定された場合は{@link #getOutputPath()}の呼び出し時には設定された値が優先的に返却されます。<br>
- * <br>
- * {@link DefinitionPath}のインスタンス生成時に出力先パスが設定されない状態で{@link #getOutputPath()}が呼び出された場合は、<br>
- * {@link DefaultOutputPathManager#execute()}を呼び出しプラットフォームに対応した既定出力先のパスを生成し返却します。<br>
- * この既定出力先のパスを生成する際にエラーが発生した場合は{@link #getOutputPath()}は必ず空文字列を返却します。
+ * <p>
+ * {@link DefinitionPath} のインスタンス生成時に設定されたファイルパスは<br>
+ * {@link #getFilePath()} を呼び出すことで取得できます。
+ * <p>
+ * {@link DefinitionPath} のインスタンス生成時に出力先パスの設定は必須ではありませんが、<br>
+ * 出力先パスが設定された場合は {@link #getOutputPath()} の呼び出し時には設定された値が優先的に返却されます。
+ * <p>
+ * {@link DefinitionPath} のインスタンス生成時に出力先パスが設定されない状態で {@link #getOutputPath()} が呼び出された場合は、<br>
+ * {@link DefaultOutputPathManager#execute()} を呼び出しプラットフォームに対応した既定出力先のパスを生成し返却します。<br>
+ * この既定出力先のパスを生成する際にエラーが発生した場合は {@link #getOutputPath()} は必ず空文字列を返却します。
  *
  * @author Kato Shinya
  * @since 1.0
@@ -82,7 +81,7 @@ public final class DefinitionPath {
      *
      * @param filePath 生成する情報が定義されたファイルへのパス
      *
-     * @exception NullPointerException 引数として{@code null}が渡された場合
+     * @exception NullPointerException 引数として {@code null} が渡された場合
      * @throws IllegalArgumentException ファイルパスが空文字列の場合
      */
     private DefinitionPath(@NonNull String filePath) {
@@ -95,7 +94,7 @@ public final class DefinitionPath {
      * @param filePath   生成する情報が定義されたファイルへのパス(必須)
      * @param outputParh 生成された情報の出力先（任意）
      *
-     * @exception NullPointerException 引数として{@code null}が渡された場合
+     * @exception NullPointerException 引数として {@code null} が渡された場合
      * @throws IllegalArgumentException ファイルパスが空文字列の場合
      */
     private DefinitionPath(@NonNull String filePath, @NonNull String outputPath) {
@@ -119,7 +118,7 @@ public final class DefinitionPath {
      *
      * @param filePath 生成する情報が定義されたファイルへのパス
      *
-     * @exception NullPointerException 引数として{@code null}が渡された場合
+     * @exception NullPointerException 引数として {@code null} が渡された場合
      * @throws IllegalArgumentException ファイルパスが空文字列の場合
      */
     public static DefinitionPath of(@NonNull String filePath) {
@@ -132,7 +131,7 @@ public final class DefinitionPath {
      * @param filePath   生成する情報が定義されたファイルへのパス(必須)
      * @param outputParh 生成された情報の出力先（任意）
      *
-     * @exception NullPointerException 引数として{@code null}が渡された場合
+     * @exception NullPointerException 引数として {@code null} が渡された場合
      * @throws IllegalArgumentException ファイルパスが空文字列の場合
      */
     public static DefinitionPath of(@NonNull String filePath, @NonNull String outputPath) {
@@ -141,17 +140,15 @@ public final class DefinitionPath {
 
     /**
      * 出力先のパスを返却します。 <br>
-     * {@link DefinitionPath}のインスタンス生成時に出力先パスをコンストラクタへ渡した場合は、<br>
-     * インスタンス生成時の出力先パスが優先的に返却されます。<br>
-     * <br>
-     * {@link DefinitionPath}のインスタンス生成時に出力パスを指定しなかった場合、または空文字列を指定した場合は、<br>
-     * プログラム実行時のプラットフォームに応じた既定の出力先パスを取得し返却します。<br>
-     * <br>
+     * {@link DefinitionPath} のインスタンス生成時に出力先パスをコンストラクタへ渡した場合は、<br>
+     * インスタンス生成時の出力先パスが優先的に返却されます。
+     * <p>
+     * {@link DefinitionPath} のインスタンス生成時に出力パスを指定しなかった場合、または空文字列を指定した場合は、<br>
+     * プログラム実行時のプラットフォームに応じた既定の出力先パスを取得し返却します。
+     * <p>
      * 以下の場合は空文字列を返却します。<br>
-     * <br>
-     * 1, {@link Platform#getPlatform()}実行時に未対応のプラットフォームでプログラムが実行されたことを検知された場合<br>
-     * <br>
-     * 2, {@link DefaultOutputPathManager#execute()}実行時にエラーが発生した場合
+     * 1, {@link Platform#getPlatform()} 実行時に未対応のプラットフォームでプログラムが実行されたことを検知された場合<br>
+     * 2, {@link DefaultOutputPathManager#execute()} 実行時にエラーが発生した場合
      *
      * @return 出力先のパス
      */

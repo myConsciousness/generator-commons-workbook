@@ -29,8 +29,8 @@ import lombok.NonNull;
 final class GeneratorFactory extends AbstractGeneratorFactory {
 
     /**
-     * {@link GeneratorFactory}のシングルトンインスタンスを保持するインナークラスです。<br>
-     * {@link GeneratorFactory}シングルトンインスタンスは初回参照時にメモリに読み込まれます。
+     * {@link GeneratorFactory} のシングルトンインスタンスを保持するインナークラスです。<br>
+     * {@link GeneratorFactory} シングルトンインスタンスは初回参照時にメモリに読み込まれます。
      */
     private static class InstanceHolder {
 

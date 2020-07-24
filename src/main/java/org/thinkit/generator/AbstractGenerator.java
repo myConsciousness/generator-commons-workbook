@@ -59,7 +59,7 @@ public abstract class AbstractGenerator implements Generator {
      * コンストラクタ
      *
      * @param definitionPath 生成する定義のパスを管理するオブジェクト
-     * @exception NullPointerException 引数として{@code null}が渡された場合
+     * @exception NullPointerException 引数として {@code null} が渡された場合
      */
     protected AbstractGenerator(@NonNull DefinitionPath definitionPath) {
         this.definitionPath = definitionPath;
@@ -68,7 +68,7 @@ public abstract class AbstractGenerator implements Generator {
     /**
      * メイン処理を定義する抽象メソッドです。
      *
-     * @return 処理が正常終了した場合は{@code true}、それ以外は{@code false}
+     * @return 処理が正常終了した場合は {@code true} 、それ以外は {@code false}
      */
     protected abstract boolean run();
 
@@ -120,7 +120,7 @@ public abstract class AbstractGenerator implements Generator {
      * @param packageName カンマ区切りで表現されたパッケージ名
      * @return 出力先へのパス
      *
-     * @exception NullPointerException 引数として{@code null}が渡された場合
+     * @exception NullPointerException 引数として {@code null} が渡された場合
      */
     protected String getOutputPath(@NonNull String packageName) {
 
