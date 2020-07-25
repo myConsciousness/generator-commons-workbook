@@ -12,10 +12,9 @@
 
 package org.thinkit.generator;
 
-import org.thinkit.generator.common.catalog.GeneratorDivision;
 import org.thinkit.generator.common.Generator;
+import org.thinkit.generator.common.catalog.GeneratorDivision;
 import org.thinkit.generator.dtogenerator.DtoGenerator;
-
 
 import lombok.NonNull;
 
@@ -61,7 +60,7 @@ final class GeneratorFactory extends AbstractGeneratorFactory {
 
         Generator generator = null;
 
-        if (generatorDivision == GeneratorDivision.DTO_DEFINITOON) {
+        if (generatorDivision == GeneratorDivision.DTO_DEFINITION) {
             generator = new DtoGenerator(definitionPath);
         }
 
