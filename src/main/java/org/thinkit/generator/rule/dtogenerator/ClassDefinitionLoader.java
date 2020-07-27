@@ -1,6 +1,6 @@
 /**
  * Project Name : Generator<br>
- * File Name : ClassDefinitionReader.java<br>
+ * File Name : ClassDefinitionLoader.java<br>
  * Encoding : UTF-8<br>
  * Creation Date : 2020/05/24<br>
  * <p>
@@ -26,7 +26,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
- * Excelに記述された定義書シートからクラス定義情報を抽出する処理を行うルールです。
+ * コンテンツ「クラス項目定義情報」の情報をロードするルールクラスです。
  *
  * @author Kato Shinya
  * @since 1.0

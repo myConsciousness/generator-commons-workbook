@@ -1,6 +1,6 @@
 /**
  * Project Name : Generator<br>
- * File Name : DefaultOutputPathManager.java<br>
+ * File Name : DefaultOutputPathLoader.java<br>
  * Encoding : UTF-8<br>
  * Creation Date : 2020/06/15<br>
  * <p>
@@ -35,17 +35,13 @@ import lombok.ToString;
 /**
  * 既定の出力先パスを管理するクラスです。
  * <p>
- * {@link #execute()} を実行することでコンテンツ「既定出力先情報」から<br>
- * 既定の出力先を生成する際に必要な情報を取得します。
+ * {@link #execute()} を実行することでコンテンツ「既定出力先情報」から既定の出力先を生成する際に必要な情報を取得します。
  * <p>
- * 実行の前提としてプログラム実行時のプラットフォームに対応した既定の出力先情報が<br>
- * コンテンツ「既定出力先情報」に定義されている必要があります。
+ * 実行の前提としてプログラム実行時のプラットフォームに対応した既定の出力先情報がコンテンツ「既定出力先情報」に定義されている必要があります。
  *
  * @author Kato Shinya
  * @since 1.0
  * @version 1.0
- *
- * @see #execute()
  */
 @ToString
 @EqualsAndHashCode(callSuper = false)
