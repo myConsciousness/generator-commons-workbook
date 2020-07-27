@@ -10,22 +10,17 @@
  * reproduced or used in any manner whatsoever.
  */
 
-package org.thinkit.generator.rule.dtogenerator;
-
-import java.util.List;
+package org.thinkit.generator.command.dtogenerator;
 
 import com.google.common.flogger.FluentLogger;
 
 import org.apache.commons.lang3.StringUtils;
-import org.thinkit.common.rule.AbstractRule;
-import org.thinkit.common.rule.RuleInvoker;
+import org.thinkit.common.command.Command;
+import org.thinkit.common.command.CommandInvoker;
 import org.thinkit.common.util.workbook.FluentSheet;
 import org.thinkit.common.util.workbook.FluentWorkbook;
-import org.thinkit.generator.common.dto.dtogenerator.ClassCreatorDefinition;
-import org.thinkit.generator.common.dto.dtogenerator.ClassDefinition;
+import org.thinkit.generator.command.Sheet;
 import org.thinkit.generator.common.dto.dtogenerator.ClassDefinitionMatrix;
-import org.thinkit.generator.common.dto.dtogenerator.ClassNameDefinition;
-import org.thinkit.generator.rule.Sheet;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -41,7 +36,7 @@ import lombok.ToString;
  */
 @ToString
 @EqualsAndHashCode(callSuper = false)
-final class ClassDefinitionMatrixReader extends AbstractRule<ClassDefinitionMatrix> {
+public final class ClassDefinitionMatrixCollector implements Command<ClassDefinitionMatrix> {
 
     /**
      * ログ出力オブジェクト
@@ -58,7 +53,7 @@ final class ClassDefinitionMatrixReader extends AbstractRule<ClassDefinitionMatr
      * デフォルトコンストラクタ
      */
     @SuppressWarnings("unused")
-    private ClassDefinitionMatrixReader() {
+    private ClassDefinitionMatrixCollector() {
     }
 
     /**
@@ -67,7 +62,7 @@ final class ClassDefinitionMatrixReader extends AbstractRule<ClassDefinitionMatr
      * @param filePath DTO定義書のファイルパス
      * @exception IllegalArgumentException ファイルパスがnullまたは空文字列の場合
      */
-    public ClassDefinitionMatrixReader(String filePath) {
+    public ClassDefinitionMatrixCollector(String filePath) {
         logger.atInfo().log("ファイルパス = (%s)", filePath);
 
         if (StringUtils.isEmpty(filePath)) {
@@ -90,20 +85,17 @@ final class ClassDefinitionMatrixReader extends AbstractRule<ClassDefinitionMatr
     }
 
     @Override
-    public ClassDefinitionMatrix execute() {
+    public ClassDefinitionMatrix run() {
 
         final FluentWorkbook workbook = new FluentWorkbook.Builder().fromFile(this.getFilePath()).build();
         final FluentSheet sheet = workbook.sheet(SheetName.定義書.name());
 
-        final ClassCreatorDefinition classCreatorDefinition = RuleInvoker.of(new ClassCreatorDefinitionReader(sheet))
-                .invoke();
-        final ClassNameDefinition classNameDefinition = RuleInvoker.of(new ClassNameDefinitionReader(sheet)).invoke();
-        final List<ClassDefinition> classDefinitions = RuleInvoker.of(new ClassDefinitionReader(sheet)).invoke();
-
-        final ClassDefinitionMatrix classDefinitionMatrix = new ClassDefinitionMatrix(classNameDefinition,
-                classCreatorDefinition, classDefinitions);
+        final ClassDefinitionMatrix classDefinitionMatrix = new ClassDefinitionMatrix(
+                CommandInvoker.of(new ClassNameDefinitionCollector(sheet)).invoke(),
+                CommandInvoker.of(new ClassCreatorDefinitionCollector(sheet)).invoke(),
+                CommandInvoker.of(new ClassDefinitionCollector(sheet)).invoke());
 
         logger.atInfo().log("クラス定義情報マトリクス = (%s)", classDefinitionMatrix);
-        return classDefinitionMatrix;
+        return null;
     }
 }

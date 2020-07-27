@@ -13,7 +13,7 @@
 package org.thinkit.generator.rule.dtogenerator;
 
 import org.thinkit.common.command.CommandInvoker;
-import org.thinkit.common.rule.RuleInvoker;
+import org.thinkit.generator.command.dtogenerator.ClassDefinitionMatrixCollector;
 import org.thinkit.generator.common.command.dtogenerator.ClassResourceFormatter;
 import org.thinkit.generator.common.dto.dtogenerator.ClassDefinitionMatrix;
 import org.thinkit.generator.common.dto.dtogenerator.ClassResource;
@@ -56,8 +56,8 @@ public final class DtoClassResourceFacade {
      */
     public static ClassResource createResource(@NonNull String filePath) {
 
-        final ClassDefinitionMatrix classDefintionMatrix = RuleInvoker.of(new ClassDefinitionMatrixReader(filePath))
-                .invoke();
+        final ClassDefinitionMatrix classDefintionMatrix = CommandInvoker
+                .of(new ClassDefinitionMatrixCollector(filePath)).invoke();
 
         return CommandInvoker.of(new ClassResourceFormatter(classDefintionMatrix)).invoke();
     }

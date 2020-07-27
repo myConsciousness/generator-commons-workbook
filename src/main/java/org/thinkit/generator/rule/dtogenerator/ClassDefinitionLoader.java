@@ -47,7 +47,7 @@ import lombok.ToString;
  */
 @ToString
 @EqualsAndHashCode(callSuper = false)
-final class ClassDefinitionReader extends AbstractRule<List<ClassDefinition>> {
+final class ClassDefinitionLoader extends AbstractRule<List<ClassDefinition>> {
 
     /**
      * ログ出力オブジェクト
@@ -78,7 +78,7 @@ final class ClassDefinitionReader extends AbstractRule<List<ClassDefinition>> {
      * デフォルトコンストラクタ
      */
     @SuppressWarnings("unused")
-    private ClassDefinitionReader() {
+    private ClassDefinitionLoader() {
     }
 
     /**
@@ -87,7 +87,7 @@ final class ClassDefinitionReader extends AbstractRule<List<ClassDefinition>> {
      * @param filePath DTO定義書のファイルパス
      * @exception IllegalArgumentException ファイルパスがnullまたは空文字列の場合
      */
-    public ClassDefinitionReader(String filePath) {
+    public ClassDefinitionLoader(String filePath) {
 
         if (StringUtils.isEmpty(filePath)) {
             throw new IllegalArgumentException("wrong parameter was given. File path is required.");
@@ -103,7 +103,7 @@ final class ClassDefinitionReader extends AbstractRule<List<ClassDefinition>> {
      *
      * @param sheet DTO定義書の情報を持つSheetオブジェクト
      */
-    public ClassDefinitionReader(@NonNull FluentSheet sheet) {
+    public ClassDefinitionLoader(@NonNull FluentSheet sheet) {
         this.sheet = sheet;
         super.loadContent(ContentName.クラス項目定義情報);
     }

@@ -44,7 +44,7 @@ import lombok.ToString;
  */
 @ToString
 @EqualsAndHashCode(callSuper = false)
-final class ClassNameDefinitionReader extends AbstractRule<ClassNameDefinition> {
+final class ClassNameDefinitionLoader extends AbstractRule<ClassNameDefinition> {
 
     /**
      * ログ出力オブジェクト
@@ -65,7 +65,7 @@ final class ClassNameDefinitionReader extends AbstractRule<ClassNameDefinition> 
      * デフォルトコンストラクタ
      */
     @SuppressWarnings("unused")
-    private ClassNameDefinitionReader() {
+    private ClassNameDefinitionLoader() {
     }
 
     /**
@@ -74,7 +74,7 @@ final class ClassNameDefinitionReader extends AbstractRule<ClassNameDefinition> 
      * @param filePath DTO定義書のファイルパス
      * @exception IllegalArgumentException ファイルパスがnullまたは空文字列の場合
      */
-    public ClassNameDefinitionReader(String filePath) {
+    public ClassNameDefinitionLoader(String filePath) {
         logger.atInfo().log("ファイルパス = (%s)", filePath);
 
         if (StringUtils.isEmpty(filePath)) {
@@ -91,7 +91,7 @@ final class ClassNameDefinitionReader extends AbstractRule<ClassNameDefinition> 
      *
      * @param sheet DTO定義書の情報を持つSheetオブジェクト
      */
-    public ClassNameDefinitionReader(@NonNull FluentSheet sheet) {
+    public ClassNameDefinitionLoader(@NonNull FluentSheet sheet) {
         this.sheet = sheet;
         super.loadContent(ContentName.クラス名定義情報);
     }
