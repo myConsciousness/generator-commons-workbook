@@ -1,6 +1,6 @@
 /**
  * Project Name :Generator<br>
- * File Name : ClassDefinitionMatrixReader.java<br>
+ * File Name : ClassDefinitionMatrixCollector.java<br>
  * Encoding : UTF-8<br>
  * Creation Date : 2020/04/23<br>
  * <p>
@@ -28,7 +28,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 /**
- * Excelに記述された定義書シートからクラス定義マトリクス情報を抽出する処理を行うルールです。
+ * Excelに記述された定義書シートからクラス定義情報を読み取る処理を定義したコマンドクラスです。
  *
  * @author Kato Shinya
  * @since 1.0

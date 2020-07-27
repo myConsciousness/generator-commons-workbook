@@ -1,3 +1,15 @@
+/**
+ * Project Name : Generator<br>
+ * File Name : ClassNameDefinitionCollector.java<br>
+ * Encoding : UTF-8<br>
+ * Creation Date : 2020/06/13<br>
+ * <p>
+ * Copyright © 2020 Kato Shinya. All rights reserved.
+ * <p>
+ * This source code or any portion thereof must not be<br>
+ * reproduced or used in any manner whatsoever.
+ */
+
 package org.thinkit.generator.command.dtogenerator;
 
 import java.util.EnumMap;
@@ -23,6 +35,13 @@ import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.ToString;
 
+/**
+ * Excelに記載されたDTO定義の名前部分の情報を読み取る処理を定義したコマンドクラスです。
+ *
+ * @author Kato Shinya
+ * @since 1.0
+ * @version 1.0
+ */
 @ToString
 @EqualsAndHashCode
 final class ClassNameDefinitionCollector implements Command<ClassNameDefinition> {
