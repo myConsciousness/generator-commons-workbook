@@ -96,6 +96,6 @@ final class ClassDefinitionMatrixCollector implements Command<ClassDefinitionMat
                 CommandInvoker.of(new ClassDefinitionCollector(sheet)).invoke());
 
         logger.atInfo().log("クラス定義情報マトリクス = (%s)", classDefinitionMatrix);
-        return null;
+        return classDefinitionMatrix;
     }
 }
