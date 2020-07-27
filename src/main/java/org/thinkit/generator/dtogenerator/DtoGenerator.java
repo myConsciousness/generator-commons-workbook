@@ -19,7 +19,7 @@ import org.thinkit.common.catalog.Extension;
 import org.thinkit.common.util.file.FluentFile;
 import org.thinkit.generator.AbstractGenerator;
 import org.thinkit.generator.DefinitionPath;
-import org.thinkit.generator.rule.dtogenerator.DtoClassResourceFacade;
+import org.thinkit.generator.command.dtogenerator.DtoClassResourceFacade;
 
 import org.thinkit.generator.common.dto.dtogenerator.ClassResource;
 

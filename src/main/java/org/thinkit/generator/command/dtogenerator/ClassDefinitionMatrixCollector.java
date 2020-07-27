@@ -36,7 +36,7 @@ import lombok.ToString;
  */
 @ToString
 @EqualsAndHashCode(callSuper = false)
-public final class ClassDefinitionMatrixCollector implements Command<ClassDefinitionMatrix> {
+final class ClassDefinitionMatrixCollector implements Command<ClassDefinitionMatrix> {
 
     /**
      * ログ出力オブジェクト

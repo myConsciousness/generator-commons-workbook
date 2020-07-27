@@ -10,10 +10,9 @@
  * reproduced or used in any manner whatsoever.
  */
 
-package org.thinkit.generator.rule.dtogenerator;
+package org.thinkit.generator.command.dtogenerator;
 
 import org.thinkit.common.command.CommandInvoker;
-import org.thinkit.generator.command.dtogenerator.ClassDefinitionMatrixCollector;
 import org.thinkit.generator.common.command.dtogenerator.ClassResourceFormatter;
 import org.thinkit.generator.common.dto.dtogenerator.ClassDefinitionMatrix;
 import org.thinkit.generator.common.dto.dtogenerator.ClassResource;
