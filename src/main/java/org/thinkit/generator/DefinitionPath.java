@@ -20,7 +20,7 @@ import org.thinkit.common.catalog.Platform;
 import org.thinkit.common.rule.RuleInvoker;
 import org.thinkit.common.util.file.FluentFile;
 import org.thinkit.generator.dto.DefaultOutputPath;
-import org.thinkit.generator.rule.DefaultOutputPathManager;
+import org.thinkit.generator.rule.DefaultOutputPathLoader;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -177,7 +177,7 @@ public final class DefinitionPath {
             return "";
         }
 
-        final DefaultOutputPath defaultOutputPath = RuleInvoker.of(new DefaultOutputPathManager(platform)).invoke();
+        final DefaultOutputPath defaultOutputPath = RuleInvoker.of(new DefaultOutputPathLoader(platform)).invoke();
 
         final StringBuilder outputPath = new StringBuilder();
         outputPath.append(System.getenv(defaultOutputPath.getEnvironmentVariableName()))

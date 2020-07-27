@@ -49,7 +49,7 @@ import lombok.ToString;
  */
 @ToString
 @EqualsAndHashCode(callSuper = false)
-public final class DefaultOutputPathManager extends AbstractRule<DefaultOutputPath> {
+public final class DefaultOutputPathLoader extends AbstractRule<DefaultOutputPath> {
 
     /**
      * ログ出力オブジェクト
@@ -66,7 +66,7 @@ public final class DefaultOutputPathManager extends AbstractRule<DefaultOutputPa
      * デフォルトコンストラクタ
      */
     @SuppressWarnings("unused")
-    private DefaultOutputPathManager() {
+    private DefaultOutputPathLoader() {
     }
 
     /**
@@ -75,9 +75,8 @@ public final class DefaultOutputPathManager extends AbstractRule<DefaultOutputPa
      * @param platform プログラム実行時のプラットフォーム要素
      * @exception NullPointerException 引数として{@code null}が渡された場合
      */
-    public DefaultOutputPathManager(@NonNull Platform platform) {
+    public DefaultOutputPathLoader(@NonNull Platform platform) {
         this.platform = platform;
-
         super.loadContent(ContentName.既定出力先情報);
     }
 
