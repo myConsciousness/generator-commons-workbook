@@ -13,26 +13,16 @@
 package org.thinkit.generator.rule.dtogenerator;
 
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
 import com.google.common.flogger.FluentLogger;
 
-import org.apache.commons.lang3.StringUtils;
-import org.thinkit.common.catalog.Catalog;
 import org.thinkit.common.rule.AbstractRule;
 import org.thinkit.common.rule.Attribute;
 import org.thinkit.common.rule.Content;
-import org.thinkit.common.util.workbook.FluentSheet;
-import org.thinkit.common.util.workbook.FluentWorkbook;
-import org.thinkit.common.util.workbook.Matrix;
-import org.thinkit.generator.common.catalog.dtogenerator.DtoItem;
-import org.thinkit.generator.common.dto.dtogenerator.ClassCreatorDefinition;
-import org.thinkit.generator.rule.Sheet;
 
 import lombok.EqualsAndHashCode;
-import lombok.NonNull;
 import lombok.ToString;
 
 /**
@@ -44,7 +34,7 @@ import lombok.ToString;
  */
 @ToString
 @EqualsAndHashCode(callSuper = false)
-final class ClassCreatorDefinitionLoader extends AbstractRule<ClassCreatorDefinition> {
+public final class ClassCreatorDefinitionLoader extends AbstractRule<List<Map<String, String>>> {
 
     /**
      * ログ出力オブジェクト
@@ -52,59 +42,10 @@ final class ClassCreatorDefinitionLoader extends AbstractRule<ClassCreatorDefini
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
     /**
-     * SheetHandlerオブジェクト
-     */
-    private FluentSheet sheet;
-
-    /**
-     * ファイルパス
-     */
-    private String filePath = "";
-
-    /**
      * デフォルトコンストラクタ
      */
-    @SuppressWarnings("unused")
-    private ClassCreatorDefinitionLoader() {
-    }
-
-    /**
-     * コンストラクタ
-     *
-     * @param filePath DTO定義書のファイルパス
-     * @exception IllegalArgumentException ファイルパスがnullまたは空文字列の場合
-     */
-    public ClassCreatorDefinitionLoader(String filePath) {
-
-        if (StringUtils.isEmpty(filePath)) {
-            throw new IllegalArgumentException("wrong parameter was given. File path is required.");
-        }
-
-        this.filePath = filePath;
-
+    public ClassCreatorDefinitionLoader() {
         super.loadContent(ContentName.クラス作成者情報);
-    }
-
-    /**
-     * コンストラクタ
-     *
-     * @param sheet DTO定義書の情報を持つSheetオブジェクト
-     */
-    public ClassCreatorDefinitionLoader(@NonNull FluentSheet sheet) {
-        this.sheet = sheet;
-        super.loadContent(ContentName.クラス作成者情報);
-    }
-
-    /**
-     * シート名定数
-     */
-    private enum SheetName implements Sheet {
-        定義書;
-
-        @Override
-        public String getString() {
-            return this.name();
-        }
     }
 
     /**
@@ -132,45 +73,8 @@ final class ClassCreatorDefinitionLoader extends AbstractRule<ClassCreatorDefini
     }
 
     @Override
-    public ClassCreatorDefinition execute() {
-
-        if (this.sheet == null) {
-            final FluentWorkbook workbook = new FluentWorkbook.Builder().fromFile(this.filePath).build();
-            this.sheet = workbook.sheet(SheetName.定義書.name());
-        }
-
-        final EnumMap<DtoItem, String> creatorDefinitions = this.getCreatorDefinitions(this.sheet);
-        final ClassCreatorDefinition classCreatorDefinition = new ClassCreatorDefinition(
-                creatorDefinitions.get(DtoItem.CREATOR), creatorDefinitions.get(DtoItem.CREATION_TIME),
-                creatorDefinitions.get(DtoItem.UPDTATE_TIME));
-
-        logger.atInfo().log("クラス作成者情報 = (%s)", classCreatorDefinition);
-        return classCreatorDefinition;
-    }
-
-    /**
-     * セル内に定義された作成者情報を取得し返却します。
-     *
-     * @param sheet Sheetオブジェクト
-     * @return セルに定義された作成者情報
-     */
-    private EnumMap<DtoItem, String> getCreatorDefinitions(FluentSheet sheet) {
-
-        final List<Map<String, String>> contents = super.getContents();
-        final EnumMap<DtoItem, String> creatorDefinitions = new EnumMap<>(DtoItem.class);
-
-        for (Map<String, String> elements : contents) {
-            final String cellItemName = elements.get(ContentAttribute.セル項目名.name());
-            final Matrix baseIndexes = sheet.findCellIndex(cellItemName);
-
-            final String sequence = sheet.getRegionSequence(baseIndexes.getColumn(), baseIndexes.getRow());
-
-            final int itemCode = Integer.parseInt(elements.get(ContentAttribute.セル項目コード.name()));
-            creatorDefinitions.put(Catalog.getEnum(DtoItem.class, itemCode), sequence);
-        }
-
-        logger.atInfo().log("コンテンツ情報 = (%s)", creatorDefinitions);
-        return creatorDefinitions;
+    public List<Map<String, String>> execute() {
+        return super.getContents();
     }
 
     @Override
