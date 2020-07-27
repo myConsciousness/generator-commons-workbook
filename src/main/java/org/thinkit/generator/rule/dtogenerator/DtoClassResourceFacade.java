@@ -14,9 +14,9 @@ package org.thinkit.generator.rule.dtogenerator;
 
 import org.thinkit.common.command.CommandInvoker;
 import org.thinkit.common.rule.RuleInvoker;
+import org.thinkit.generator.common.command.dtogenerator.ClassResourceFormatter;
 import org.thinkit.generator.common.dto.dtogenerator.ClassDefinitionMatrix;
 import org.thinkit.generator.common.dto.dtogenerator.ClassResource;
-import org.thinkit.generator.common.rule.dtogenerator.ClassResourceFormatter;
 
 import lombok.NonNull;
 
