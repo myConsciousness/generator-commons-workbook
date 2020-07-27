@@ -24,6 +24,7 @@ import org.thinkit.common.rule.AbstractRule;
 import org.thinkit.common.rule.Attribute;
 import org.thinkit.common.rule.Condition;
 import org.thinkit.common.rule.Content;
+import org.thinkit.generator.dto.DefaultOutputPath;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -32,28 +33,23 @@ import lombok.NonNull;
 import lombok.ToString;
 
 /**
- * 既定の出力先パスを管理するクラスです。<br>
- * {@link #execute()}を実行することでコンテンツ「既定出力先情報」から<br>
- * 既定の出力先を生成する際に必要な情報を取得します。<br>
- * <br>
+ * 既定の出力先パスを管理するクラスです。
+ * <p>
+ * {@link #execute()} を実行することでコンテンツ「既定出力先情報」から<br>
+ * 既定の出力先を生成する際に必要な情報を取得します。
+ * <p>
  * 実行の前提としてプログラム実行時のプラットフォームに対応した既定の出力先情報が<br>
- * コンテンツ「既定出力先情報」に定義されている必要があります。<br>
- * <br>
- * コンテンツから取得した情報は以下のメソッドを使用することで取得できます。<br>
- * {@link #getEnvironmentVariableName()}<br>
- * {@link #getOutputDirectory()}<br>
+ * コンテンツ「既定出力先情報」に定義されている必要があります。
  *
  * @author Kato Shinya
  * @since 1.0
  * @version 1.0
  *
  * @see #execute()
- * @see #getEnvironmentVariableName()
- * @see #getOutputDirectory()
  */
 @ToString
 @EqualsAndHashCode(callSuper = false)
-public final class DefaultOutputPathManager extends AbstractRule {
+public final class DefaultOutputPathManager extends AbstractRule<DefaultOutputPath> {
 
     /**
      * ログ出力オブジェクト
@@ -65,18 +61,6 @@ public final class DefaultOutputPathManager extends AbstractRule {
      */
     @Getter(AccessLevel.PRIVATE)
     private Platform platform = null;
-
-    /**
-     * 環境変数名
-     */
-    @Getter
-    private String environmentVariableName = "";
-
-    /**
-     * 出力先ディレクトリ
-     */
-    @Getter
-    private String outputDirectory = "";
 
     /**
      * デフォルトコンストラクタ
@@ -134,16 +118,14 @@ public final class DefaultOutputPathManager extends AbstractRule {
     }
 
     @Override
-    public boolean execute() {
+    public DefaultOutputPath execute() {
 
         final Map<String, String> content = super.getContents().get(0);
-        this.environmentVariableName = content.get(ContentAttribute.環境変数名.getString());
-        this.outputDirectory = content.get(ContentAttribute.出力先ディレクトリ.getString());
+        final DefaultOutputPath defaultOutputPath = DefaultOutputPath.of(
+                content.get(ContentAttribute.環境変数名.getString()), content.get(ContentAttribute.出力先ディレクトリ.getString()));
 
-        logger.atInfo().log("環境変数名 = (%s)", this.getEnvironmentVariableName());
-        logger.atInfo().log("出力先ディレクトリ = (%s)", this.getOutputDirectory());
-
-        return true;
+        logger.atInfo().log("既定出力先 = (%s)", defaultOutputPath);
+        return defaultOutputPath;
     }
 
     @Override

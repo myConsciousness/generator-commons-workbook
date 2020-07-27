@@ -12,13 +12,19 @@
 
 package org.thinkit.generator.rule.dtogenerator;
 
+import java.util.List;
+
 import com.google.common.flogger.FluentLogger;
 
 import org.apache.commons.lang3.StringUtils;
 import org.thinkit.common.rule.AbstractRule;
+import org.thinkit.common.rule.RuleInvoker;
 import org.thinkit.common.util.workbook.FluentSheet;
 import org.thinkit.common.util.workbook.FluentWorkbook;
+import org.thinkit.generator.common.dto.dtogenerator.ClassCreatorDefinition;
+import org.thinkit.generator.common.dto.dtogenerator.ClassDefinition;
 import org.thinkit.generator.common.dto.dtogenerator.ClassDefinitionMatrix;
+import org.thinkit.generator.common.dto.dtogenerator.ClassNameDefinition;
 import org.thinkit.generator.rule.Sheet;
 
 import lombok.AccessLevel;
@@ -35,7 +41,7 @@ import lombok.ToString;
  */
 @ToString
 @EqualsAndHashCode(callSuper = false)
-final class ClassDefinitionMatrixReader extends AbstractRule {
+final class ClassDefinitionMatrixReader extends AbstractRule<ClassDefinitionMatrix> {
 
     /**
      * ログ出力オブジェクト
@@ -47,12 +53,6 @@ final class ClassDefinitionMatrixReader extends AbstractRule {
      */
     @Getter(AccessLevel.PRIVATE)
     private String filePath = "";
-
-    /**
-     * クラス定義情報群
-     */
-    @Getter
-    private ClassDefinitionMatrix classDefinitionMatrix = null;
 
     /**
      * デフォルトコンストラクタ
@@ -90,40 +90,20 @@ final class ClassDefinitionMatrixReader extends AbstractRule {
     }
 
     @Override
-    public boolean execute() {
+    public ClassDefinitionMatrix execute() {
 
         final FluentWorkbook workbook = new FluentWorkbook.Builder().fromFile(this.getFilePath()).build();
         final FluentSheet sheet = workbook.sheet(SheetName.定義書.name());
 
-        final ClassCreatorDefinitionReader classCreatorDefinitionReader = new ClassCreatorDefinitionReader(sheet);
+        final ClassCreatorDefinition classCreatorDefinition = RuleInvoker.of(new ClassCreatorDefinitionReader(sheet))
+                .invoke();
+        final ClassNameDefinition classNameDefinition = RuleInvoker.of(new ClassNameDefinitionReader(sheet)).invoke();
+        final List<ClassDefinition> classDefinitions = RuleInvoker.of(new ClassDefinitionReader(sheet)).invoke();
 
-        if (!classCreatorDefinitionReader.execute()) {
-            logger.atSevere().log("クラス作成者情報の取得処理が異常終了しました。");
-            return false;
-        }
-
-        final ClassNameDefinitionReader classNameDefinitionReader = new ClassNameDefinitionReader(sheet);
-
-        if (!classNameDefinitionReader.execute()) {
-            logger.atSevere().log("クラス名定義情報の取得処理が異常終了しました。");
-            return false;
-        }
-
-        final ClassDefinitionReader classDefinitionReader = new ClassDefinitionReader(sheet);
-
-        if (!classDefinitionReader.execute()) {
-            logger.atSevere().log("クラス定義情報の取得処理が異常終了しました。");
-            return false;
-        }
-
-        final ClassDefinitionMatrix classDefinitionMatrix = new ClassDefinitionMatrix(
-                classNameDefinitionReader.getClassNameDefinition(),
-                classCreatorDefinitionReader.getClassCreatorDefinition(),
-                classDefinitionReader.getClassDefinitionList());
-
-        this.classDefinitionMatrix = classDefinitionMatrix;
+        final ClassDefinitionMatrix classDefinitionMatrix = new ClassDefinitionMatrix(classNameDefinition,
+                classCreatorDefinition, classDefinitions);
 
         logger.atInfo().log("クラス定義情報マトリクス = (%s)", classDefinitionMatrix);
-        return true;
+        return classDefinitionMatrix;
     }
 }

@@ -17,7 +17,9 @@ import com.google.common.flogger.FluentLogger;
 
 import org.apache.commons.lang3.StringUtils;
 import org.thinkit.common.catalog.Platform;
+import org.thinkit.common.rule.RuleInvoker;
 import org.thinkit.common.util.file.FluentFile;
+import org.thinkit.generator.dto.DefaultOutputPath;
 import org.thinkit.generator.rule.DefaultOutputPathManager;
 
 import lombok.EqualsAndHashCode;
@@ -39,8 +41,10 @@ import lombok.ToString;
  * {@link DefinitionPath} のインスタンス生成時に出力先パスの設定は必須ではありませんが、<br>
  * 出力先パスが設定された場合は {@link #getOutputPath()} の呼び出し時には設定された値が優先的に返却されます。
  * <p>
- * {@link DefinitionPath} のインスタンス生成時に出力先パスが設定されない状態で {@link #getOutputPath()} が呼び出された場合は、<br>
- * {@link DefaultOutputPathManager#execute()} を呼び出しプラットフォームに対応した既定出力先のパスを生成し返却します。<br>
+ * {@link DefinitionPath} のインスタンス生成時に出力先パスが設定されない状態で {@link #getOutputPath()}
+ * が呼び出された場合は、<br>
+ * {@link DefaultOutputPathManager#execute()}
+ * を呼び出しプラットフォームに対応した既定出力先のパスを生成し返却します。<br>
  * この既定出力先のパスを生成する際にエラーが発生した場合は {@link #getOutputPath()} は必ず空文字列を返却します。
  *
  * @author Kato Shinya
@@ -173,16 +177,11 @@ public final class DefinitionPath {
             return "";
         }
 
-        final DefaultOutputPathManager defaultOutputPathManager = new DefaultOutputPathManager(platform);
-
-        if (!defaultOutputPathManager.execute()) {
-            logger.atSevere().log("既定出力先パスの取得処理が異常終了しました。");
-            return "";
-        }
+        final DefaultOutputPath defaultOutputPath = RuleInvoker.of(new DefaultOutputPathManager(platform)).invoke();
 
         final StringBuilder outputPath = new StringBuilder();
-        outputPath.append(System.getenv(defaultOutputPathManager.getEnvironmentVariableName()))
-                .append(FluentFile.getFileSeparator()).append(defaultOutputPathManager.getOutputDirectory());
+        outputPath.append(System.getenv(defaultOutputPath.getEnvironmentVariableName()))
+                .append(FluentFile.getFileSeparator()).append(defaultOutputPath.getOutputDirectory());
 
         return outputPath.toString();
     }

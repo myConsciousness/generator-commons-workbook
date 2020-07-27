@@ -32,7 +32,6 @@ import org.thinkit.generator.common.dto.dtogenerator.ClassNameDefinition;
 import org.thinkit.generator.rule.Sheet;
 
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
 
@@ -45,7 +44,7 @@ import lombok.ToString;
  */
 @ToString
 @EqualsAndHashCode(callSuper = false)
-final class ClassNameDefinitionReader extends AbstractRule {
+final class ClassNameDefinitionReader extends AbstractRule<ClassNameDefinition> {
 
     /**
      * ログ出力オブジェクト
@@ -61,12 +60,6 @@ final class ClassNameDefinitionReader extends AbstractRule {
      * ファイルパス
      */
     private String filePath = "";
-
-    /**
-     * クラス名定義情報
-     */
-    @Getter
-    private ClassNameDefinition classNameDefinition = null;
 
     /**
      * デフォルトコンストラクタ
@@ -140,7 +133,7 @@ final class ClassNameDefinitionReader extends AbstractRule {
     }
 
     @Override
-    public boolean execute() {
+    public ClassNameDefinition execute() {
 
         if (this.sheet == null) {
             final FluentWorkbook workbook = new FluentWorkbook.Builder().fromFile(this.filePath).build();
@@ -153,10 +146,8 @@ final class ClassNameDefinitionReader extends AbstractRule {
                 definitions.get(DtoItem.PHYSICAL_NAME), definitions.get(DtoItem.LOGICAL_NAME),
                 definitions.get(DtoItem.DESCRIPTION));
 
-        this.classNameDefinition = classNameDefinition;
-
         logger.atInfo().log("クラス名定義情報 = (%s)", classNameDefinition);
-        return true;
+        return classNameDefinition;
     }
 
     /**

@@ -12,8 +12,9 @@
 
 package org.thinkit.generator.rule.dtogenerator;
 
-import com.google.common.flogger.FluentLogger;
-
+import org.thinkit.common.command.CommandInvoker;
+import org.thinkit.common.rule.RuleInvoker;
+import org.thinkit.generator.common.dto.dtogenerator.ClassDefinitionMatrix;
 import org.thinkit.generator.common.dto.dtogenerator.ClassResource;
 import org.thinkit.generator.common.rule.dtogenerator.ClassResourceFormatter;
 
@@ -21,8 +22,8 @@ import lombok.NonNull;
 
 /**
  * DTOクラスのリソースを生成する処理を集約したファサードクラスです。<br>
- * DTOクラスのリソースを生成する際には{@link #createResource(String)}を呼び出してください。<br>
- * {@link #createResource(String)}を呼び出す際には、<br>
+ * DTOクラスのリソースを生成する際には {@link #createResource(String)} を呼び出してください。<br>
+ * {@link #createResource(String)} を呼び出す際には、<br>
  * 第1引数としてDTOクラスの定義情報が記載されたExcelファイルのパスを指定してください。<br>
  *
  * @author Kato Shinya
@@ -31,12 +32,7 @@ import lombok.NonNull;
  *
  * @see #createResource(String)
  */
-public class DtoClassResourceFacade {
-
-    /**
-     * ログ出力オブジェクト
-     */
-    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
+public final class DtoClassResourceFacade {
 
     /**
      * デフォルトコンストラクタ
@@ -46,9 +42,9 @@ public class DtoClassResourceFacade {
 
     /**
      * 指定されたファイルパスに定義された情報を基にDTOクラスのリソースを生成します。<br>
-     * 引数に{@code null}が指定された場合は実行時に必ず失敗します。<br>
+     * 引数に {@code null} が指定された場合は実行時に必ず失敗します。<br>
      * <br>
-     * {@link ClassResourceFormatter#getClassResource()}で取得する連想配列は<br>
+     * {@link ClassResourceFormatter#getClassResource()} で取得する連想配列は<br>
      * 以下の情報を格納しています。<br>
      * 1, Key ・・・ クラス名<br>
      * 2, Value ・・・ クラス名に紐づくDTOクラスのリソース<br>
@@ -56,25 +52,13 @@ public class DtoClassResourceFacade {
      * @param filePath 定義書のファイルパス
      * @return 生成されたDTOクラスのリソース情報
      *
-     * @exception NullPointerException 引数として{@code null}が渡された場合
+     * @exception NullPointerException 引数として {@code null} が渡された場合
      */
     public static ClassResource createResource(@NonNull String filePath) {
 
-        final ClassDefinitionMatrixReader classDefinitionMatrixReader = new ClassDefinitionMatrixReader(filePath);
+        final ClassDefinitionMatrix classDefintionMatrix = RuleInvoker.of(new ClassDefinitionMatrixReader(filePath))
+                .invoke();
 
-        if (!classDefinitionMatrixReader.execute()) {
-            logger.atSevere().log("クラス定義情報群の生成処理が異常終了しました。");
-            return null;
-        }
-
-        final ClassResourceFormatter classResourceFormatter = new ClassResourceFormatter(
-                classDefinitionMatrixReader.getClassDefinitionMatrix());
-
-        if (!classResourceFormatter.execute()) {
-            logger.atSevere().log("クラス定義情報の整形処理が異常終了しました。");
-            return null;
-        }
-
-        return classResourceFormatter.getClassResource();
+        return CommandInvoker.of(new ClassResourceFormatter(classDefintionMatrix)).invoke();
     }
 }

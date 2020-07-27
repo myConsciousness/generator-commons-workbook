@@ -47,7 +47,7 @@ import lombok.ToString;
  */
 @ToString
 @EqualsAndHashCode(callSuper = false)
-final class ClassDefinitionReader extends AbstractRule {
+final class ClassDefinitionReader extends AbstractRule<List<ClassDefinition>> {
 
     /**
      * ログ出力オブジェクト
@@ -73,12 +73,6 @@ final class ClassDefinitionReader extends AbstractRule {
      * ファイルパス
      */
     private String filePath = "";
-
-    /**
-     * クラス定義情報群
-     */
-    @Getter
-    private List<ClassDefinition> classDefinitionList = null;
 
     /**
      * デフォルトコンストラクタ
@@ -151,7 +145,7 @@ final class ClassDefinitionReader extends AbstractRule {
     }
 
     @Override
-    public boolean execute() {
+    public List<ClassDefinition> execute() {
 
         if (this.sheet == null) {
             final FluentWorkbook workbook = new FluentWorkbook.Builder().fromFile(this.filePath).build();
@@ -162,12 +156,10 @@ final class ClassDefinitionReader extends AbstractRule {
 
         if (classDefinitionList.isEmpty()) {
             logger.atSevere().log("クラス定義情報を取得できませんでした。");
-            return false;
+            return null;
         }
 
-        this.classDefinitionList = classDefinitionList;
-
-        return true;
+        return classDefinitionList;
     }
 
     /**
@@ -340,7 +332,7 @@ final class ClassDefinitionReader extends AbstractRule {
     /**
      * コンテンツリストから引数として指定されたセル項目オブジェクトのコード値と紐づくセル項目名を取得し返却します。
      *
-     * @param content     コンテンツリスト
+     * @param content コンテンツリスト
      * @param dtoItem 取得対象のセル項目コードが定義されたオブジェクト
      * @return 引数として指定されたセル項目コードに紐づくセル項目名
      * @exception IllegalArgumentException コンテンツリストが空の場合、またはセル項目オブジェクトがnullの場合
@@ -369,8 +361,8 @@ final class ClassDefinitionReader extends AbstractRule {
     /**
      * 指定されたセル項目に紐づくコンテンツ項目を取得し返却します。
      *
-     * @param nodeList     コンテンツ項目リスト
-     * @param dtoItem 取得対象のセル項目
+     * @param nodeList コンテンツ項目リスト
+     * @param dtoItem  取得対象のセル項目
      * @return 取得対象のセル項目に紐づくコンテンツ項目
      */
     private String getContentItem(List<Map<String, String>> nodeList, DtoItem dtoItem) {

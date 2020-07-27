@@ -32,7 +32,6 @@ import org.thinkit.generator.common.dto.dtogenerator.ClassCreatorDefinition;
 import org.thinkit.generator.rule.Sheet;
 
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
 
@@ -45,7 +44,7 @@ import lombok.ToString;
  */
 @ToString
 @EqualsAndHashCode(callSuper = false)
-final class ClassCreatorDefinitionReader extends AbstractRule {
+final class ClassCreatorDefinitionReader extends AbstractRule<ClassCreatorDefinition> {
 
     /**
      * ログ出力オブジェクト
@@ -61,12 +60,6 @@ final class ClassCreatorDefinitionReader extends AbstractRule {
      * ファイルパス
      */
     private String filePath = "";
-
-    /**
-     * クラス作成者情報
-     */
-    @Getter
-    private ClassCreatorDefinition classCreatorDefinition = null;
 
     /**
      * デフォルトコンストラクタ
@@ -139,7 +132,7 @@ final class ClassCreatorDefinitionReader extends AbstractRule {
     }
 
     @Override
-    public boolean execute() {
+    public ClassCreatorDefinition execute() {
 
         if (this.sheet == null) {
             final FluentWorkbook workbook = new FluentWorkbook.Builder().fromFile(this.filePath).build();
@@ -151,10 +144,8 @@ final class ClassCreatorDefinitionReader extends AbstractRule {
                 creatorDefinitions.get(DtoItem.CREATOR), creatorDefinitions.get(DtoItem.CREATION_TIME),
                 creatorDefinitions.get(DtoItem.UPDTATE_TIME));
 
-        this.classCreatorDefinition = classCreatorDefinition;
-
         logger.atInfo().log("クラス作成者情報 = (%s)", classCreatorDefinition);
-        return true;
+        return classCreatorDefinition;
     }
 
     /**
