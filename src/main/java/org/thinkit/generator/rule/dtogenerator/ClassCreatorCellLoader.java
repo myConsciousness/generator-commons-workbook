@@ -1,6 +1,6 @@
 /**
  * Project Name : Generator<br>
- * File Name : ClassCreatorCellItemLoader.java<br>
+ * File Name : ClassCreatorCellLoader.java<br>
  * Encoding : UTF-8<br>
  * Creation Date : 2020/05/16<br>
  * <p>
@@ -25,7 +25,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
- * コンテンツ「クラス作成者セル項目」の情報をロードするルールクラスです。
+ * コンテンツ「クラス作成者セル」の情報をロードするルールクラスです。
  *
  * @author Kato Shinya
  * @since 1.0
@@ -33,12 +33,21 @@ import lombok.ToString;
  */
 @ToString
 @EqualsAndHashCode(callSuper = false)
-public final class ClassCreatorCellItemLoader implements Rule<List<Map<String, String>>> {
+public final class ClassCreatorCellLoader implements Rule<List<Map<String, String>>> {
 
     /**
      * デフォルトコンストラクタ
      */
-    public ClassCreatorCellItemLoader() {
+    private ClassCreatorCellLoader() {
+    }
+
+    /**
+     * {@link ClassCreatorCellLoader} クラスの新しいインスタンスを生成し返却します。
+     *
+     * @return {@link ClassCreatorCellLoader} クラスの新しいインスタンス
+     */
+    public static ClassCreatorCellLoader of() {
+        return new ClassCreatorCellLoader();
     }
 
     /**

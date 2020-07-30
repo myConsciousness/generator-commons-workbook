@@ -19,6 +19,7 @@ import java.util.Map;
 import com.google.common.flogger.FluentLogger;
 
 import org.apache.commons.lang3.StringUtils;
+import org.thinkit.common.catalog.Catalog;
 import org.thinkit.common.command.Command;
 import org.thinkit.common.rule.Attribute;
 import org.thinkit.common.rule.RuleInvoker;
@@ -28,8 +29,7 @@ import org.thinkit.common.util.workbook.Matrix;
 import org.thinkit.generator.command.Sheet;
 import org.thinkit.generator.common.catalog.dtogenerator.DtoItem;
 import org.thinkit.generator.common.dto.dtogenerator.ClassNameDefinition;
-import org.thinkit.generator.rule.dtogenerator.ClassNameCellItemLoader;
-import org.thinkit.common.catalog.Catalog;
+import org.thinkit.generator.rule.dtogenerator.ClassNameCellLoader;
 
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
@@ -132,10 +132,12 @@ final class ClassNameDefinitionCollector implements Command<ClassNameDefinition>
      *
      * @param sheet Sheetオブジェクト
      * @return セルに定義されたクラス名情報
+     *
+     * @exception NullPointerException 引数として {@code null} が渡された場合
      */
-    private EnumMap<DtoItem, String> getNameDefinitions(FluentSheet sheet) {
+    private EnumMap<DtoItem, String> getNameDefinitions(@NonNull FluentSheet sheet) {
 
-        final List<Map<String, String>> contents = RuleInvoker.of(new ClassNameCellItemLoader()).invoke();
+        final List<Map<String, String>> contents = RuleInvoker.of(ClassNameCellLoader.of()).invoke();
         final EnumMap<DtoItem, String> classNameDefinitions = new EnumMap<>(DtoItem.class);
 
         for (Map<String, String> elements : contents) {

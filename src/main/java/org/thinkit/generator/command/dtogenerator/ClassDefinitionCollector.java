@@ -30,7 +30,7 @@ import org.thinkit.generator.command.Sheet;
 import org.thinkit.generator.common.catalog.dtogenerator.DtoItem;
 import org.thinkit.generator.common.dto.dtogenerator.ClassDefinition;
 import org.thinkit.generator.common.dto.dtogenerator.ClassItemDefinition;
-import org.thinkit.generator.rule.dtogenerator.ClassDefinitionCellItemLoader;
+import org.thinkit.generator.rule.dtogenerator.ClassDefinitionCellLoader;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -144,11 +144,14 @@ final class ClassDefinitionCollector implements Command<List<ClassDefinition>> {
      *
      * @param sheet Sheetオブジェクト
      * @return クラス定義情報群
+     *
+     * @exception NullPointerException 引数として {@code null} が渡された場合
+     *
      * @see #getClassDefinitionRecursively(List, List, List, int, int)
      */
-    private List<ClassDefinition> getClassDefinitionList(FluentSheet sheet) {
+    private List<ClassDefinition> getClassDefinitionList(@NonNull FluentSheet sheet) {
 
-        final List<Map<String, String>> contents = RuleInvoker.of(new ClassDefinitionCellItemLoader()).invoke();
+        final List<Map<String, String>> contents = RuleInvoker.of(ClassDefinitionCellLoader.of()).invoke();
 
         final String baseCellItem = this.getContentItem(contents, DtoItem.LOGICAL_DELETE);
         final Matrix baseIndexes = sheet.findCellIndex(baseCellItem);
@@ -171,6 +174,9 @@ final class ClassDefinitionCollector implements Command<List<ClassDefinition>> {
      *
      * @param recursiveRequiredParameters 再帰処理時に必須となる情報を格納したデータクラス
      * @return 子クラスを生成する際に使用したレコード数
+     *
+     * @exception NullPointerException 引数として {@code null} が渡された場合
+     *
      * @see RecursiveRequiredParameters
      */
     private int craeteClassDefinitionRecursively(
@@ -291,16 +297,17 @@ final class ClassDefinitionCollector implements Command<List<ClassDefinition>> {
     }
 
     /**
-     * 文字列を真偽値に変換します。 <br>
+     * 文字列を真偽値に変換します。
+     * <p>
      * 真偽値へ変換する際のルールは下記の通りです。<br>
-     * 当該メソッドでは文字列に対するトリム加工は行いません。<br>
-     * <br>
+     * 当該メソッドでは文字列に対するトリム加工は行いません。
+     * <p>
      * 1, 文字列がnullの場合: {@code false}<br>
      * 2, 文字列が空文字列の場合: {@code false}<br>
      * 3, 上記以外の場合: {@code true}<br>
      *
      * @param sequence 変換対象の文字列
-     * @return 文字列がnullまたは空文字列の場合は{@code false}、それ以外は{@true}
+     * @return 文字列がnullまたは空文字列の場合は {@code false} 、それ以外は {@code true}
      */
     private boolean convertStringToBoolean(final String sequence) {
         return !StringUtils.isEmpty(sequence);
@@ -312,7 +319,9 @@ final class ClassDefinitionCollector implements Command<List<ClassDefinition>> {
      * @param content コンテンツリスト
      * @param dtoItem 取得対象のセル項目コードが定義されたオブジェクト
      * @return 引数として指定されたセル項目コードに紐づくセル項目名
-     * @exception IllegalArgumentException コンテンツリストが空の場合、またはセル項目オブジェクトがnullの場合
+     *
+     * @exception IllegalArgumentException コンテンツリストが空の場合、またはセル項目オブジェクトが {@code null}
+     *                                     の場合
      */
     private String getCellItemName(@NonNull List<Map<String, String>> content, @NonNull DtoItem dtoItem) {
         assert !content.isEmpty();
@@ -402,5 +411,4 @@ final class ClassDefinitionCollector implements Command<List<ClassDefinition>> {
          */
         private final int baseItemLayer;
     }
-
 }

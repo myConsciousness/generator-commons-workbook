@@ -1,6 +1,6 @@
 /**
  * Project Name : Generator<br>
- * File Name : ClassNameCellItemLoader.java<br>
+ * File Name : ClassNameCellLoader.java<br>
  * Encoding : UTF-8<br>
  * Creation Date : 2020/05/16<br>
  * <p>
@@ -13,7 +13,6 @@
 package org.thinkit.generator.rule.dtogenerator;
 
 import java.util.ArrayList;
-
 import java.util.List;
 import java.util.Map;
 
@@ -23,11 +22,10 @@ import org.thinkit.common.rule.Content;
 import org.thinkit.common.rule.Rule;
 
 import lombok.EqualsAndHashCode;
-
 import lombok.ToString;
 
 /**
- * コンテンツ「クラス名称セル項目」の情報をロードするルールクラスです。
+ * コンテンツ「クラス名称セル」の情報をロードするルールクラスです。
  *
  * @author Kato Shinya
  * @since 1.0
@@ -35,12 +33,21 @@ import lombok.ToString;
  */
 @ToString
 @EqualsAndHashCode(callSuper = false)
-public final class ClassNameCellItemLoader implements Rule<List<Map<String, String>>> {
+public final class ClassNameCellLoader implements Rule<List<Map<String, String>>> {
 
     /**
      * デフォルトコンストラクタ
      */
-    public ClassNameCellItemLoader() {
+    private ClassNameCellLoader() {
+    }
+
+    /**
+     * {@link ClassNameCellLoader} クラスの新しいインスタンスを生成し返却します。
+     *
+     * @return {@link ClassNameCellLoader} クラスの新しいインスタンス
+     */
+    public static ClassNameCellLoader of() {
+        return new ClassNameCellLoader();
     }
 
     /**
