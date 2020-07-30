@@ -30,7 +30,7 @@ import org.thinkit.generator.command.Sheet;
 import org.thinkit.generator.common.catalog.dtogenerator.DtoItem;
 import org.thinkit.generator.common.dto.dtogenerator.ClassDefinition;
 import org.thinkit.generator.common.dto.dtogenerator.ClassItemDefinition;
-import org.thinkit.generator.rule.dtogenerator.ClassDefinitionLoader;
+import org.thinkit.generator.rule.dtogenerator.ClassDefinitionCellItemLoader;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -148,7 +148,7 @@ final class ClassDefinitionCollector implements Command<List<ClassDefinition>> {
      */
     private List<ClassDefinition> getClassDefinitionList(FluentSheet sheet) {
 
-        final List<Map<String, String>> contents = RuleInvoker.of(new ClassDefinitionLoader()).invoke();
+        final List<Map<String, String>> contents = RuleInvoker.of(new ClassDefinitionCellItemLoader()).invoke();
 
         final String baseCellItem = this.getContentItem(contents, DtoItem.LOGICAL_DELETE);
         final Matrix baseIndexes = sheet.findCellIndex(baseCellItem);

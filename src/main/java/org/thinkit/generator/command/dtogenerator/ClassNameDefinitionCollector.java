@@ -28,7 +28,7 @@ import org.thinkit.common.util.workbook.Matrix;
 import org.thinkit.generator.command.Sheet;
 import org.thinkit.generator.common.catalog.dtogenerator.DtoItem;
 import org.thinkit.generator.common.dto.dtogenerator.ClassNameDefinition;
-import org.thinkit.generator.rule.dtogenerator.ClassNameDefinitionLoader;
+import org.thinkit.generator.rule.dtogenerator.ClassNameCellItemLoader;
 import org.thinkit.common.catalog.Catalog;
 
 import lombok.EqualsAndHashCode;
@@ -135,7 +135,7 @@ final class ClassNameDefinitionCollector implements Command<ClassNameDefinition>
      */
     private EnumMap<DtoItem, String> getNameDefinitions(FluentSheet sheet) {
 
-        final List<Map<String, String>> contents = RuleInvoker.of(new ClassNameDefinitionLoader()).invoke();
+        final List<Map<String, String>> contents = RuleInvoker.of(new ClassNameCellItemLoader()).invoke();
         final EnumMap<DtoItem, String> classNameDefinitions = new EnumMap<>(DtoItem.class);
 
         for (Map<String, String> elements : contents) {
