@@ -79,7 +79,7 @@ public final class DefaultOutputPathLoader implements Rule<DefaultOutputPath> {
      * コンテンツ名定数
      */
     private enum ContentName implements Content {
-        既定出力先情報;
+        既定出力先;
 
         @Override
         public String getString() {
@@ -114,7 +114,7 @@ public final class DefaultOutputPathLoader implements Rule<DefaultOutputPath> {
     @Override
     public DefaultOutputPath execute() {
 
-        final Map<String, String> content = loadContent(ContentName.既定出力先情報).get(0);
+        final Map<String, String> content = loadContent(ContentName.既定出力先).get(0);
         final DefaultOutputPath defaultOutputPath = DefaultOutputPath.of(
                 content.get(ContentAttribute.環境変数名.getString()), content.get(ContentAttribute.出力先ディレクトリ.getString()));
 
