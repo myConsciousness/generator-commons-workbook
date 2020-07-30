@@ -24,7 +24,7 @@ import org.thinkit.common.rule.Attribute;
 import org.thinkit.common.rule.Condition;
 import org.thinkit.common.rule.Content;
 import org.thinkit.common.rule.Rule;
-import org.thinkit.generator.dto.DefaultOutputPath;
+import org.thinkit.generator.vo.DefaultOutputPath;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;

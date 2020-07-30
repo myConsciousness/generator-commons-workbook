@@ -10,7 +10,7 @@
  * reproduced or used in any manner whatsoever.
  */
 
-package org.thinkit.generator.dto;
+package org.thinkit.generator.vo;
 
 import java.io.Serializable;
 

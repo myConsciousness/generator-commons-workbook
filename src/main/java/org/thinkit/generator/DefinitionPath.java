@@ -19,8 +19,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.thinkit.common.catalog.Platform;
 import org.thinkit.common.rule.RuleInvoker;
 import org.thinkit.common.util.file.FluentFile;
-import org.thinkit.generator.dto.DefaultOutputPath;
 import org.thinkit.generator.rule.DefaultOutputPathLoader;
+import org.thinkit.generator.vo.DefaultOutputPath;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
