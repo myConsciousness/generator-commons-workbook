@@ -18,9 +18,11 @@ import java.util.Map;
 
 import com.google.common.flogger.FluentLogger;
 
-import org.thinkit.common.rule.AbstractRule;
 import org.thinkit.common.rule.Attribute;
+import org.thinkit.common.rule.Condition;
 import org.thinkit.common.rule.Content;
+import org.thinkit.common.rule.Rule;
+
 import lombok.EqualsAndHashCode;
 
 import lombok.ToString;
@@ -34,7 +36,7 @@ import lombok.ToString;
  */
 @ToString
 @EqualsAndHashCode(callSuper = false)
-public final class ClassDefinitionLoader extends AbstractRule<List<Map<String, String>>> {
+public final class ClassDefinitionLoader implements Rule<List<Map<String, String>>> {
 
     /**
      * ログ出力オブジェクト
@@ -45,7 +47,6 @@ public final class ClassDefinitionLoader extends AbstractRule<List<Map<String, S
      * デフォルトコンストラクタ
      */
     public ClassDefinitionLoader() {
-        super.loadContent(ContentName.クラス項目定義情報);
     }
 
     /**
@@ -74,17 +75,22 @@ public final class ClassDefinitionLoader extends AbstractRule<List<Map<String, S
 
     @Override
     public List<Map<String, String>> execute() {
-        return super.getContents();
+        return loadContent(ContentName.クラス項目定義情報);
+
     }
 
     @Override
-    protected List<Attribute> getAttributes() {
-
+    public List<Attribute> getAttributes() {
         final List<Attribute> attributes = new ArrayList<>(2);
         attributes.add(ContentAttribute.セル項目コード);
         attributes.add(ContentAttribute.セル項目名);
 
         logger.atInfo().log("クラス項目定義情報のアトリビュート = (%s)", attributes);
         return attributes;
+    }
+
+    @Override
+    public Map<Condition, String> getConditions() {
+        return Map.of();
     }
 }

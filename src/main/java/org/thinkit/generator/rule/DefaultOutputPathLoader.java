@@ -20,10 +20,10 @@ import java.util.Map;
 import com.google.common.flogger.FluentLogger;
 
 import org.thinkit.common.catalog.Platform;
-import org.thinkit.common.rule.AbstractRule;
 import org.thinkit.common.rule.Attribute;
 import org.thinkit.common.rule.Condition;
 import org.thinkit.common.rule.Content;
+import org.thinkit.common.rule.Rule;
 import org.thinkit.generator.dto.DefaultOutputPath;
 
 import lombok.AccessLevel;
@@ -45,7 +45,7 @@ import lombok.ToString;
  */
 @ToString
 @EqualsAndHashCode(callSuper = false)
-public final class DefaultOutputPathLoader extends AbstractRule<DefaultOutputPath> {
+public final class DefaultOutputPathLoader implements Rule<DefaultOutputPath> {
 
     /**
      * ログ出力オブジェクト
@@ -73,7 +73,6 @@ public final class DefaultOutputPathLoader extends AbstractRule<DefaultOutputPat
      */
     public DefaultOutputPathLoader(@NonNull Platform platform) {
         this.platform = platform;
-        super.loadContent(ContentName.既定出力先情報);
     }
 
     /**
@@ -115,7 +114,7 @@ public final class DefaultOutputPathLoader extends AbstractRule<DefaultOutputPat
     @Override
     public DefaultOutputPath execute() {
 
-        final Map<String, String> content = super.getContents().get(0);
+        final Map<String, String> content = loadContent(ContentName.既定出力先情報).get(0);
         final DefaultOutputPath defaultOutputPath = DefaultOutputPath.of(
                 content.get(ContentAttribute.環境変数名.getString()), content.get(ContentAttribute.出力先ディレクトリ.getString()));
 
@@ -124,8 +123,7 @@ public final class DefaultOutputPathLoader extends AbstractRule<DefaultOutputPat
     }
 
     @Override
-    protected List<Attribute> getAttributes() {
-
+    public List<Attribute> getAttributes() {
         final List<Attribute> attributes = new ArrayList<>(2);
         attributes.add(ContentAttribute.環境変数名);
         attributes.add(ContentAttribute.出力先ディレクトリ);
@@ -135,8 +133,7 @@ public final class DefaultOutputPathLoader extends AbstractRule<DefaultOutputPat
     }
 
     @Override
-    protected Map<Condition, String> getConditions() {
-
+    public Map<Condition, String> getConditions() {
         final Map<Condition, String> conditions = new HashMap<>(1);
         conditions.put(ContentConditions.プラットフォームコード, String.valueOf(this.getPlatform().getCode()));
 
