@@ -16,8 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.flogger.FluentLogger;
-
 import org.thinkit.common.rule.Attribute;
 import org.thinkit.common.rule.Condition;
 import org.thinkit.common.rule.Content;
@@ -39,11 +37,6 @@ import lombok.ToString;
 public final class ClassDefinitionLoader implements Rule<List<Map<String, String>>> {
 
     /**
-     * ログ出力オブジェクト
-     */
-    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
-
-    /**
      * デフォルトコンストラクタ
      */
     public ClassDefinitionLoader() {
@@ -53,7 +46,7 @@ public final class ClassDefinitionLoader implements Rule<List<Map<String, String
      * コンテンツ名定数
      */
     private enum ContentName implements Content {
-        クラス項目定義情報;
+        クラス定義セル項目;
 
         @Override
         public String getString() {
@@ -75,7 +68,7 @@ public final class ClassDefinitionLoader implements Rule<List<Map<String, String
 
     @Override
     public List<Map<String, String>> execute() {
-        return loadContent(ContentName.クラス項目定義情報);
+        return loadContent(ContentName.クラス定義セル項目);
 
     }
 
@@ -85,12 +78,11 @@ public final class ClassDefinitionLoader implements Rule<List<Map<String, String
         attributes.add(ContentAttribute.セル項目コード);
         attributes.add(ContentAttribute.セル項目名);
 
-        logger.atInfo().log("クラス項目定義情報のアトリビュート = (%s)", attributes);
         return attributes;
     }
 
     @Override
     public Map<Condition, String> getConditions() {
-        return Map.of();
+        return null;
     }
 }
