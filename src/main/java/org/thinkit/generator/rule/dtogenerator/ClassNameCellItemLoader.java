@@ -1,6 +1,6 @@
 /**
  * Project Name : Generator<br>
- * File Name : ClassNameDefinitionLoader.java<br>
+ * File Name : ClassNameCellItemLoader.java<br>
  * Encoding : UTF-8<br>
  * Creation Date : 2020/05/16<br>
  * <p>
@@ -27,7 +27,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
- * コンテンツ「クラス名定義情報」の情報をロードするルールクラスです。
+ * コンテンツ「クラス名称セル項目」の情報をロードするルールクラスです。
  *
  * @author Kato Shinya
  * @since 1.0
@@ -35,12 +35,12 @@ import lombok.ToString;
  */
 @ToString
 @EqualsAndHashCode(callSuper = false)
-public final class ClassNameDefinitionLoader implements Rule<List<Map<String, String>>> {
+public final class ClassNameCellItemLoader implements Rule<List<Map<String, String>>> {
 
     /**
      * デフォルトコンストラクタ
      */
-    public ClassNameDefinitionLoader() {
+    public ClassNameCellItemLoader() {
     }
 
     /**
