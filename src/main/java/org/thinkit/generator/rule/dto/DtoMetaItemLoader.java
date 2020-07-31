@@ -19,6 +19,8 @@ import org.thinkit.common.rule.Attribute;
 import org.thinkit.common.rule.Condition;
 import org.thinkit.common.rule.Content;
 import org.thinkit.common.rule.Rule;
+import org.thinkit.generator.vo.dto.DtoMetaItem;
+import org.thinkit.generator.vo.dto.DtoMetaItemGroup;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -32,7 +34,7 @@ import lombok.ToString;
  */
 @ToString
 @EqualsAndHashCode(callSuper = false)
-public final class DtoMetaItemLoader implements Rule<List<Map<String, String>>> {
+public final class DtoMetaItemLoader implements Rule<DtoMetaItemGroup> {
 
     /**
      * デフォルトコンストラクタ
@@ -74,8 +76,16 @@ public final class DtoMetaItemLoader implements Rule<List<Map<String, String>>> 
     }
 
     @Override
-    public List<Map<String, String>> execute() {
-        return loadContent(ContentName.DTOメタ項目);
+    public DtoMetaItemGroup execute() {
+
+        final DtoMetaItemGroup dtoMetaItemGroup = DtoMetaItemGroup.of();
+
+        loadContent(ContentName.DTOメタ項目).forEach(content -> {
+            dtoMetaItemGroup.add(DtoMetaItem.of(Integer.parseInt(content.get(ContentAttribute.セル項目コード.getString())),
+                    content.get(ContentAttribute.セル項目名.getString())));
+        });
+
+        return dtoMetaItemGroup;
     }
 
     @Override

@@ -13,7 +13,6 @@
 package org.thinkit.generator.command.dto;
 
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
 
 import com.google.common.flogger.FluentLogger;
@@ -21,7 +20,6 @@ import com.google.common.flogger.FluentLogger;
 import org.apache.commons.lang3.StringUtils;
 import org.thinkit.common.catalog.Catalog;
 import org.thinkit.common.command.Command;
-import org.thinkit.common.rule.Attribute;
 import org.thinkit.common.rule.RuleInvoker;
 import org.thinkit.common.util.workbook.FluentSheet;
 import org.thinkit.common.util.workbook.FluentWorkbook;
@@ -30,6 +28,7 @@ import org.thinkit.generator.command.Sheet;
 import org.thinkit.generator.common.catalog.dtogenerator.DtoItem;
 import org.thinkit.generator.common.vo.dto.DtoMeta;
 import org.thinkit.generator.rule.dto.DtoMetaItemLoader;
+import org.thinkit.generator.vo.dto.DtoMetaItemGroup;
 
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
@@ -74,26 +73,16 @@ final class DtoMetaCollector implements Command<DtoMeta> {
     }
 
     /**
-     * コンテンツ要素定数
-     */
-    private enum ContentAttribute implements Attribute {
-        セル項目コード, セル項目名;
-
-        @Override
-        public String getString() {
-            return this.name();
-        }
-    }
-
-    /**
      * コンストラクタ
      *
      * @param filePath DTO定義書のファイルパス
-     * @exception IllegalArgumentException ファイルパスがnullまたは空文字列の場合
+     *
+     * @exception NullPointerException     引数として {@code null} が渡された場合
+     * @exception IllegalArgumentException ファイルパスが空文字列の場合
      */
-    public DtoMetaCollector(String filePath) {
+    public DtoMetaCollector(@NonNull String filePath) {
 
-        if (StringUtils.isEmpty(filePath)) {
+        if (StringUtils.isBlank(filePath)) {
             throw new IllegalArgumentException("wrong parameter was given. File path is required.");
         }
 
@@ -136,19 +125,14 @@ final class DtoMetaCollector implements Command<DtoMeta> {
      */
     private EnumMap<DtoItem, String> getNameDefinitions(@NonNull FluentSheet sheet) {
 
-        final List<Map<String, String>> contents = RuleInvoker.of(DtoMetaItemLoader.of()).invoke();
+        final DtoMetaItemGroup dtoMetaItemGroup = RuleInvoker.of(DtoMetaItemLoader.of()).invoke();
         final EnumMap<DtoItem, String> classNameDefinitions = new EnumMap<>(DtoItem.class);
 
-        for (Map<String, String> elements : contents) {
-            final String cellItemName = elements.get(ContentAttribute.セル項目名.name());
-            final Matrix baseIndexes = sheet.findCellIndex(cellItemName);
-
+        dtoMetaItemGroup.forEach(dtoMetaItem -> {
+            final Matrix baseIndexes = sheet.findCellIndex(dtoMetaItem.getCellItemName());
             final String sequence = sheet.getRegionSequence(baseIndexes.getColumn(), baseIndexes.getRow());
-            logger.atInfo().log("取得した領域内の値 = (%s)", sequence);
-
-            final int itemCode = Integer.parseInt(elements.get(ContentAttribute.セル項目コード.name()));
-            classNameDefinitions.put(Catalog.getEnum(DtoItem.class, itemCode), sequence);
-        }
+            classNameDefinitions.put(Catalog.getEnum(DtoItem.class, dtoMetaItem.getCellItemCode()), sequence);
+        });
 
         logger.atInfo().log("コンテンツ情報 = (%s)", classNameDefinitions);
         return classNameDefinitions;
