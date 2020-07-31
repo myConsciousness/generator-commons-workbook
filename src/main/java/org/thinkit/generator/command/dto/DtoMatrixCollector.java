@@ -1,6 +1,6 @@
 /**
  * Project Name :Generator<br>
- * File Name : DtoDefinitionMatrixCollector.java<br>
+ * File Name : DtoMatrixCollector.java<br>
  * Encoding : UTF-8<br>
  * Creation Date : 2020/04/23<br>
  * <p>
@@ -20,7 +20,7 @@ import org.thinkit.common.command.CommandInvoker;
 import org.thinkit.common.util.workbook.FluentSheet;
 import org.thinkit.common.util.workbook.FluentWorkbook;
 import org.thinkit.generator.command.Sheet;
-import org.thinkit.generator.common.vo.dto.DtoDefinitionMatrix;
+import org.thinkit.generator.common.vo.dto.DtoMatrix;
 
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
@@ -35,7 +35,7 @@ import lombok.ToString;
  */
 @ToString
 @EqualsAndHashCode(callSuper = false)
-final class DtoDefinitionMatrixCollector implements Command<DtoDefinitionMatrix> {
+final class DtoMatrixCollector implements Command<DtoMatrix> {
 
     /**
      * ログ出力オブジェクト
@@ -50,7 +50,7 @@ final class DtoDefinitionMatrixCollector implements Command<DtoDefinitionMatrix>
     /**
      * デフォルトコンストラクタ
      */
-    private DtoDefinitionMatrixCollector() {
+    private DtoMatrixCollector() {
     }
 
     /**
@@ -61,7 +61,7 @@ final class DtoDefinitionMatrixCollector implements Command<DtoDefinitionMatrix>
      * @exception NullPointerException 引数として {@code null} が渡された場合
      * @throws IllegalArgumentException ファイルパスが空文字列の場合
      */
-    private DtoDefinitionMatrixCollector(@NonNull String filePath) {
+    private DtoMatrixCollector(@NonNull String filePath) {
 
         if (StringUtils.isBlank(filePath)) {
             throw new IllegalArgumentException("wrong parameter was given. File path is required.");
@@ -71,17 +71,16 @@ final class DtoDefinitionMatrixCollector implements Command<DtoDefinitionMatrix>
     }
 
     /**
-     * 引数として指定された定義書へのファイルパスを基に {@link DtoDefinitionMatrixCollector}
-     * クラスの新しいインスタンスを生成し返却します。
+     * 引数として指定された定義書へのファイルパスを基に {@link DtoMatrixCollector} クラスの新しいインスタンスを生成し返却します。
      *
      * @param filePath DTO定義書へのパス
-     * @return {@link DtoDefinitionMatrixCollector} クラスの新しいインスタンス
+     * @return {@link DtoMatrixCollector} クラスの新しいインスタンス
      *
      * @exception NullPointerException 引数として {@code null} が渡された場合
      * @throws IllegalArgumentException ファイルパスが空文字列の場合
      */
-    public static Command<DtoDefinitionMatrix> from(@NonNull String filePath) {
-        return new DtoDefinitionMatrixCollector(filePath);
+    public static Command<DtoMatrix> from(@NonNull String filePath) {
+        return new DtoMatrixCollector(filePath);
     }
 
     /**
@@ -97,17 +96,16 @@ final class DtoDefinitionMatrixCollector implements Command<DtoDefinitionMatrix>
     }
 
     @Override
-    public DtoDefinitionMatrix run() {
+    public DtoMatrix run() {
 
         final FluentWorkbook workbook = FluentWorkbook.builder().fromFile(this.filePath).build();
         final FluentSheet sheet = workbook.sheet(SheetName.定義書.name());
 
-        final DtoDefinitionMatrix dtoDefinitionMatrix = new DtoDefinitionMatrix(
-                CommandInvoker.of(DtoMetaCollector.from(sheet)).invoke(),
+        final DtoMatrix dtoMatrix = new DtoMatrix(CommandInvoker.of(DtoMetaCollector.from(sheet)).invoke(),
                 CommandInvoker.of(DtoCreatorCollector.from(sheet)).invoke(),
                 CommandInvoker.of(DtoDefinitionCollector.from(sheet)).invoke());
 
-        logger.atInfo().log("DTO定義マトリクス = (%s)", dtoDefinitionMatrix);
-        return dtoDefinitionMatrix;
+        logger.atInfo().log("DTOマトリクス = (%s)", dtoMatrix);
+        return dtoMatrix;
     }
 }

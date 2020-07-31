@@ -14,7 +14,7 @@ package org.thinkit.generator.command.dto;
 
 import org.thinkit.common.command.CommandInvoker;
 import org.thinkit.generator.common.command.dto.DtoResourceFormatter;
-import org.thinkit.generator.common.vo.dto.DtoDefinitionMatrix;
+import org.thinkit.generator.common.vo.dto.DtoMatrix;
 import org.thinkit.generator.common.vo.dto.DtoResource;
 
 import lombok.NonNull;
@@ -56,9 +56,8 @@ public final class DtoResourceFacade {
      */
     public static DtoResource createResource(@NonNull String filePath) {
 
-        final DtoDefinitionMatrix dtoDefinitionMatrix = CommandInvoker.of(DtoDefinitionMatrixCollector.from(filePath))
-                .invoke();
+        final DtoMatrix dtoMatrix = CommandInvoker.of(DtoMatrixCollector.from(filePath)).invoke();
 
-        return CommandInvoker.of(DtoResourceFormatter.of(dtoDefinitionMatrix)).invoke();
+        return CommandInvoker.of(DtoResourceFormatter.of(dtoMatrix)).invoke();
     }
 }
