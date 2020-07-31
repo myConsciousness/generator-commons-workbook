@@ -9,8 +9,7 @@
  * This source code or any portion thereof must not be<br>
  * reproduced or used in any manner whatsoever.
  */
-
-package org.thinkit.generator.rule.dtogenerator;
+package org.thinkit.generator.rule.dto;
 
 import java.util.ArrayList;
 import java.util.List;
