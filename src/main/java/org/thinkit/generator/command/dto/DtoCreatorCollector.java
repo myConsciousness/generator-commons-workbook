@@ -24,7 +24,7 @@ import org.thinkit.common.util.workbook.FluentSheet;
 import org.thinkit.common.util.workbook.FluentWorkbook;
 import org.thinkit.common.util.workbook.Matrix;
 import org.thinkit.generator.command.Sheet;
-import org.thinkit.generator.common.catalog.dtogenerator.DtoItem;
+import org.thinkit.generator.common.catalog.dto.DtoItem;
 import org.thinkit.generator.common.vo.dto.DtoCreator;
 import org.thinkit.generator.rule.dto.DtoCreatorItemLoader;
 import org.thinkit.generator.vo.dto.DtoCreatorItemGroup;
