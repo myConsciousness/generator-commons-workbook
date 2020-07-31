@@ -21,7 +21,6 @@ import com.google.common.flogger.FluentLogger;
 
 import org.apache.commons.lang3.StringUtils;
 import org.thinkit.common.command.Command;
-import org.thinkit.common.rule.Attribute;
 import org.thinkit.common.rule.RuleInvoker;
 import org.thinkit.common.util.workbook.FluentSheet;
 import org.thinkit.common.util.workbook.FluentWorkbook;
@@ -31,6 +30,8 @@ import org.thinkit.generator.common.catalog.dtogenerator.DtoItem;
 import org.thinkit.generator.common.vo.dto.DtoDefinition;
 import org.thinkit.generator.common.vo.dto.DtoField;
 import org.thinkit.generator.rule.dto.DtoDefinitionItemLoader;
+import org.thinkit.generator.vo.dto.DtoDefinitionItem;
+import org.thinkit.generator.vo.dto.DtoDefinitionItemGroup;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -79,18 +80,6 @@ final class DtoDefinitionCollector implements Command<List<DtoDefinition>> {
      */
     private enum SheetName implements Sheet {
         定義書;
-
-        @Override
-        public String getString() {
-            return this.name();
-        }
-    }
-
-    /**
-     * コンテンツ要素定数
-     */
-    private enum ContentAttribute implements Attribute {
-        セル項目コード, セル項目名;
 
         @Override
         public String getString() {
@@ -153,20 +142,20 @@ final class DtoDefinitionCollector implements Command<List<DtoDefinition>> {
      */
     private List<DtoDefinition> getDtoDefinitionList(@NonNull FluentSheet sheet) {
 
-        final List<Map<String, String>> contents = RuleInvoker.of(DtoDefinitionItemLoader.of()).invoke();
+        final DtoDefinitionItemGroup dtoDefinitionItemGroup = RuleInvoker.of(DtoDefinitionItemLoader.of()).invoke();
 
-        final String baseCellItem = this.getContentItem(contents, DtoItem.LOGICAL_DELETE);
+        final String baseCellItem = this.getItemName(dtoDefinitionItemGroup, DtoItem.LOGICAL_DELETE);
         final Matrix baseIndexes = sheet.findCellIndex(baseCellItem);
 
         final List<Map<String, String>> matrixList = sheet.getMatrixList(baseIndexes.getColumn(), baseIndexes.getRow());
         logger.atInfo().log("マトリクスリスト = (%s)", matrixList);
 
         final List<DtoDefinition> dtoDefinitionList = new ArrayList<>();
-        this.craetedtoDefinitionRecursively(RecursiveRequiredParameters.of(matrixList, contents, dtoDefinitionList,
-                RECURSIVE_START_INDEX, RECURSIVE_BASE_LAYER));
+
+        this.craeteDtoDefinitionRecursively(RecursiveRequiredParameters.of(matrixList, dtoDefinitionItemGroup,
+                dtoDefinitionList, RECURSIVE_START_INDEX, RECURSIVE_BASE_LAYER));
 
         logger.atInfo().log("DTO定義情報群 = (%s)", dtoDefinitionList);
-
         return dtoDefinitionList;
     }
 
@@ -181,10 +170,10 @@ final class DtoDefinitionCollector implements Command<List<DtoDefinition>> {
      *
      * @see RecursiveRequiredParameters
      */
-    private int craetedtoDefinitionRecursively(@NonNull final RecursiveRequiredParameters recursiveRequiredParameters) {
+    private int craeteDtoDefinitionRecursively(@NonNull final RecursiveRequiredParameters recursiveRequiredParameters) {
 
         final List<Map<String, String>> matrixList = recursiveRequiredParameters.getMatrixList();
-        final List<Map<String, String>> contents = recursiveRequiredParameters.getContents();
+        final DtoDefinitionItemGroup dtoDefinitionItemGroup = recursiveRequiredParameters.getDtoDefinitionItemGroup();
         final List<DtoDefinition> dtoDefinitionList = recursiveRequiredParameters.getDtoDefinitionList();
         final int startIndex = recursiveRequiredParameters.getStartIndex();
         final int baseItemLayer = recursiveRequiredParameters.getBaseItemLayer();
@@ -199,8 +188,8 @@ final class DtoDefinitionCollector implements Command<List<DtoDefinition>> {
         for (int i = startIndex, size = matrixList.size(); i < size; i++) {
             final Map<String, String> record = matrixList.get(i);
 
-            final boolean deleted = this
-                    .convertStringToBoolean(record.get(this.getCellItemName(contents, DtoItem.LOGICAL_DELETE)));
+            final boolean deleted = this.convertStringToBoolean(
+                    record.get(this.getItemName(dtoDefinitionItemGroup, DtoItem.LOGICAL_DELETE)));
 
             if (deleted) {
                 logger.atInfo().log("論理削除されたレコードのためスキップします。");
@@ -209,7 +198,7 @@ final class DtoDefinitionCollector implements Command<List<DtoDefinition>> {
                 continue;
             }
 
-            final int layer = Integer.parseInt(record.get(this.getCellItemName(contents, DtoItem.LAYER)));
+            final int layer = Integer.parseInt(record.get(this.getItemName(dtoDefinitionItemGroup, DtoItem.LAYER)));
             logger.atInfo().log("レコードから取得した項目層 = (%s)", layer);
 
             if (layer + 1 < baseItemLayer) {
@@ -225,14 +214,14 @@ final class DtoDefinitionCollector implements Command<List<DtoDefinition>> {
                 parentDtoDefinition.setDtoFieldList(dtoFieldList);
                 dtoDefinitionList.add(parentDtoDefinition);
 
-                this.createDtoDefinition(contents, record, parentDtoDefinition);
+                this.createDtoDefinition(dtoDefinitionItemGroup, record, parentDtoDefinition);
             } else {
                 if (layer > baseItemLayer) {
                     logger.atInfo().log("子クラス情報を生成するため再帰処理を開始します。");
 
                     List<DtoDefinition> childDtoDefinitionList = new ArrayList<>();
-                    final int skipCounter = this.craetedtoDefinitionRecursively(RecursiveRequiredParameters
-                            .of(matrixList, contents, childDtoDefinitionList, i, baseItemLayer + 2));
+                    final int skipCounter = this.craeteDtoDefinitionRecursively(RecursiveRequiredParameters
+                            .of(matrixList, dtoDefinitionItemGroup, childDtoDefinitionList, i, baseItemLayer + 2));
 
                     dtoFieldList.get(dtoFieldList.size() - 1).setChildDtoDefinitionList(childDtoDefinitionList);
 
@@ -240,7 +229,7 @@ final class DtoDefinitionCollector implements Command<List<DtoDefinition>> {
                     logger.atInfo().log("スキップ数 = (%s)", skipCounter);
                     i += skipCounter - 1;
                 } else {
-                    this.createDtoField(contents, record, dtoFieldList);
+                    this.createDtoField(dtoDefinitionItemGroup, record, dtoFieldList);
                 }
             }
 
@@ -254,15 +243,15 @@ final class DtoDefinitionCollector implements Command<List<DtoDefinition>> {
     /**
      * マトリクスから取得したレコードを基にDTO定義情報を生成します。
      *
-     * @param content       コンテンツ
-     * @param record        マトリクスレコード
-     * @param dtoDefinition DTO定義情報
+     * @param dtoDefinitionItemGroup DTO定期項目グループ
+     * @param record                 マトリクスレコード
+     * @param dtoDefinition          DTO定義情報
      */
-    private void createDtoDefinition(final List<Map<String, String>> content, final Map<String, String> record,
-            final DtoDefinition dtoDefinition) {
+    private void createDtoDefinition(final DtoDefinitionItemGroup dtoDefinitionItemGroup,
+            final Map<String, String> record, final DtoDefinition dtoDefinition) {
 
-        final String className = record.get(this.getCellItemName(content, DtoItem.VARIABLE_NAME));
-        final String description = record.get(this.getCellItemName(content, DtoItem.DESCRIPTION));
+        final String className = record.get(this.getItemName(dtoDefinitionItemGroup, DtoItem.VARIABLE_NAME));
+        final String description = record.get(this.getItemName(dtoDefinitionItemGroup, DtoItem.DESCRIPTION));
 
         dtoDefinition.setClassName(className);
         dtoDefinition.setDescription(description);
@@ -273,19 +262,19 @@ final class DtoDefinitionCollector implements Command<List<DtoDefinition>> {
     /**
      * マトリクスから取得した情報を基にクラス項目情報を生成します。
      *
-     * @param content      コンテンツ
-     * @param record       マトリクスレコード
-     * @param dtoFieldList DTOフィールドリスト
+     * @param dtoDefinitionItemGroup DTO定義項目グループ
+     * @param record                 マトリクスレコード
+     * @param dtoFieldList           DTOフィールドリスト
      */
-    private void createDtoField(List<Map<String, String>> content, Map<String, String> record,
+    private void createDtoField(final DtoDefinitionItemGroup dtoDefinitionItemGroup, Map<String, String> record,
             List<DtoField> dtoFieldList) {
 
-        final String variableName = record.get(this.getCellItemName(content, DtoItem.VARIABLE_NAME));
-        final String dataType = record.get(this.getCellItemName(content, DtoItem.DATA_TYPE));
-        final String initialValue = record.get(this.getCellItemName(content, DtoItem.INITIAL_VALUE));
+        final String variableName = record.get(this.getItemName(dtoDefinitionItemGroup, DtoItem.VARIABLE_NAME));
+        final String dataType = record.get(this.getItemName(dtoDefinitionItemGroup, DtoItem.DATA_TYPE));
+        final String initialValue = record.get(this.getItemName(dtoDefinitionItemGroup, DtoItem.INITIAL_VALUE));
         final boolean invariant = this
-                .convertStringToBoolean(record.get(this.getCellItemName(content, DtoItem.INVARIANT)));
-        final String description = record.get(this.getCellItemName(content, DtoItem.DESCRIPTION));
+                .convertStringToBoolean(record.get(this.getItemName(dtoDefinitionItemGroup, DtoItem.INVARIANT)));
+        final String description = record.get(this.getItemName(dtoDefinitionItemGroup, DtoItem.DESCRIPTION));
 
         final DtoField classItemDefinition = new DtoField(variableName, dataType, initialValue, invariant, description);
 
@@ -312,54 +301,23 @@ final class DtoDefinitionCollector implements Command<List<DtoDefinition>> {
     }
 
     /**
-     * コンテンツリストから引数として指定されたセル項目オブジェクトのコード値と紐づくセル項目名を取得し返却します。
+     * 指定されたセル項目に紐づく名称を取得し返却します。
      *
-     * @param content コンテンツリスト
-     * @param dtoItem 取得対象のセル項目コードが定義されたオブジェクト
-     * @return 引数として指定されたセル項目コードに紐づくセル項目名
+     * @param dtoDefinitionItemGroup DTO定義項目グループ
+     * @param dtoItem                取得対象のセル項目
+     * @return 取得対象のセル項目に紐づく名称
      *
-     * @exception IllegalArgumentException コンテンツリストが空の場合、またはセル項目オブジェクトが {@code null}
-     *                                     の場合
+     * @exception NullPointerException 引数として {@code null} が渡された場合
      */
-    private String getCellItemName(@NonNull List<Map<String, String>> content, @NonNull DtoItem dtoItem) {
-        assert !content.isEmpty();
+    private String getItemName(@NonNull final DtoDefinitionItemGroup dtoDefinitionItemGroup, DtoItem dtoItem) {
 
-        final int cellItemCode = dtoItem.getCode();
-        logger.atInfo().log("引数として渡されたセル項目コード = (%s)", cellItemCode);
-
-        for (Map<String, String> elements : content) {
-            final int code = Integer.parseInt(elements.get(ContentAttribute.セル項目コード.name()));
-            logger.atInfo().log("コンテンツから取得したセル項目コード = (%s)", code);
-
-            if (cellItemCode == code) {
-                return elements.get(ContentAttribute.セル項目名.name());
+        for (DtoDefinitionItem dtoDefinitionItem : dtoDefinitionItemGroup) {
+            if (dtoItem.getCode() == dtoDefinitionItem.getCellItemCode()) {
+                return dtoDefinitionItem.getCellItemName();
             }
         }
 
-        logger.atWarning().log("指定されたセル項目コードに紐づく要素がコンテンツに定義されていません。");
-        return "";
-    }
-
-    /**
-     * 指定されたセル項目に紐づくコンテンツ項目を取得し返却します。
-     *
-     * @param nodeList コンテンツ項目リスト
-     * @param dtoItem  取得対象のセル項目
-     * @return 取得対象のセル項目に紐づくコンテンツ項目
-     */
-    private String getContentItem(List<Map<String, String>> nodeList, DtoItem dtoItem) {
-
-        for (Map<String, String> node : nodeList) {
-            final int cellItemCode = Integer.parseInt(node.get(ContentAttribute.セル項目コード.getString()));
-
-            if (dtoItem.getCode() == cellItemCode) {
-                final String contentItem = node.get(ContentAttribute.セル項目名.getString());
-                logger.atInfo().log("取得したコンテンツ項目 = (%s)", contentItem);
-                return contentItem;
-            }
-        }
-
-        logger.atInfo().log("指定されたコンテンツ項目を取得できませんでした。");
+        logger.atSevere().log("指定されたコンテンツ項目を取得できませんでした。");
         return "";
     }
 
@@ -388,10 +346,10 @@ final class DtoDefinitionCollector implements Command<List<DtoDefinition>> {
         private final List<Map<String, String>> matrixList;
 
         /**
-         * クラス項目のコンテンツ情報が格納されたマップ
+         * DTO定義項目グループ
          */
         @NonNull
-        private final List<Map<String, String>> contents;
+        private final DtoDefinitionItemGroup dtoDefinitionItemGroup;
 
         /**
          * DTO定義情報リスト

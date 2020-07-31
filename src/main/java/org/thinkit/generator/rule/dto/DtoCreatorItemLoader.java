@@ -79,10 +79,9 @@ public final class DtoCreatorItemLoader implements Rule<DtoCreatorItemGroup> {
     @Override
     public DtoCreatorItemGroup execute() {
 
-        final List<Map<String, String>> contents = loadContent(ContentName.DTO作成者項目);
         final DtoCreatorItemGroup dtoCreatorItemGroup = DtoCreatorItemGroup.of();
 
-        contents.forEach(content -> {
+        loadContent(ContentName.DTO作成者項目).forEach(content -> {
             dtoCreatorItemGroup
                     .add(DtoCreatorItem.of(Integer.parseInt(content.get(ContentAttribute.セル項目コード.getString())),
                             content.get(ContentAttribute.セル項目名.getString())));
