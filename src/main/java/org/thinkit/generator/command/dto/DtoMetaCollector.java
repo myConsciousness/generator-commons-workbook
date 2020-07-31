@@ -1,6 +1,6 @@
 /**
  * Project Name : Generator<br>
- * File Name : ClassNameDefinitionCollector.java<br>
+ * File Name : DtoMetaCollector.java<br>
  * Encoding : UTF-8<br>
  * Creation Date : 2020/06/13<br>
  * <p>
@@ -44,7 +44,7 @@ import lombok.ToString;
  */
 @ToString
 @EqualsAndHashCode
-final class ClassNameDefinitionCollector implements Command<DtoMeta> {
+final class DtoMetaCollector implements Command<DtoMeta> {
 
     /**
      * ログ出力オブジェクト
@@ -91,7 +91,7 @@ final class ClassNameDefinitionCollector implements Command<DtoMeta> {
      * @param filePath DTO定義書のファイルパス
      * @exception IllegalArgumentException ファイルパスがnullまたは空文字列の場合
      */
-    public ClassNameDefinitionCollector(String filePath) {
+    public DtoMetaCollector(String filePath) {
 
         if (StringUtils.isEmpty(filePath)) {
             throw new IllegalArgumentException("wrong parameter was given. File path is required.");
@@ -105,7 +105,7 @@ final class ClassNameDefinitionCollector implements Command<DtoMeta> {
      *
      * @param sheet DTO定義書の情報を持つSheetオブジェクト
      */
-    public ClassNameDefinitionCollector(@NonNull FluentSheet sheet) {
+    public DtoMetaCollector(@NonNull FluentSheet sheet) {
         this.sheet = sheet;
     }
 

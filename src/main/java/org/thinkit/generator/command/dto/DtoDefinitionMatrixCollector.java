@@ -1,6 +1,6 @@
 /**
  * Project Name :Generator<br>
- * File Name : ClassDefinitionMatrixCollector.java<br>
+ * File Name : DtoDefinitionMatrixCollector.java<br>
  * Encoding : UTF-8<br>
  * Creation Date : 2020/04/23<br>
  * <p>
@@ -36,7 +36,7 @@ import lombok.ToString;
  */
 @ToString
 @EqualsAndHashCode(callSuper = false)
-final class ClassDefinitionMatrixCollector implements Command<DtoDefinitionMatrix> {
+final class DtoDefinitionMatrixCollector implements Command<DtoDefinitionMatrix> {
 
     /**
      * ログ出力オブジェクト
@@ -53,7 +53,7 @@ final class ClassDefinitionMatrixCollector implements Command<DtoDefinitionMatri
      * デフォルトコンストラクタ
      */
     @SuppressWarnings("unused")
-    private ClassDefinitionMatrixCollector() {
+    private DtoDefinitionMatrixCollector() {
     }
 
     /**
@@ -62,7 +62,7 @@ final class ClassDefinitionMatrixCollector implements Command<DtoDefinitionMatri
      * @param filePath DTO定義書のファイルパス
      * @exception IllegalArgumentException ファイルパスがnullまたは空文字列の場合
      */
-    public ClassDefinitionMatrixCollector(String filePath) {
+    public DtoDefinitionMatrixCollector(String filePath) {
         logger.atInfo().log("ファイルパス = (%s)", filePath);
 
         if (StringUtils.isEmpty(filePath)) {
@@ -91,9 +91,9 @@ final class ClassDefinitionMatrixCollector implements Command<DtoDefinitionMatri
         final FluentSheet sheet = workbook.sheet(SheetName.定義書.name());
 
         final DtoDefinitionMatrix dtoDefinitionMatrix = new DtoDefinitionMatrix(
-                CommandInvoker.of(new ClassNameDefinitionCollector(sheet)).invoke(),
-                CommandInvoker.of(new ClassCreatorDefinitionCollector(sheet)).invoke(),
-                CommandInvoker.of(new ClassDefinitionCollector(sheet)).invoke());
+                CommandInvoker.of(new DtoMetaCollector(sheet)).invoke(),
+                CommandInvoker.of(new DtoCreatorCollector(sheet)).invoke(),
+                CommandInvoker.of(new DtoDefinitionCollector(sheet)).invoke());
 
         logger.atInfo().log("DTO定義マトリクス = (%s)", dtoDefinitionMatrix);
         return dtoDefinitionMatrix;

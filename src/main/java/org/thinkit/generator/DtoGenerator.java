@@ -17,7 +17,7 @@ import com.google.common.flogger.FluentLogger;
 import org.apache.commons.lang3.StringUtils;
 import org.thinkit.common.catalog.Extension;
 import org.thinkit.common.util.file.FluentFile;
-import org.thinkit.generator.command.dto.DtoClassResourceFacade;
+import org.thinkit.generator.command.dto.DtoResourceFacade;
 import org.thinkit.generator.common.vo.dto.DtoResource;
 
 import lombok.NonNull;
@@ -48,7 +48,7 @@ public final class DtoGenerator extends AbstractGenerator {
     @Override
     protected boolean run() {
 
-        final DtoResource dtoResource = DtoClassResourceFacade.createResource(super.getFilePath());
+        final DtoResource dtoResource = DtoResourceFacade.createResource(super.getFilePath());
 
         if (dtoResource == null) {
             logger.atSevere().log("DTOクラスのリソース作成処理が異常終了しました。");

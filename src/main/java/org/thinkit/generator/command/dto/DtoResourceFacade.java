@@ -1,6 +1,6 @@
 /**
  * Project Name : Generator<br>
- * File Name : DtoClassResourceFacade.java<br>
+ * File Name : DtoResourceFacade.java<br>
  * Encoding : UTF-8<br>
  * Creation Date : 2020/06/13<br>
  * <p>
@@ -32,12 +32,12 @@ import lombok.NonNull;
  *
  * @see #createResource(String)
  */
-public final class DtoClassResourceFacade {
+public final class DtoResourceFacade {
 
     /**
      * デフォルトコンストラクタ
      */
-    private DtoClassResourceFacade() {
+    private DtoResourceFacade() {
     }
 
     /**
@@ -56,7 +56,7 @@ public final class DtoClassResourceFacade {
      */
     public static DtoResource createResource(@NonNull String filePath) {
 
-        final DtoDefinitionMatrix dtoDefinitionMatrix = CommandInvoker.of(new ClassDefinitionMatrixCollector(filePath))
+        final DtoDefinitionMatrix dtoDefinitionMatrix = CommandInvoker.of(new DtoDefinitionMatrixCollector(filePath))
                 .invoke();
 
         return CommandInvoker.of(DtoResourceFormatter.of(dtoDefinitionMatrix)).invoke();

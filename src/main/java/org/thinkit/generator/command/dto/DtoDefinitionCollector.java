@@ -1,6 +1,6 @@
 /**
  * Project Name : Generator<br>
- * File Name : dtoDefinitionCollector.java<br>
+ * File Name : DtoDefinitionCollector.java<br>
  * Encoding : UTF-8<br>
  * Creation Date : 2020/06/13<br>
  * <p>
@@ -47,7 +47,7 @@ import lombok.ToString;
  */
 @ToString
 @EqualsAndHashCode
-final class ClassDefinitionCollector implements Command<List<DtoDefinition>> {
+final class DtoDefinitionCollector implements Command<List<DtoDefinition>> {
 
     /**
      * ログ出力オブジェクト
@@ -106,7 +106,7 @@ final class ClassDefinitionCollector implements Command<List<DtoDefinition>> {
      * @exception NullPointerException 引数として {@code null} が渡された場合
      * @throws IllegalArgumentException ファイルパスがnullまたは空文字列の場合
      */
-    public ClassDefinitionCollector(@NonNull String filePath) {
+    public DtoDefinitionCollector(@NonNull String filePath) {
 
         if (StringUtils.isBlank(filePath)) {
             throw new IllegalArgumentException("wrong parameter was given. File path is required.");
@@ -120,7 +120,7 @@ final class ClassDefinitionCollector implements Command<List<DtoDefinition>> {
      *
      * @param sheet DTO定義書の情報を持つSheetオブジェクト
      */
-    public ClassDefinitionCollector(@NonNull FluentSheet sheet) {
+    public DtoDefinitionCollector(@NonNull FluentSheet sheet) {
         this.sheet = sheet;
     }
 
