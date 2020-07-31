@@ -13,7 +13,7 @@
 package org.thinkit.generator.command.dtogenerator;
 
 import org.thinkit.common.command.CommandInvoker;
-import org.thinkit.generator.common.command.dtogenerator.DtoResourceFormatter;
+import org.thinkit.generator.common.command.dto.DtoResourceFormatter;
 import org.thinkit.generator.common.vo.dto.DtoDefinitionMatrix;
 import org.thinkit.generator.common.vo.dto.DtoResource;
 
