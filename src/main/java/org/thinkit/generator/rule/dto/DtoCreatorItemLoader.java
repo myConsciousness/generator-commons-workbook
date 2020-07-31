@@ -20,6 +20,8 @@ import org.thinkit.common.rule.Attribute;
 import org.thinkit.common.rule.Condition;
 import org.thinkit.common.rule.Content;
 import org.thinkit.common.rule.Rule;
+import org.thinkit.generator.vo.dto.DtoCreatorItem;
+import org.thinkit.generator.vo.dto.DtoCreatorItemGroup;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -33,7 +35,7 @@ import lombok.ToString;
  */
 @ToString
 @EqualsAndHashCode(callSuper = false)
-public final class DtoCreatorItemLoader implements Rule<List<Map<String, String>>> {
+public final class DtoCreatorItemLoader implements Rule<DtoCreatorItemGroup> {
 
     /**
      * デフォルトコンストラクタ
@@ -75,8 +77,19 @@ public final class DtoCreatorItemLoader implements Rule<List<Map<String, String>
     }
 
     @Override
-    public List<Map<String, String>> execute() {
-        return loadContent(ContentName.DTO作成者項目);
+    public DtoCreatorItemGroup execute() {
+
+        final List<Map<String, String>> contents = loadContent(ContentName.DTO作成者項目);
+        final DtoCreatorItemGroup dtoCreatorItemGroup = DtoCreatorItemGroup.of();
+
+        contents.forEach(content -> {
+            dtoCreatorItemGroup
+                    .add(DtoCreatorItem.of(Integer.parseInt(content.get(ContentAttribute.セル項目コード.getString())),
+                            content.get(ContentAttribute.セル項目名.getString())));
+
+        });
+
+        return dtoCreatorItemGroup;
     }
 
     @Override

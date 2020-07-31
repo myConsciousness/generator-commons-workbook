@@ -13,15 +13,12 @@
 package org.thinkit.generator.command.dto;
 
 import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
 
 import com.google.common.flogger.FluentLogger;
 
 import org.apache.commons.lang3.StringUtils;
 import org.thinkit.common.catalog.Catalog;
 import org.thinkit.common.command.Command;
-import org.thinkit.common.rule.Attribute;
 import org.thinkit.common.rule.RuleInvoker;
 import org.thinkit.common.util.workbook.FluentSheet;
 import org.thinkit.common.util.workbook.FluentWorkbook;
@@ -30,6 +27,7 @@ import org.thinkit.generator.command.Sheet;
 import org.thinkit.generator.common.catalog.dtogenerator.DtoItem;
 import org.thinkit.generator.common.vo.dto.DtoCreator;
 import org.thinkit.generator.rule.dto.DtoCreatorItemLoader;
+import org.thinkit.generator.vo.dto.DtoCreatorItemGroup;
 
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
@@ -66,18 +64,6 @@ final class DtoCreatorCollector implements Command<DtoCreator> {
      */
     private enum SheetName implements Sheet {
         定義書;
-
-        @Override
-        public String getString() {
-            return this.name();
-        }
-    }
-
-    /**
-     * コンテンツ要素定数
-     */
-    private enum ContentAttribute implements Attribute {
-        セル項目コード, セル項目名;
 
         @Override
         public String getString() {
@@ -133,18 +119,14 @@ final class DtoCreatorCollector implements Command<DtoCreator> {
      */
     private EnumMap<DtoItem, String> getDtoCreator(FluentSheet sheet) {
 
-        final List<Map<String, String>> contents = RuleInvoker.of(DtoCreatorItemLoader.of()).invoke();
+        final DtoCreatorItemGroup dtoCreatorItemGroup = RuleInvoker.of(DtoCreatorItemLoader.of()).invoke();
         final EnumMap<DtoItem, String> dtoCreator = new EnumMap<>(DtoItem.class);
 
-        for (Map<String, String> elements : contents) {
-            final String cellItemName = elements.get(ContentAttribute.セル項目名.name());
-            final Matrix baseIndexes = sheet.findCellIndex(cellItemName);
-
+        dtoCreatorItemGroup.forEach(dtoCreatorItem -> {
+            final Matrix baseIndexes = sheet.findCellIndex(dtoCreatorItem.getCellItemName());
             final String sequence = sheet.getRegionSequence(baseIndexes.getColumn(), baseIndexes.getRow());
-
-            final int itemCode = Integer.parseInt(elements.get(ContentAttribute.セル項目コード.name()));
-            dtoCreator.put(Catalog.getEnum(DtoItem.class, itemCode), sequence);
-        }
+            dtoCreator.put(Catalog.getEnum(DtoItem.class, dtoCreatorItem.getCellItemCode()), sequence);
+        });
 
         logger.atInfo().log("コンテンツ情報 = (%s)", dtoCreator);
         return dtoCreator;
