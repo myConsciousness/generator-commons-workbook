@@ -16,14 +16,11 @@ import java.util.EnumMap;
 
 import com.google.common.flogger.FluentLogger;
 
-import org.apache.commons.lang3.StringUtils;
 import org.thinkit.common.catalog.Catalog;
 import org.thinkit.common.command.Command;
 import org.thinkit.common.rule.RuleInvoker;
 import org.thinkit.common.util.workbook.FluentSheet;
-import org.thinkit.common.util.workbook.FluentWorkbook;
 import org.thinkit.common.util.workbook.Matrix;
-import org.thinkit.generator.command.Sheet;
 import org.thinkit.generator.common.catalog.dto.DtoItem;
 import org.thinkit.generator.common.vo.dto.DtoCreator;
 import org.thinkit.generator.rule.dto.DtoCreatorItemLoader;
@@ -55,53 +52,38 @@ final class DtoCreatorCollector implements Command<DtoCreator> {
     private FluentSheet sheet;
 
     /**
-     * ファイルパス
+     * デフォルトコンストラクタ
      */
-    private String filePath;
-
-    /**
-     * シート名定数
-     */
-    private enum SheetName implements Sheet {
-        定義書;
-
-        @Override
-        public String getString() {
-            return this.name();
-        }
+    private DtoCreatorCollector() {
     }
 
     /**
      * コンストラクタ
      *
-     * @param filePath DTO定義書のファイルパス
-     * @exception IllegalArgumentException ファイルパスがnullまたは空文字列の場合
-     */
-    public DtoCreatorCollector(String filePath) {
-
-        if (StringUtils.isEmpty(filePath)) {
-            throw new IllegalArgumentException("wrong parameter was given. File path is required.");
-        }
-
-        this.filePath = filePath;
-    }
-
-    /**
-     * コンストラクタ
+     * @param sheet 操作する対象のシートオブジェクト
      *
-     * @param sheet DTO定義書の情報を持つSheetオブジェクト
+     * @exception NullPointerException 引数として {@code null} が渡された場合
      */
-    public DtoCreatorCollector(@NonNull FluentSheet sheet) {
+    private DtoCreatorCollector(@NonNull FluentSheet sheet) {
         this.sheet = sheet;
+    }
+
+    /**
+     * 引数として渡された {@code sheet} を基に {@link DtoCreatorCollector}
+     * クラスの新しいインスタンスを生成し返却します。
+     *
+     * @param sheet 操作する対象のシートオブジェクト
+     * @return {@link DtoCreatorCollector} クラスの新しいインスタンス
+     *
+     * @exception NullPointerException 引数として {@code null} が渡された場合
+     * @see FluentSheet
+     */
+    public static Command<DtoCreator> from(@NonNull FluentSheet sheet) {
+        return new DtoCreatorCollector(sheet);
     }
 
     @Override
     public DtoCreator run() {
-
-        if (this.sheet == null) {
-            final FluentWorkbook workbook = FluentWorkbook.builder().fromFile(this.filePath).build();
-            this.sheet = workbook.sheet(SheetName.定義書.name());
-        }
 
         final EnumMap<DtoItem, String> dtoCreator = this.getDtoCreator(this.sheet);
         final DtoCreator classCreatorDefinition = new DtoCreator(dtoCreator.get(DtoItem.CREATOR),
@@ -128,7 +110,6 @@ final class DtoCreatorCollector implements Command<DtoCreator> {
             dtoCreator.put(Catalog.getEnum(DtoItem.class, dtoCreatorItem.getCellItemCode()), sequence);
         });
 
-        logger.atInfo().log("コンテンツ情報 = (%s)", dtoCreator);
         return dtoCreator;
     }
 }

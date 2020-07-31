@@ -56,7 +56,7 @@ public final class DtoResourceFacade {
      */
     public static DtoResource createResource(@NonNull String filePath) {
 
-        final DtoDefinitionMatrix dtoDefinitionMatrix = CommandInvoker.of(new DtoDefinitionMatrixCollector(filePath))
+        final DtoDefinitionMatrix dtoDefinitionMatrix = CommandInvoker.of(DtoDefinitionMatrixCollector.from(filePath))
                 .invoke();
 
         return CommandInvoker.of(DtoResourceFormatter.of(dtoDefinitionMatrix)).invoke();

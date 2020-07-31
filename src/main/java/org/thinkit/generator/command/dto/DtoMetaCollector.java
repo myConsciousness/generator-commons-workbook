@@ -17,14 +17,11 @@ import java.util.Map;
 
 import com.google.common.flogger.FluentLogger;
 
-import org.apache.commons.lang3.StringUtils;
 import org.thinkit.common.catalog.Catalog;
 import org.thinkit.common.command.Command;
 import org.thinkit.common.rule.RuleInvoker;
 import org.thinkit.common.util.workbook.FluentSheet;
-import org.thinkit.common.util.workbook.FluentWorkbook;
 import org.thinkit.common.util.workbook.Matrix;
-import org.thinkit.generator.command.Sheet;
 import org.thinkit.generator.common.catalog.dto.DtoItem;
 import org.thinkit.generator.common.vo.dto.DtoMeta;
 import org.thinkit.generator.rule.dto.DtoMetaItemLoader;
@@ -56,57 +53,40 @@ final class DtoMetaCollector implements Command<DtoMeta> {
     private FluentSheet sheet;
 
     /**
-     * ファイルパス
+     * デフォルトコンストラクタ
      */
-    private String filePath;
-
-    /**
-     * シート名定数
-     */
-    private enum SheetName implements Sheet {
-        定義書;
-
-        @Override
-        public String getString() {
-            return this.name();
-        }
+    private DtoMetaCollector() {
     }
 
     /**
      * コンストラクタ
      *
-     * @param filePath DTO定義書のファイルパス
+     * @param sheet 操作する対象のシートオブジェクト
      *
-     * @exception NullPointerException     引数として {@code null} が渡された場合
-     * @exception IllegalArgumentException ファイルパスが空文字列の場合
+     * @exception NullPointerException 引数として {@code null} が渡された場合
      */
-    public DtoMetaCollector(@NonNull String filePath) {
-
-        if (StringUtils.isBlank(filePath)) {
-            throw new IllegalArgumentException("wrong parameter was given. File path is required.");
-        }
-
-        this.filePath = filePath;
-    }
-
-    /**
-     * コンストラクタ
-     *
-     * @param sheet DTO定義書の情報を持つSheetオブジェクト
-     */
-    public DtoMetaCollector(@NonNull FluentSheet sheet) {
+    private DtoMetaCollector(@NonNull FluentSheet sheet) {
         this.sheet = sheet;
+    }
+
+    /**
+     * 引数として渡された {@code sheet} オブジェクトを基に {@link DtoMetaCollector}
+     * クラスの新しいインスタンスを生成し返却します。
+     *
+     * @param sheet 操作する対象のシートオブジェクト
+     * @return {@link DtoMetaCollector} クラスの新しいインスタンス
+     *
+     * @exception NullPointerException 引数として {@code null} が渡された場合
+     * @see FluentSheet
+     */
+    public static Command<DtoMeta> from(@NonNull FluentSheet sheet) {
+        return new DtoMetaCollector(sheet);
     }
 
     @Override
     public DtoMeta run() {
 
-        if (this.sheet == null) {
-            final FluentWorkbook workbook = FluentWorkbook.builder().fromFile(this.filePath).build();
-            this.sheet = workbook.sheet(SheetName.定義書.name());
-        }
-
-        final Map<DtoItem, String> definitions = this.getNameDefinitions(sheet);
+        final Map<DtoItem, String> definitions = this.getNameDefinitions(this.sheet);
         final DtoMeta dtoMeta = new DtoMeta(definitions.get(DtoItem.VERSION), definitions.get(DtoItem.PROJECT_NAME),
                 definitions.get(DtoItem.PACKAGE_NAME), definitions.get(DtoItem.PHYSICAL_NAME),
                 definitions.get(DtoItem.LOGICAL_NAME), definitions.get(DtoItem.DESCRIPTION));
@@ -134,7 +114,6 @@ final class DtoMetaCollector implements Command<DtoMeta> {
             classNameDefinitions.put(Catalog.getEnum(DtoItem.class, dtoMetaItem.getCellItemCode()), sequence);
         });
 
-        logger.atInfo().log("コンテンツ情報 = (%s)", classNameDefinitions);
         return classNameDefinitions;
     }
 }

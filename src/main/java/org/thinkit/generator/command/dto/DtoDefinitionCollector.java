@@ -23,9 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.thinkit.common.command.Command;
 import org.thinkit.common.rule.RuleInvoker;
 import org.thinkit.common.util.workbook.FluentSheet;
-import org.thinkit.common.util.workbook.FluentWorkbook;
 import org.thinkit.common.util.workbook.Matrix;
-import org.thinkit.generator.command.Sheet;
 import org.thinkit.generator.common.catalog.dto.DtoItem;
 import org.thinkit.generator.common.vo.dto.DtoDefinition;
 import org.thinkit.generator.common.vo.dto.DtoField;
@@ -71,56 +69,40 @@ final class DtoDefinitionCollector implements Command<List<DtoDefinition>> {
     private FluentSheet sheet;
 
     /**
-     * ファイルパス
+     * デフォルトコンストラクタ
      */
-    private String filePath;
-
-    /**
-     * シート名定数
-     */
-    private enum SheetName implements Sheet {
-        定義書;
-
-        @Override
-        public String getString() {
-            return this.name();
-        }
+    private DtoDefinitionCollector() {
     }
 
     /**
      * コンストラクタ
      *
-     * @param filePath DTO定義書のファイルパス
+     * @param sheet 操作する対象のシートオブジェクト
      *
      * @exception NullPointerException 引数として {@code null} が渡された場合
-     * @throws IllegalArgumentException ファイルパスがnullまたは空文字列の場合
      */
-    public DtoDefinitionCollector(@NonNull String filePath) {
-
-        if (StringUtils.isBlank(filePath)) {
-            throw new IllegalArgumentException("wrong parameter was given. File path is required.");
-        }
-
-        this.filePath = filePath;
+    private DtoDefinitionCollector(@NonNull FluentSheet sheet) {
+        this.sheet = sheet;
     }
 
     /**
-     * コンストラクタ
+     * 引数として渡された {@code sheet} を基に {@link DtoDefinitionCollector}
+     * クラスの新しいインスタンスを生成し返却します。
      *
-     * @param sheet DTO定義書の情報を持つSheetオブジェクト
+     * @param sheet 操作する対象のシートオブジェクト
+     * @return {@link DtoDefinitionCollector} クラスの新しいインスタンス
+     *
+     * @exception NullPointerException 引数として {@code null} が渡された場合
+     * @see FluentSheet
      */
-    public DtoDefinitionCollector(@NonNull FluentSheet sheet) {
-        this.sheet = sheet;
+    public static Command<List<DtoDefinition>> from(@NonNull FluentSheet sheet) {
+        return new DtoDefinitionCollector(sheet);
     }
 
     @Override
     public List<DtoDefinition> run() {
-        if (this.sheet == null) {
-            final FluentWorkbook workbook = FluentWorkbook.builder().fromFile(this.filePath).build();
-            this.sheet = workbook.sheet(SheetName.定義書.name());
-        }
 
-        final List<DtoDefinition> dtoDefinitionList = this.getDtoDefinitionList(sheet);
+        final List<DtoDefinition> dtoDefinitionList = this.getDtoDefinitionList(this.sheet);
 
         if (dtoDefinitionList.isEmpty()) {
             logger.atSevere().log("DTO定義情報を取得できませんでした。");

@@ -22,9 +22,8 @@ import org.thinkit.common.util.workbook.FluentWorkbook;
 import org.thinkit.generator.command.Sheet;
 import org.thinkit.generator.common.vo.dto.DtoDefinitionMatrix;
 
-import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.NonNull;
 import lombok.ToString;
 
 /**
@@ -46,13 +45,11 @@ final class DtoDefinitionMatrixCollector implements Command<DtoDefinitionMatrix>
     /**
      * ファイルパス
      */
-    @Getter(AccessLevel.PRIVATE)
-    private String filePath = "";
+    private String filePath;
 
     /**
      * デフォルトコンストラクタ
      */
-    @SuppressWarnings("unused")
     private DtoDefinitionMatrixCollector() {
     }
 
@@ -60,16 +57,31 @@ final class DtoDefinitionMatrixCollector implements Command<DtoDefinitionMatrix>
      * コンストラクタ
      *
      * @param filePath DTO定義書のファイルパス
-     * @exception IllegalArgumentException ファイルパスがnullまたは空文字列の場合
+     *
+     * @exception NullPointerException 引数として {@code null} が渡された場合
+     * @throws IllegalArgumentException ファイルパスが空文字列の場合
      */
-    public DtoDefinitionMatrixCollector(String filePath) {
-        logger.atInfo().log("ファイルパス = (%s)", filePath);
+    private DtoDefinitionMatrixCollector(@NonNull String filePath) {
 
-        if (StringUtils.isEmpty(filePath)) {
+        if (StringUtils.isBlank(filePath)) {
             throw new IllegalArgumentException("wrong parameter was given. File path is required.");
         }
 
         this.filePath = filePath;
+    }
+
+    /**
+     * 引数として指定された定義書へのファイルパスを基に {@link DtoDefinitionMatrixCollector}
+     * クラスの新しいインスタンスを生成し返却します。
+     *
+     * @param filePath DTO定義書へのパス
+     * @return {@link DtoDefinitionMatrixCollector} クラスの新しいインスタンス
+     *
+     * @exception NullPointerException 引数として {@code null} が渡された場合
+     * @throws IllegalArgumentException ファイルパスが空文字列の場合
+     */
+    public static Command<DtoDefinitionMatrix> from(@NonNull String filePath) {
+        return new DtoDefinitionMatrixCollector(filePath);
     }
 
     /**
@@ -87,13 +99,13 @@ final class DtoDefinitionMatrixCollector implements Command<DtoDefinitionMatrix>
     @Override
     public DtoDefinitionMatrix run() {
 
-        final FluentWorkbook workbook = FluentWorkbook.builder().fromFile(this.getFilePath()).build();
+        final FluentWorkbook workbook = FluentWorkbook.builder().fromFile(this.filePath).build();
         final FluentSheet sheet = workbook.sheet(SheetName.定義書.name());
 
         final DtoDefinitionMatrix dtoDefinitionMatrix = new DtoDefinitionMatrix(
-                CommandInvoker.of(new DtoMetaCollector(sheet)).invoke(),
-                CommandInvoker.of(new DtoCreatorCollector(sheet)).invoke(),
-                CommandInvoker.of(new DtoDefinitionCollector(sheet)).invoke());
+                CommandInvoker.of(DtoMetaCollector.from(sheet)).invoke(),
+                CommandInvoker.of(DtoCreatorCollector.from(sheet)).invoke(),
+                CommandInvoker.of(DtoDefinitionCollector.from(sheet)).invoke());
 
         logger.atInfo().log("DTO定義マトリクス = (%s)", dtoDefinitionMatrix);
         return dtoDefinitionMatrix;
