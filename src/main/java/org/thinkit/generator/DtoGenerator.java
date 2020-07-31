@@ -17,7 +17,7 @@ import com.google.common.flogger.FluentLogger;
 import org.apache.commons.lang3.StringUtils;
 import org.thinkit.common.catalog.Extension;
 import org.thinkit.common.util.file.FluentFile;
-import org.thinkit.generator.command.dtogenerator.DtoClassResourceFacade;
+import org.thinkit.generator.command.dto.DtoClassResourceFacade;
 import org.thinkit.generator.common.vo.dto.DtoResource;
 
 import lombok.NonNull;

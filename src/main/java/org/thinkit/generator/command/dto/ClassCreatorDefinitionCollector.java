@@ -10,7 +10,7 @@
  * reproduced or used in any manner whatsoever.
  */
 
-package org.thinkit.generator.command.dtogenerator;
+package org.thinkit.generator.command.dto;
 
 import java.util.EnumMap;
 import java.util.List;
