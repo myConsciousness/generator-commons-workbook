@@ -29,7 +29,7 @@ import org.thinkit.common.util.workbook.Matrix;
 import org.thinkit.generator.command.Sheet;
 import org.thinkit.generator.common.catalog.dtogenerator.DtoItem;
 import org.thinkit.generator.common.vo.dto.DtoCreator;
-import org.thinkit.generator.rule.dto.ClassCreatorCellLoader;
+import org.thinkit.generator.rule.dto.DtoCreatorItemLoader;
 
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
@@ -133,7 +133,7 @@ final class DtoCreatorCollector implements Command<DtoCreator> {
      */
     private EnumMap<DtoItem, String> getDtoCreator(FluentSheet sheet) {
 
-        final List<Map<String, String>> contents = RuleInvoker.of(ClassCreatorCellLoader.of()).invoke();
+        final List<Map<String, String>> contents = RuleInvoker.of(DtoCreatorItemLoader.of()).invoke();
         final EnumMap<DtoItem, String> dtoCreator = new EnumMap<>(DtoItem.class);
 
         for (Map<String, String> elements : contents) {

@@ -1,6 +1,6 @@
 /**
  * Project Name : Generator<br>
- * File Name : ClassNameCellLoader.java<br>
+ * File Name : DtoMetaItemLoader.java<br>
  * Encoding : UTF-8<br>
  * Creation Date : 2020/05/16<br>
  * <p>
@@ -24,7 +24,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
- * コンテンツ「クラス名称セル」の情報をロードするルールクラスです。
+ * コンテンツ「DTOメタ項目」の情報をロードするルールクラスです。
  *
  * @author Kato Shinya
  * @since 1.0
@@ -32,28 +32,28 @@ import lombok.ToString;
  */
 @ToString
 @EqualsAndHashCode(callSuper = false)
-public final class ClassNameCellLoader implements Rule<List<Map<String, String>>> {
+public final class DtoMetaItemLoader implements Rule<List<Map<String, String>>> {
 
     /**
      * デフォルトコンストラクタ
      */
-    private ClassNameCellLoader() {
+    private DtoMetaItemLoader() {
     }
 
     /**
-     * {@link ClassNameCellLoader} クラスの新しいインスタンスを生成し返却します。
+     * {@link DtoMetaItemLoader} クラスの新しいインスタンスを生成し返却します。
      *
-     * @return {@link ClassNameCellLoader} クラスの新しいインスタンス
+     * @return {@link DtoMetaItemLoader} クラスの新しいインスタンス
      */
-    public static ClassNameCellLoader of() {
-        return new ClassNameCellLoader();
+    public static DtoMetaItemLoader of() {
+        return new DtoMetaItemLoader();
     }
 
     /**
      * コンテンツ名定数
      */
     private enum ContentName implements Content {
-        クラス名称セル項目;
+        DTOメタ項目;
 
         @Override
         public String getString() {
@@ -75,7 +75,7 @@ public final class ClassNameCellLoader implements Rule<List<Map<String, String>>
 
     @Override
     public List<Map<String, String>> execute() {
-        return loadContent(ContentName.クラス名称セル項目);
+        return loadContent(ContentName.DTOメタ項目);
     }
 
     @Override

@@ -29,7 +29,7 @@ import org.thinkit.common.util.workbook.Matrix;
 import org.thinkit.generator.command.Sheet;
 import org.thinkit.generator.common.catalog.dtogenerator.DtoItem;
 import org.thinkit.generator.common.vo.dto.DtoMeta;
-import org.thinkit.generator.rule.dto.ClassNameCellLoader;
+import org.thinkit.generator.rule.dto.DtoMetaItemLoader;
 
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
@@ -130,13 +130,13 @@ final class DtoMetaCollector implements Command<DtoMeta> {
      * セル内に定義された作成者情報を取得し返却します。
      *
      * @param sheet Sheetオブジェクト
-     * @return セルに定義されたクラス名情報
+     * @return セルに定義されたDTOメタ情報
      *
      * @exception NullPointerException 引数として {@code null} が渡された場合
      */
     private EnumMap<DtoItem, String> getNameDefinitions(@NonNull FluentSheet sheet) {
 
-        final List<Map<String, String>> contents = RuleInvoker.of(ClassNameCellLoader.of()).invoke();
+        final List<Map<String, String>> contents = RuleInvoker.of(DtoMetaItemLoader.of()).invoke();
         final EnumMap<DtoItem, String> classNameDefinitions = new EnumMap<>(DtoItem.class);
 
         for (Map<String, String> elements : contents) {

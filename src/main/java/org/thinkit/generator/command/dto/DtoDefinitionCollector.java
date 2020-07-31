@@ -30,7 +30,7 @@ import org.thinkit.generator.command.Sheet;
 import org.thinkit.generator.common.catalog.dtogenerator.DtoItem;
 import org.thinkit.generator.common.vo.dto.DtoDefinition;
 import org.thinkit.generator.common.vo.dto.DtoField;
-import org.thinkit.generator.rule.dto.ClassDefinitionCellLoader;
+import org.thinkit.generator.rule.dto.DtoDefinitionItemLoader;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -153,7 +153,7 @@ final class DtoDefinitionCollector implements Command<List<DtoDefinition>> {
      */
     private List<DtoDefinition> getDtoDefinitionList(@NonNull FluentSheet sheet) {
 
-        final List<Map<String, String>> contents = RuleInvoker.of(ClassDefinitionCellLoader.of()).invoke();
+        final List<Map<String, String>> contents = RuleInvoker.of(DtoDefinitionItemLoader.of()).invoke();
 
         final String baseCellItem = this.getContentItem(contents, DtoItem.LOGICAL_DELETE);
         final Matrix baseIndexes = sheet.findCellIndex(baseCellItem);

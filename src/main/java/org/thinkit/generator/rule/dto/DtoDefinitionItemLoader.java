@@ -1,6 +1,6 @@
 /**
  * Project Name : Generator<br>
- * File Name : ClassDefinitionCellLoader.java<br>
+ * File Name : DtoDefinitionItemLoader.java<br>
  * Encoding : UTF-8<br>
  * Creation Date : 2020/05/24<br>
  * <p>
@@ -32,28 +32,28 @@ import lombok.ToString;
  */
 @ToString
 @EqualsAndHashCode(callSuper = false)
-public final class ClassDefinitionCellLoader implements Rule<List<Map<String, String>>> {
+public final class DtoDefinitionItemLoader implements Rule<List<Map<String, String>>> {
 
     /**
      * デフォルトコンストラクタ
      */
-    private ClassDefinitionCellLoader() {
+    private DtoDefinitionItemLoader() {
     }
 
     /**
-     * {@link ClassDefinitionCellLoader} クラスの新しいインスタンスを生成し返却します。
+     * {@link DtoDefinitionItemLoader} クラスの新しいインスタンスを生成し返却します。
      *
-     * @return {@link ClassDefinitionCellLoader} クラスの新しいインスタンス
+     * @return {@link DtoDefinitionItemLoader} クラスの新しいインスタンス
      */
-    public static ClassDefinitionCellLoader of() {
-        return new ClassDefinitionCellLoader();
+    public static DtoDefinitionItemLoader of() {
+        return new DtoDefinitionItemLoader();
     }
 
     /**
      * コンテンツ名定数
      */
     private enum ContentName implements Content {
-        クラス定義セル項目;
+        DTO定義項目;
 
         @Override
         public String getString() {
@@ -75,7 +75,7 @@ public final class ClassDefinitionCellLoader implements Rule<List<Map<String, St
 
     @Override
     public List<Map<String, String>> execute() {
-        return loadContent(ContentName.クラス定義セル項目);
+        return loadContent(ContentName.DTO定義項目);
 
     }
 

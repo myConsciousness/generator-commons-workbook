@@ -1,6 +1,6 @@
 /**
  * Project Name : Generator<br>
- * File Name : ClassCreatorCellLoader.java<br>
+ * File Name : DtoCreatorItemLoader.java<br>
  * Encoding : UTF-8<br>
  * Creation Date : 2020/05/16<br>
  * <p>
@@ -25,7 +25,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
- * コンテンツ「クラス作成者セル」の情報をロードするルールクラスです。
+ * コンテンツ「DTO作成者項目」の情報をロードするルールクラスです。
  *
  * @author Kato Shinya
  * @since 1.0
@@ -33,28 +33,28 @@ import lombok.ToString;
  */
 @ToString
 @EqualsAndHashCode(callSuper = false)
-public final class ClassCreatorCellLoader implements Rule<List<Map<String, String>>> {
+public final class DtoCreatorItemLoader implements Rule<List<Map<String, String>>> {
 
     /**
      * デフォルトコンストラクタ
      */
-    private ClassCreatorCellLoader() {
+    private DtoCreatorItemLoader() {
     }
 
     /**
-     * {@link ClassCreatorCellLoader} クラスの新しいインスタンスを生成し返却します。
+     * {@link DtoCreatorItemLoader} クラスの新しいインスタンスを生成し返却します。
      *
-     * @return {@link ClassCreatorCellLoader} クラスの新しいインスタンス
+     * @return {@link DtoCreatorItemLoader} クラスの新しいインスタンス
      */
-    public static ClassCreatorCellLoader of() {
-        return new ClassCreatorCellLoader();
+    public static DtoCreatorItemLoader of() {
+        return new DtoCreatorItemLoader();
     }
 
     /**
      * コンテンツ名定数
      */
     private enum ContentName implements Content {
-        クラス作成者セル項目;
+        DTO作成者項目;
 
         @Override
         public String getString() {
@@ -76,7 +76,7 @@ public final class ClassCreatorCellLoader implements Rule<List<Map<String, Strin
 
     @Override
     public List<Map<String, String>> execute() {
-        return loadContent(ContentName.クラス作成者セル項目);
+        return loadContent(ContentName.DTO作成者項目);
     }
 
     @Override
