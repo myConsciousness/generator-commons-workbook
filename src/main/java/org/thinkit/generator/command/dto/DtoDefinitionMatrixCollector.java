@@ -87,7 +87,7 @@ final class DtoDefinitionMatrixCollector implements Command<DtoDefinitionMatrix>
     @Override
     public DtoDefinitionMatrix run() {
 
-        final FluentWorkbook workbook = new FluentWorkbook.Builder().fromFile(this.getFilePath()).build();
+        final FluentWorkbook workbook = FluentWorkbook.builder().fromFile(this.getFilePath()).build();
         final FluentSheet sheet = workbook.sheet(SheetName.定義書.name());
 
         final DtoDefinitionMatrix dtoDefinitionMatrix = new DtoDefinitionMatrix(

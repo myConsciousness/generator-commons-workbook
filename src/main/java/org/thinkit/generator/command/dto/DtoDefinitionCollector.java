@@ -116,7 +116,7 @@ final class DtoDefinitionCollector implements Command<List<DtoDefinition>> {
     @Override
     public List<DtoDefinition> run() {
         if (this.sheet == null) {
-            final FluentWorkbook workbook = new FluentWorkbook.Builder().fromFile(this.filePath).build();
+            final FluentWorkbook workbook = FluentWorkbook.builder().fromFile(this.filePath).build();
             this.sheet = workbook.sheet(SheetName.定義書.name());
         }
 

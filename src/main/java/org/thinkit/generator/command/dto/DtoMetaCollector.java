@@ -102,7 +102,7 @@ final class DtoMetaCollector implements Command<DtoMeta> {
     public DtoMeta run() {
 
         if (this.sheet == null) {
-            final FluentWorkbook workbook = new FluentWorkbook.Builder().fromFile(this.filePath).build();
+            final FluentWorkbook workbook = FluentWorkbook.builder().fromFile(this.filePath).build();
             this.sheet = workbook.sheet(SheetName.定義書.name());
         }
 
