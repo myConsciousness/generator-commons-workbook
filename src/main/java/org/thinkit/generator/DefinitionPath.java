@@ -17,9 +17,9 @@ import com.google.common.flogger.FluentLogger;
 
 import org.apache.commons.lang3.StringUtils;
 import org.thinkit.common.catalog.Platform;
-import org.thinkit.common.rule.RuleInvoker;
+import org.thinkit.common.command.CommandInvoker;
 import org.thinkit.common.util.file.FluentFile;
-import org.thinkit.generator.rule.DefaultOutputPathLoader;
+import org.thinkit.generator.command.DefaultOutputPathCollector;
 import org.thinkit.generator.vo.DefaultOutputPath;
 
 import lombok.EqualsAndHashCode;
@@ -177,7 +177,7 @@ public final class DefinitionPath {
             return "";
         }
 
-        final DefaultOutputPath defaultOutputPath = RuleInvoker.of(new DefaultOutputPathLoader(platform)).invoke();
+        final DefaultOutputPath defaultOutputPath = CommandInvoker.of(DefaultOutputPathCollector.of(platform)).invoke();
 
         final StringBuilder outputPath = new StringBuilder();
         outputPath.append(System.getenv(defaultOutputPath.getEnvironmentVariableName()))

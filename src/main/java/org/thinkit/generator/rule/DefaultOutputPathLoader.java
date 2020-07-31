@@ -56,12 +56,11 @@ public final class DefaultOutputPathLoader implements Rule<DefaultOutputPath> {
      * プログラム実行時のプラットフォーム要素
      */
     @Getter(AccessLevel.PRIVATE)
-    private Platform platform = null;
+    private Platform platform;
 
     /**
      * デフォルトコンストラクタ
      */
-    @SuppressWarnings("unused")
     private DefaultOutputPathLoader() {
     }
 
@@ -69,10 +68,24 @@ public final class DefaultOutputPathLoader implements Rule<DefaultOutputPath> {
      * コンストラクタ
      *
      * @param platform プログラム実行時のプラットフォーム要素
-     * @exception NullPointerException 引数として{@code null}が渡された場合
+     * @exception NullPointerException 引数として {@code null} が渡された場合
      */
-    public DefaultOutputPathLoader(@NonNull Platform platform) {
+    private DefaultOutputPathLoader(@NonNull Platform platform) {
         this.platform = platform;
+    }
+
+    /**
+     * 引数として与えられた {@code platform} をもとに {@link DefaultOutputPathLoader}
+     * クラスの新しいインスタンスを生成し返却します。
+     *
+     * @param platform プログラム実行時のプラットフォーム
+     * @return {@link DefaultOutputPathLoader} クラスの新しいインスタンス
+     *
+     * @exception NullPointerException 引数として {@code null} が渡された場合
+     * @see Platform
+     */
+    public static DefaultOutputPathLoader of(@NonNull Platform platform) {
+        return new DefaultOutputPathLoader(platform);
     }
 
     /**
