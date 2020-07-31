@@ -16,6 +16,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.thinkit.common.util.iterator.FluentIterator;
 import org.thinkit.common.util.iterator.IterableNode;
@@ -128,6 +129,15 @@ public final class DtoCreatorItemGroup implements Iterable<DtoCreatorItem>, Iter
         size++;
 
         return this;
+    }
+
+    /**
+     * {@link DtoCreatorItem} クラスを総称型として持つストリームを返却します。
+     *
+     * @return {@link DtoCreatorItem} クラスを総称型として持つストリーム
+     */
+    public Stream<DtoCreatorItem> stream() {
+        return this.dtoCreatorItemGroup.stream();
     }
 
     @Override

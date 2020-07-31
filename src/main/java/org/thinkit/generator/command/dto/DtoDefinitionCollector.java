@@ -289,9 +289,9 @@ final class DtoDefinitionCollector implements Command<List<DtoDefinition>> {
      * 真偽値へ変換する際のルールは下記の通りです。<br>
      * 当該メソッドでは文字列に対するトリム加工は行いません。
      * <p>
-     * 1, 文字列がnullの場合: {@code false}<br>
-     * 2, 文字列が空文字列の場合: {@code false}<br>
-     * 3, 上記以外の場合: {@code true}<br>
+     * 1, 文字列がnullの場合: {@code false} <br>
+     * 2, 文字列が空文字列の場合: {@code false} <br>
+     * 3, 上記以外の場合: {@code true} <br>
      *
      * @param sequence 変換対象の文字列
      * @return 文字列がnullまたは空文字列の場合は {@code false} 、それ以外は {@code true}
@@ -302,23 +302,19 @@ final class DtoDefinitionCollector implements Command<List<DtoDefinition>> {
 
     /**
      * 指定されたセル項目に紐づく名称を取得し返却します。
+     * <p>
+     * 指定されたセル項目に紐づく名称が存在しない場合は空文字列を返却します。
      *
      * @param dtoDefinitionItemGroup DTO定義項目グループ
      * @param dtoItem                取得対象のセル項目
-     * @return 取得対象のセル項目に紐づく名称
+     * @return 取得対象のセル項目に紐づく名称、または、セル項目に紐づく名称が存在しない場合は空文字列
      *
      * @exception NullPointerException 引数として {@code null} が渡された場合
      */
     private String getItemName(@NonNull final DtoDefinitionItemGroup dtoDefinitionItemGroup, DtoItem dtoItem) {
-
-        for (DtoDefinitionItem dtoDefinitionItem : dtoDefinitionItemGroup) {
-            if (dtoItem.getCode() == dtoDefinitionItem.getCellItemCode()) {
-                return dtoDefinitionItem.getCellItemName();
-            }
-        }
-
-        logger.atSevere().log("指定されたコンテンツ項目を取得できませんでした。");
-        return "";
+        return dtoDefinitionItemGroup.stream()
+                .filter(dtoDefinitionItem -> dtoDefinitionItem.getCellItemCode() == dtoItem.getCode())
+                .map(DtoDefinitionItem::getCellItemName).findFirst().orElse(StringUtils.EMPTY);
     }
 
     /**
