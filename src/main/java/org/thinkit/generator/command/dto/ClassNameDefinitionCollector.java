@@ -29,7 +29,7 @@ import org.thinkit.common.util.workbook.Matrix;
 import org.thinkit.generator.command.Sheet;
 import org.thinkit.generator.common.catalog.dtogenerator.DtoItem;
 import org.thinkit.generator.common.vo.dto.DtoMeta;
-import org.thinkit.generator.rule.dtogenerator.ClassNameCellLoader;
+import org.thinkit.generator.rule.dto.ClassNameCellLoader;
 
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;

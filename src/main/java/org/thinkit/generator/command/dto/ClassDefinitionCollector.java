@@ -30,7 +30,7 @@ import org.thinkit.generator.command.Sheet;
 import org.thinkit.generator.common.catalog.dtogenerator.DtoItem;
 import org.thinkit.generator.common.vo.dto.DtoDefinition;
 import org.thinkit.generator.common.vo.dto.DtoField;
-import org.thinkit.generator.rule.dtogenerator.ClassDefinitionCellLoader;
+import org.thinkit.generator.rule.dto.ClassDefinitionCellLoader;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
