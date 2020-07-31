@@ -1,6 +1,6 @@
 /**
  * Project Name : Generator<br>
- * File Name : ClassDefinitionCollector.java<br>
+ * File Name : dtoDefinitionCollector.java<br>
  * Encoding : UTF-8<br>
  * Creation Date : 2020/06/13<br>
  * <p>
@@ -28,8 +28,8 @@ import org.thinkit.common.util.workbook.FluentWorkbook;
 import org.thinkit.common.util.workbook.Matrix;
 import org.thinkit.generator.command.Sheet;
 import org.thinkit.generator.common.catalog.dtogenerator.DtoItem;
-import org.thinkit.generator.common.dto.dtogenerator.ClassDefinition;
-import org.thinkit.generator.common.dto.dtogenerator.ClassItemDefinition;
+import org.thinkit.generator.common.vo.dto.DtoDefinition;
+import org.thinkit.generator.common.vo.dto.DtoField;
 import org.thinkit.generator.rule.dtogenerator.ClassDefinitionCellLoader;
 
 import lombok.EqualsAndHashCode;
@@ -47,7 +47,7 @@ import lombok.ToString;
  */
 @ToString
 @EqualsAndHashCode
-final class ClassDefinitionCollector implements Command<List<ClassDefinition>> {
+final class ClassDefinitionCollector implements Command<List<DtoDefinition>> {
 
     /**
      * ログ出力オブジェクト
@@ -102,11 +102,13 @@ final class ClassDefinitionCollector implements Command<List<ClassDefinition>> {
      * コンストラクタ
      *
      * @param filePath DTO定義書のファイルパス
-     * @exception IllegalArgumentException ファイルパスがnullまたは空文字列の場合
+     *
+     * @exception NullPointerException 引数として {@code null} が渡された場合
+     * @throws IllegalArgumentException ファイルパスがnullまたは空文字列の場合
      */
-    public ClassDefinitionCollector(String filePath) {
+    public ClassDefinitionCollector(@NonNull String filePath) {
 
-        if (StringUtils.isEmpty(filePath)) {
+        if (StringUtils.isBlank(filePath)) {
             throw new IllegalArgumentException("wrong parameter was given. File path is required.");
         }
 
@@ -123,33 +125,33 @@ final class ClassDefinitionCollector implements Command<List<ClassDefinition>> {
     }
 
     @Override
-    public List<ClassDefinition> run() {
+    public List<DtoDefinition> run() {
         if (this.sheet == null) {
             final FluentWorkbook workbook = new FluentWorkbook.Builder().fromFile(this.filePath).build();
             this.sheet = workbook.sheet(SheetName.定義書.name());
         }
 
-        final List<ClassDefinition> classDefinitionList = this.getClassDefinitionList(sheet);
+        final List<DtoDefinition> dtoDefinitionList = this.getDtoDefinitionList(sheet);
 
-        if (classDefinitionList.isEmpty()) {
-            logger.atSevere().log("クラス定義情報を取得できませんでした。");
+        if (dtoDefinitionList.isEmpty()) {
+            logger.atSevere().log("DTO定義情報を取得できませんでした。");
             return null;
         }
 
-        return classDefinitionList;
+        return dtoDefinitionList;
     }
 
     /**
-     * Excelに定義されたマトリクステーブルからクラス定義情報群を取得し返却します。
+     * Excelに定義されたマトリクステーブルからDTO定義情報群を取得し返却します。
      *
      * @param sheet Sheetオブジェクト
-     * @return クラス定義情報群
+     * @return DTO定義情報群
      *
      * @exception NullPointerException 引数として {@code null} が渡された場合
      *
-     * @see #getClassDefinitionRecursively(List, List, List, int, int)
+     * @see #getdtoDefinitionRecursively(List, List, List, int, int)
      */
-    private List<ClassDefinition> getClassDefinitionList(@NonNull FluentSheet sheet) {
+    private List<DtoDefinition> getDtoDefinitionList(@NonNull FluentSheet sheet) {
 
         final List<Map<String, String>> contents = RuleInvoker.of(ClassDefinitionCellLoader.of()).invoke();
 
@@ -159,17 +161,17 @@ final class ClassDefinitionCollector implements Command<List<ClassDefinition>> {
         final List<Map<String, String>> matrixList = sheet.getMatrixList(baseIndexes.getColumn(), baseIndexes.getRow());
         logger.atInfo().log("マトリクスリスト = (%s)", matrixList);
 
-        final List<ClassDefinition> classDefinitionList = new ArrayList<>();
-        this.craeteClassDefinitionRecursively(RecursiveRequiredParameters.of(matrixList, contents, classDefinitionList,
+        final List<DtoDefinition> dtoDefinitionList = new ArrayList<>();
+        this.craetedtoDefinitionRecursively(RecursiveRequiredParameters.of(matrixList, contents, dtoDefinitionList,
                 RECURSIVE_START_INDEX, RECURSIVE_BASE_LAYER));
 
-        logger.atInfo().log("クラス定義情報群 = (%s)", classDefinitionList);
+        logger.atInfo().log("DTO定義情報群 = (%s)", dtoDefinitionList);
 
-        return classDefinitionList;
+        return dtoDefinitionList;
     }
 
     /**
-     * 引数として指定されたマトリクスリストから再帰的にクラス定義情報群を生成します。<br>
+     * 引数として指定されたマトリクスリストから再帰的にDTO定義情報群を生成します。<br>
      * 再帰処理は各レコードが子クラスを持っている場合に実行されます。
      *
      * @param recursiveRequiredParameters 再帰処理時に必須となる情報を格納したデータクラス
@@ -179,37 +181,35 @@ final class ClassDefinitionCollector implements Command<List<ClassDefinition>> {
      *
      * @see RecursiveRequiredParameters
      */
-    private int craeteClassDefinitionRecursively(
-            @NonNull final RecursiveRequiredParameters recursiveRequiredParameters) {
+    private int craetedtoDefinitionRecursively(@NonNull final RecursiveRequiredParameters recursiveRequiredParameters) {
 
         final List<Map<String, String>> matrixList = recursiveRequiredParameters.getMatrixList();
         final List<Map<String, String>> contents = recursiveRequiredParameters.getContents();
-        final List<ClassDefinition> classDefinitionList = recursiveRequiredParameters.getClassDefinitionList();
+        final List<DtoDefinition> dtoDefinitionList = recursiveRequiredParameters.getDtoDefinitionList();
         final int startIndex = recursiveRequiredParameters.getStartIndex();
         final int baseItemLayer = recursiveRequiredParameters.getBaseItemLayer();
 
         logger.atInfo().log("開始インデックス = (%s)", startIndex);
         logger.atInfo().log("基準項目層 = (%s)", baseItemLayer);
 
-        ClassDefinition parentClassDefinition = new ClassDefinition();
-        List<ClassItemDefinition> classItemDefinitionList = new ArrayList<>();
+        DtoDefinition parentDtoDefinition = new DtoDefinition();
+        List<DtoField> dtoFieldList = new ArrayList<>();
 
         int recordCounter = 0;
         for (int i = startIndex, size = matrixList.size(); i < size; i++) {
             final Map<String, String> record = matrixList.get(i);
 
-            final String itemNameLogicalDelete = this.getCellItemName(contents, DtoItem.LOGICAL_DELETE);
-            final boolean logicalDelete = this.convertStringToBoolean(record.get(itemNameLogicalDelete));
+            final boolean deleted = this
+                    .convertStringToBoolean(record.get(this.getCellItemName(contents, DtoItem.LOGICAL_DELETE)));
 
-            if (logicalDelete) {
+            if (deleted) {
                 logger.atInfo().log("論理削除されたレコードのためスキップします。");
                 logger.atInfo().log("スキップされたレコード = (%s)", record);
                 recordCounter++;
                 continue;
             }
 
-            final String itemNameLayer = this.getCellItemName(contents, DtoItem.LAYER);
-            final int layer = Integer.parseInt(record.get(itemNameLayer));
+            final int layer = Integer.parseInt(record.get(this.getCellItemName(contents, DtoItem.LAYER)));
             logger.atInfo().log("レコードから取得した項目層 = (%s)", layer);
 
             if (layer + 1 < baseItemLayer) {
@@ -219,67 +219,66 @@ final class ClassDefinitionCollector implements Command<List<ClassDefinition>> {
             }
 
             if (layer == baseItemLayer - 1 && layer % 2 == 0) {
-                parentClassDefinition = new ClassDefinition();
-                classItemDefinitionList = new ArrayList<>();
+                parentDtoDefinition = new DtoDefinition();
+                dtoFieldList = new ArrayList<>();
 
-                parentClassDefinition.setClassItemDefinitionList(classItemDefinitionList);
-                classDefinitionList.add(parentClassDefinition);
+                parentDtoDefinition.setDtoFieldList(dtoFieldList);
+                dtoDefinitionList.add(parentDtoDefinition);
 
-                this.createClassDefinition(contents, record, parentClassDefinition);
+                this.createDtoDefinition(contents, record, parentDtoDefinition);
             } else {
                 if (layer > baseItemLayer) {
                     logger.atInfo().log("子クラス情報を生成するため再帰処理を開始します。");
 
-                    List<ClassDefinition> childClassDefinitionList = new ArrayList<>();
-                    final int skipCounter = this.craeteClassDefinitionRecursively(RecursiveRequiredParameters
-                            .of(matrixList, contents, childClassDefinitionList, i, baseItemLayer + 2));
+                    List<DtoDefinition> childDtoDefinitionList = new ArrayList<>();
+                    final int skipCounter = this.craetedtoDefinitionRecursively(RecursiveRequiredParameters
+                            .of(matrixList, contents, childDtoDefinitionList, i, baseItemLayer + 2));
 
-                    classItemDefinitionList.get(classItemDefinitionList.size() - 1)
-                            .setChildClassDefinitionList(childClassDefinitionList);
+                    dtoFieldList.get(dtoFieldList.size() - 1).setChildDtoDefinitionList(childDtoDefinitionList);
 
                     logger.atInfo().log("レコード番号 = (%s)", i);
                     logger.atInfo().log("スキップ数 = (%s)", skipCounter);
                     i += skipCounter - 1;
                 } else {
-                    this.createClassItemDefinition(contents, record, classItemDefinitionList);
+                    this.createDtoField(contents, record, dtoFieldList);
                 }
             }
 
             recordCounter++;
         }
 
-        logger.atInfo().log("クラス定義情報（途中経過） = (%s)", classDefinitionList);
+        logger.atInfo().log("DTO定義情報（途中経過） = (%s)", dtoDefinitionList);
         return recordCounter;
     }
 
     /**
-     * マトリクスから取得したレコードを基にクラス定義情報を生成します。
+     * マトリクスから取得したレコードを基にDTO定義情報を生成します。
      *
-     * @param content         コンテンツ
-     * @param record          マトリクスレコード
-     * @param classDefinition クラス定義情報
+     * @param content       コンテンツ
+     * @param record        マトリクスレコード
+     * @param dtoDefinition DTO定義情報
      */
-    private void createClassDefinition(final List<Map<String, String>> content, final Map<String, String> record,
-            final ClassDefinition classDefinition) {
+    private void createDtoDefinition(final List<Map<String, String>> content, final Map<String, String> record,
+            final DtoDefinition dtoDefinition) {
 
         final String className = record.get(this.getCellItemName(content, DtoItem.VARIABLE_NAME));
         final String description = record.get(this.getCellItemName(content, DtoItem.DESCRIPTION));
 
-        classDefinition.setClassName(className);
-        classDefinition.setDescription(description);
+        dtoDefinition.setClassName(className);
+        dtoDefinition.setDescription(description);
 
-        logger.atInfo().log("クラス定義情報 = (%s)", classDefinition.toString());
+        logger.atInfo().log("DTO定義情報 = (%s)", dtoDefinition.toString());
     }
 
     /**
      * マトリクスから取得した情報を基にクラス項目情報を生成します。
      *
-     * @param content                 コンテンツ
-     * @param record                  マトリクスレコード
-     * @param classItemDefinitionList クラス項目情報リスト
+     * @param content      コンテンツ
+     * @param record       マトリクスレコード
+     * @param dtoFieldList DTOフィールドリスト
      */
-    private void createClassItemDefinition(List<Map<String, String>> content, Map<String, String> record,
-            List<ClassItemDefinition> classItemDefinitionList) {
+    private void createDtoField(List<Map<String, String>> content, Map<String, String> record,
+            List<DtoField> dtoFieldList) {
 
         final String variableName = record.get(this.getCellItemName(content, DtoItem.VARIABLE_NAME));
         final String dataType = record.get(this.getCellItemName(content, DtoItem.DATA_TYPE));
@@ -288,12 +287,11 @@ final class ClassDefinitionCollector implements Command<List<ClassDefinition>> {
                 .convertStringToBoolean(record.get(this.getCellItemName(content, DtoItem.INVARIANT)));
         final String description = record.get(this.getCellItemName(content, DtoItem.DESCRIPTION));
 
-        final ClassItemDefinition classItemDefinition = new ClassItemDefinition(variableName, dataType, initialValue,
-                invariant, description);
+        final DtoField classItemDefinition = new DtoField(variableName, dataType, initialValue, invariant, description);
 
-        classItemDefinitionList.add(classItemDefinition);
+        dtoFieldList.add(classItemDefinition);
 
-        logger.atInfo().log("クラス項目定義情報 = (%s)", classItemDefinition);
+        logger.atInfo().log("DTOフィールド = (%s)", classItemDefinition);
     }
 
     /**
@@ -366,7 +364,7 @@ final class ClassDefinitionCollector implements Command<List<ClassDefinition>> {
     }
 
     /**
-     * クラス定義情報を取得する際の再帰処理で必要となるパラメータ情報を管理するデータクラスです。
+     * DTO定義情報を取得する際の再帰処理で必要となるパラメータ情報を管理するデータクラスです。
      *
      * @author Kato Shinya
      * @since 1.0
@@ -396,10 +394,10 @@ final class ClassDefinitionCollector implements Command<List<ClassDefinition>> {
         private final List<Map<String, String>> contents;
 
         /**
-         * クラス定義情報リスト
+         * DTO定義情報リスト
          */
         @NonNull
-        private final List<ClassDefinition> classDefinitionList;
+        private final List<DtoDefinition> dtoDefinitionList;
 
         /**
          * 探索開始インデックス

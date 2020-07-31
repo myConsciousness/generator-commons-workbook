@@ -28,7 +28,7 @@ import org.thinkit.common.util.workbook.FluentWorkbook;
 import org.thinkit.common.util.workbook.Matrix;
 import org.thinkit.generator.command.Sheet;
 import org.thinkit.generator.common.catalog.dtogenerator.DtoItem;
-import org.thinkit.generator.common.dto.dtogenerator.ClassNameDefinition;
+import org.thinkit.generator.common.vo.dto.DtoMeta;
 import org.thinkit.generator.rule.dtogenerator.ClassNameCellLoader;
 
 import lombok.EqualsAndHashCode;
@@ -44,7 +44,7 @@ import lombok.ToString;
  */
 @ToString
 @EqualsAndHashCode
-final class ClassNameDefinitionCollector implements Command<ClassNameDefinition> {
+final class ClassNameDefinitionCollector implements Command<DtoMeta> {
 
     /**
      * ログ出力オブジェクト
@@ -110,7 +110,7 @@ final class ClassNameDefinitionCollector implements Command<ClassNameDefinition>
     }
 
     @Override
-    public ClassNameDefinition run() {
+    public DtoMeta run() {
 
         if (this.sheet == null) {
             final FluentWorkbook workbook = new FluentWorkbook.Builder().fromFile(this.filePath).build();
@@ -118,13 +118,12 @@ final class ClassNameDefinitionCollector implements Command<ClassNameDefinition>
         }
 
         final Map<DtoItem, String> definitions = this.getNameDefinitions(sheet);
-        final ClassNameDefinition classNameDefinition = new ClassNameDefinition(definitions.get(DtoItem.VERSION),
-                definitions.get(DtoItem.PROJECT_NAME), definitions.get(DtoItem.PACKAGE_NAME),
-                definitions.get(DtoItem.PHYSICAL_NAME), definitions.get(DtoItem.LOGICAL_NAME),
-                definitions.get(DtoItem.DESCRIPTION));
+        final DtoMeta dtoMeta = new DtoMeta(definitions.get(DtoItem.VERSION), definitions.get(DtoItem.PROJECT_NAME),
+                definitions.get(DtoItem.PACKAGE_NAME), definitions.get(DtoItem.PHYSICAL_NAME),
+                definitions.get(DtoItem.LOGICAL_NAME), definitions.get(DtoItem.DESCRIPTION));
 
-        logger.atInfo().log("クラス名定義情報 = (%s)", classNameDefinition);
-        return classNameDefinition;
+        logger.atInfo().log("DTOメタ = (%s)", dtoMeta);
+        return dtoMeta;
     }
 
     /**

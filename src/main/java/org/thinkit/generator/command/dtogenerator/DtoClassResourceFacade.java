@@ -13,17 +13,18 @@
 package org.thinkit.generator.command.dtogenerator;
 
 import org.thinkit.common.command.CommandInvoker;
-import org.thinkit.generator.common.command.dtogenerator.ClassResourceFormatter;
-import org.thinkit.generator.common.dto.dtogenerator.ClassDefinitionMatrix;
-import org.thinkit.generator.common.dto.dtogenerator.ClassResource;
+import org.thinkit.generator.common.command.dtogenerator.DtoResourceFormatter;
+import org.thinkit.generator.common.vo.dto.DtoDefinitionMatrix;
+import org.thinkit.generator.common.vo.dto.DtoResource;
 
 import lombok.NonNull;
 
 /**
- * DTOクラスのリソースを生成する処理を集約したファサードクラスです。<br>
- * DTOクラスのリソースを生成する際には {@link #createResource(String)} を呼び出してください。<br>
- * {@link #createResource(String)} を呼び出す際には、<br>
- * 第1引数としてDTOクラスの定義情報が記載されたExcelファイルのパスを指定してください。<br>
+ * DTOクラスのリソースを生成する処理を集約したファサードクラスです。 DTOクラスのリソースを生成する際には
+ * {@link #createResource(String)} を呼び出してください。
+ * <p>
+ * {@link #createResource(String)}
+ * を呼び出す際には第1引数としてDTOクラスの定義情報が記載されたExcelファイルのパスを指定してください。
  *
  * @author Kato Shinya
  * @since 1.0
@@ -43,7 +44,7 @@ public final class DtoClassResourceFacade {
      * 指定されたファイルパスに定義された情報を基にDTOクラスのリソースを生成します。<br>
      * 引数に {@code null} が指定された場合は実行時に必ず失敗します。<br>
      * <br>
-     * {@link ClassResourceFormatter#getClassResource()} で取得する連想配列は<br>
+     * {@link DtoResourceFormatter#getClassResource()} で取得する連想配列は<br>
      * 以下の情報を格納しています。<br>
      * 1, Key ・・・ クラス名<br>
      * 2, Value ・・・ クラス名に紐づくDTOクラスのリソース<br>
@@ -53,11 +54,11 @@ public final class DtoClassResourceFacade {
      *
      * @exception NullPointerException 引数として {@code null} が渡された場合
      */
-    public static ClassResource createResource(@NonNull String filePath) {
+    public static DtoResource createResource(@NonNull String filePath) {
 
-        final ClassDefinitionMatrix classDefintionMatrix = CommandInvoker
-                .of(new ClassDefinitionMatrixCollector(filePath)).invoke();
+        final DtoDefinitionMatrix dtoDefinitionMatrix = CommandInvoker.of(new ClassDefinitionMatrixCollector(filePath))
+                .invoke();
 
-        return CommandInvoker.of(new ClassResourceFormatter(classDefintionMatrix)).invoke();
+        return CommandInvoker.of(DtoResourceFormatter.of(dtoDefinitionMatrix)).invoke();
     }
 }

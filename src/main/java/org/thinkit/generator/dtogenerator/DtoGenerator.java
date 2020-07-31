@@ -20,8 +20,7 @@ import org.thinkit.common.util.file.FluentFile;
 import org.thinkit.generator.AbstractGenerator;
 import org.thinkit.generator.DefinitionPath;
 import org.thinkit.generator.command.dtogenerator.DtoClassResourceFacade;
-
-import org.thinkit.generator.common.dto.dtogenerator.ClassResource;
+import org.thinkit.generator.common.vo.dto.DtoResource;
 
 import lombok.NonNull;
 
@@ -51,21 +50,21 @@ public final class DtoGenerator extends AbstractGenerator {
     @Override
     protected boolean run() {
 
-        final ClassResource classResource = DtoClassResourceFacade.createResource(super.getFilePath());
+        final DtoResource dtoResource = DtoClassResourceFacade.createResource(super.getFilePath());
 
-        if (classResource == null) {
+        if (dtoResource == null) {
             logger.atSevere().log("DTOクラスのリソース作成処理が異常終了しました。");
             return false;
         }
 
-        final String outputPath = super.getOutputPath(classResource.getPackageName());
+        final String outputPath = super.getOutputPath(dtoResource.getPackageName());
 
         if (StringUtils.isEmpty(outputPath)) {
             logger.atSevere().log("出力先パスの取得処理が異常終了しました。");
             return false;
         }
 
-        classResource.getResources().forEach((key, value) -> {
+        dtoResource.getResources().forEach((key, value) -> {
             FluentFile.writerOf(outputPath).write(key, Extension.java(), value);
         });
 

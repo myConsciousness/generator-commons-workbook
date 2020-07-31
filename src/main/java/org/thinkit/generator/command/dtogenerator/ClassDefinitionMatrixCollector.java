@@ -20,7 +20,7 @@ import org.thinkit.common.command.CommandInvoker;
 import org.thinkit.common.util.workbook.FluentSheet;
 import org.thinkit.common.util.workbook.FluentWorkbook;
 import org.thinkit.generator.command.Sheet;
-import org.thinkit.generator.common.dto.dtogenerator.ClassDefinitionMatrix;
+import org.thinkit.generator.common.vo.dto.DtoDefinitionMatrix;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -36,7 +36,7 @@ import lombok.ToString;
  */
 @ToString
 @EqualsAndHashCode(callSuper = false)
-final class ClassDefinitionMatrixCollector implements Command<ClassDefinitionMatrix> {
+final class ClassDefinitionMatrixCollector implements Command<DtoDefinitionMatrix> {
 
     /**
      * ログ出力オブジェクト
@@ -85,17 +85,17 @@ final class ClassDefinitionMatrixCollector implements Command<ClassDefinitionMat
     }
 
     @Override
-    public ClassDefinitionMatrix run() {
+    public DtoDefinitionMatrix run() {
 
         final FluentWorkbook workbook = new FluentWorkbook.Builder().fromFile(this.getFilePath()).build();
         final FluentSheet sheet = workbook.sheet(SheetName.定義書.name());
 
-        final ClassDefinitionMatrix classDefinitionMatrix = new ClassDefinitionMatrix(
+        final DtoDefinitionMatrix dtoDefinitionMatrix = new DtoDefinitionMatrix(
                 CommandInvoker.of(new ClassNameDefinitionCollector(sheet)).invoke(),
                 CommandInvoker.of(new ClassCreatorDefinitionCollector(sheet)).invoke(),
                 CommandInvoker.of(new ClassDefinitionCollector(sheet)).invoke());
 
-        logger.atInfo().log("クラス定義情報マトリクス = (%s)", classDefinitionMatrix);
-        return classDefinitionMatrix;
+        logger.atInfo().log("DTO定義マトリクス = (%s)", dtoDefinitionMatrix);
+        return dtoDefinitionMatrix;
     }
 }
