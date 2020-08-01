@@ -44,7 +44,7 @@ import lombok.ToString;
  * @version 1.0
  */
 @ToString
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode
 public final class DefaultOutputPathLoader implements Rule<DefaultOutputPath> {
 
     /**
@@ -84,7 +84,7 @@ public final class DefaultOutputPathLoader implements Rule<DefaultOutputPath> {
      * @exception NullPointerException 引数として {@code null} が渡された場合
      * @see Platform
      */
-    public static DefaultOutputPathLoader of(@NonNull Platform platform) {
+    public static Rule<DefaultOutputPath> of(@NonNull Platform platform) {
         return new DefaultOutputPathLoader(platform);
     }
 

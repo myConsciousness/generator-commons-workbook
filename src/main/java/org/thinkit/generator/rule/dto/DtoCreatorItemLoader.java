@@ -34,7 +34,7 @@ import lombok.ToString;
  * @version 1.0
  */
 @ToString
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode
 public final class DtoCreatorItemLoader implements Rule<DtoCreatorItemGroup> {
 
     /**
@@ -48,7 +48,7 @@ public final class DtoCreatorItemLoader implements Rule<DtoCreatorItemGroup> {
      *
      * @return {@link DtoCreatorItemLoader} クラスの新しいインスタンス
      */
-    public static DtoCreatorItemLoader of() {
+    public static Rule<DtoCreatorItemGroup> of() {
         return new DtoCreatorItemLoader();
     }
 

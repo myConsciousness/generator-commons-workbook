@@ -33,7 +33,7 @@ import lombok.ToString;
  * @version 1.0
  */
 @ToString
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode
 public final class DtoMetaItemLoader implements Rule<DtoMetaItemGroup> {
 
     /**
@@ -47,7 +47,7 @@ public final class DtoMetaItemLoader implements Rule<DtoMetaItemGroup> {
      *
      * @return {@link DtoMetaItemLoader} クラスの新しいインスタンス
      */
-    public static DtoMetaItemLoader of() {
+    public static Rule<DtoMetaItemGroup> of() {
         return new DtoMetaItemLoader();
     }
 
