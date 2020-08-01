@@ -132,6 +132,15 @@ public final class DtoMetaItemGroup implements Iterable<DtoMetaItem>, IterableNo
     }
 
     /**
+     * オブジェクトに含まれる情報が空か判定します。
+     *
+     * @return オブジェクトに含まれる情報がからの場合は {@code true} 、それ以外は {@code false}
+     */
+    public boolean isEmpty() {
+        return this.size <= 0;
+    }
+
+    /**
      * {@link DtoMetaItem} を総称型として持つストリームを返却します。
      *
      * @return {@link DtoMetaItem} を総称型として持つストリーム

@@ -132,6 +132,15 @@ public final class DtoCreatorItemGroup implements Iterable<DtoCreatorItem>, Iter
     }
 
     /**
+     * オブジェクトに含まれる情報が空か判定します。
+     *
+     * @return オブジェクトに含まれる情報がからの場合は {@code true} 、それ以外は {@code false}
+     */
+    public boolean isEmpty() {
+        return this.size <= 0;
+    }
+
+    /**
      * {@link DtoCreatorItem} クラスを総称型として持つストリームを返却します。
      *
      * @return {@link DtoCreatorItem} クラスを総称型として持つストリーム

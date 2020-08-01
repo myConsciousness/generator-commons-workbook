@@ -27,7 +27,7 @@ import lombok.NonNull;
 import lombok.ToString;
 
 /**
- * コンテンツ「DTO作成者項目」のオブジェクトグループを管理するデータクラスです。
+ * コンテンツ「DTO定義項目」のオブジェクトグループを管理するデータクラスです。
  * <p>
  * このクラスはFluentインターフェースの概念を応用し設計されています。<br>
  * そのため、以下のようなメソッドチェーンでの操作が可能です。
@@ -120,7 +120,7 @@ public final class DtoDefinitionItemGroup
      * </code>
      * </pre>
      *
-     * @param dtoDefinitionItem DTO作成者項目
+     * @param dtoDefinitionItem DTO定義項目
      * @return 自分自身のインスタンス
      *
      * @exception NullPointerException 引数として {@code null} が渡された場合
@@ -130,6 +130,15 @@ public final class DtoDefinitionItemGroup
         size++;
 
         return this;
+    }
+
+    /**
+     * オブジェクトに含まれる情報が空か判定します。
+     *
+     * @return オブジェクトに含まれる情報がからの場合は {@code true} 、それ以外は {@code false}
+     */
+    public boolean isEmpty() {
+        return this.size <= 0;
     }
 
     /**
