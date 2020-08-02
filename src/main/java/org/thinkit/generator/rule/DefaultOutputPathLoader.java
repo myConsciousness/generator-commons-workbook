@@ -17,8 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.flogger.FluentLogger;
-
 import org.thinkit.common.catalog.Platform;
 import org.thinkit.common.rule.Attribute;
 import org.thinkit.common.rule.Condition;
@@ -46,11 +44,6 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 public final class DefaultOutputPathLoader implements Rule<DefaultOutputPath> {
-
-    /**
-     * ログ出力オブジェクト
-     */
-    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
     /**
      * プログラム実行時のプラットフォーム要素
@@ -128,11 +121,9 @@ public final class DefaultOutputPathLoader implements Rule<DefaultOutputPath> {
     public DefaultOutputPath execute() {
 
         final Map<String, String> content = loadContent(ContentName.既定出力先).get(0);
-        final DefaultOutputPath defaultOutputPath = DefaultOutputPath.of(
-                content.get(ContentAttribute.環境変数名.getString()), content.get(ContentAttribute.出力先ディレクトリ.getString()));
 
-        logger.atInfo().log("既定出力先 = (%s)", defaultOutputPath);
-        return defaultOutputPath;
+        return DefaultOutputPath.of(content.get(ContentAttribute.環境変数名.getString()),
+                content.get(ContentAttribute.出力先ディレクトリ.getString()));
     }
 
     @Override
