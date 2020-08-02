@@ -64,7 +64,7 @@ public final class DefaultOutputPathCollector implements Command<DefaultOutputPa
      * @exception NullPointerException 引数として {@code null} が渡された場合
      * @see Platform
      */
-    public static DefaultOutputPathCollector of(@NonNull Platform platform) {
+    public static Command<DefaultOutputPath> of(@NonNull Platform platform) {
         return new DefaultOutputPathCollector(platform);
     }
 

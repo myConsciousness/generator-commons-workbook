@@ -110,7 +110,7 @@ final class DtoMetaCollector implements Command<DtoMeta> {
             dtoMeta.put(Catalog.getEnum(DtoItem.class, dtoMetaItem.getCellItemCode()), sequence);
         });
 
-        logger.atInfo().log("DTOメタ = (%s)", dtoMeta);
+        logger.atFinest().log("DTOメタ = (%s)", dtoMeta);
         return dtoMeta;
     }
 }

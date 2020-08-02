@@ -24,7 +24,7 @@ import lombok.NonNull;
  * {@link #createResource(String)} を呼び出してください。
  * <p>
  * {@link #createResource(String)}
- * を呼び出す際には第1引数としてDTOクラスの定義情報が記載されたExcelファイルのパスを指定してください。
+ * を呼び出す際には第1引数としてDTOクラスの定義情報が記載されたワークブックへのファイルパスを指定してください。
  *
  * @author Kato Shinya
  * @since 1.0
@@ -41,16 +41,10 @@ public final class DtoResourceFacade {
     }
 
     /**
-     * 指定されたファイルパスに定義された情報を基にDTOクラスのリソースを生成します。<br>
-     * 引数に {@code null} が指定された場合は実行時に必ず失敗します。<br>
-     * <br>
-     * {@link DtoResourceFormatter#getClassResource()} で取得する連想配列は<br>
-     * 以下の情報を格納しています。<br>
-     * 1, Key ・・・ クラス名<br>
-     * 2, Value ・・・ クラス名に紐づくDTOクラスのリソース<br>
+     * 引数として指定された {@code filePath} の値に紐づくワークブックに定義された情報からDTO定義グループを取得し返却します。
      *
-     * @param filePath 定義書のファイルパス
-     * @return 生成されたDTOクラスのリソース情報
+     * @param filePath DTO定義書へのファイルパス
+     * @return DTO定義書から取得したDTO定義グループ
      *
      * @exception NullPointerException 引数として {@code null} が渡された場合
      */
