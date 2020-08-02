@@ -34,7 +34,7 @@ import lombok.ToString;
  * @version 1.0
  */
 @ToString
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode
 final class DtoMatrixCollector implements Command<DtoMatrix> {
 
     /**
@@ -101,11 +101,11 @@ final class DtoMatrixCollector implements Command<DtoMatrix> {
         final FluentWorkbook workbook = FluentWorkbook.builder().fromFile(this.filePath).build();
         final FluentSheet sheet = workbook.sheet(SheetName.定義書.name());
 
-        final DtoMatrix dtoMatrix = new DtoMatrix(CommandInvoker.of(DtoMetaCollector.from(sheet)).invoke(),
+        final DtoMatrix dtoMatrix = DtoMatrix.of(CommandInvoker.of(DtoMetaCollector.from(sheet)).invoke(),
                 CommandInvoker.of(DtoCreatorCollector.from(sheet)).invoke(),
                 CommandInvoker.of(DtoDefinitionCollector.from(sheet)).invoke());
 
-        logger.atInfo().log("DTOマトリクス = (%s)", dtoMatrix);
+        logger.atFinest().log("DTOマトリクス = (%s)", dtoMatrix);
         return dtoMatrix;
     }
 }

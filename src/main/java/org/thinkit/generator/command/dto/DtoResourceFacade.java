@@ -15,7 +15,7 @@ package org.thinkit.generator.command.dto;
 import org.thinkit.common.command.CommandInvoker;
 import org.thinkit.generator.common.command.dto.DtoResourceFormatter;
 import org.thinkit.generator.common.vo.dto.DtoMatrix;
-import org.thinkit.generator.common.vo.dto.DtoResource;
+import org.thinkit.generator.common.vo.dto.DtoResourceGroup;
 
 import lombok.NonNull;
 
@@ -54,10 +54,8 @@ public final class DtoResourceFacade {
      *
      * @exception NullPointerException 引数として {@code null} が渡された場合
      */
-    public static DtoResource createResource(@NonNull String filePath) {
-
+    public static DtoResourceGroup createResource(@NonNull String filePath) {
         final DtoMatrix dtoMatrix = CommandInvoker.of(DtoMatrixCollector.from(filePath)).invoke();
-
         return CommandInvoker.of(DtoResourceFormatter.of(dtoMatrix)).invoke();
     }
 }

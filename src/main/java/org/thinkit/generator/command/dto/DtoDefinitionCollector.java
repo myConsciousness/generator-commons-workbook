@@ -13,7 +13,6 @@
 package org.thinkit.generator.command.dto;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +25,9 @@ import org.thinkit.common.util.workbook.FluentSheet;
 import org.thinkit.common.util.workbook.Matrix;
 import org.thinkit.generator.common.catalog.dto.DtoItem;
 import org.thinkit.generator.common.vo.dto.DtoDefinition;
+import org.thinkit.generator.common.vo.dto.DtoDefinitionGroup;
 import org.thinkit.generator.common.vo.dto.DtoField;
+import org.thinkit.generator.common.vo.dto.DtoFieldGroup;
 import org.thinkit.generator.rule.dto.DtoDefinitionItemLoader;
 import org.thinkit.generator.vo.dto.DtoDefinitionItem;
 import org.thinkit.generator.vo.dto.DtoDefinitionItemGroup;
@@ -46,7 +47,7 @@ import lombok.ToString;
  */
 @ToString
 @EqualsAndHashCode
-final class DtoDefinitionCollector implements Command<List<DtoDefinition>> {
+final class DtoDefinitionCollector implements Command<DtoDefinitionGroup> {
 
     /**
      * ログ出力オブジェクト
@@ -95,21 +96,21 @@ final class DtoDefinitionCollector implements Command<List<DtoDefinition>> {
      * @exception NullPointerException 引数として {@code null} が渡された場合
      * @see FluentSheet
      */
-    public static Command<List<DtoDefinition>> from(@NonNull FluentSheet sheet) {
+    public static Command<DtoDefinitionGroup> from(@NonNull FluentSheet sheet) {
         return new DtoDefinitionCollector(sheet);
     }
 
     @Override
-    public List<DtoDefinition> run() {
+    public DtoDefinitionGroup run() {
 
-        final List<DtoDefinition> dtoDefinitionList = this.getDtoDefinitionList(this.sheet);
+        final DtoDefinitionGroup dtoDefinitionGroup = this.getDtoDefinitionList(this.sheet);
 
-        if (dtoDefinitionList.isEmpty()) {
-            logger.atSevere().log("DTO定義情報を取得できませんでした。");
+        if (dtoDefinitionGroup.isEmpty()) {
+            logger.atSevere().log("DTO定義グループを取得できませんでした。");
             return null;
         }
 
-        return dtoDefinitionList;
+        return dtoDefinitionGroup;
     }
 
     /**
@@ -119,10 +120,8 @@ final class DtoDefinitionCollector implements Command<List<DtoDefinition>> {
      * @return DTO定義情報群
      *
      * @exception NullPointerException 引数として {@code null} が渡された場合
-     *
-     * @see #getdtoDefinitionRecursively(List, List, List, int, int)
      */
-    private List<DtoDefinition> getDtoDefinitionList(@NonNull FluentSheet sheet) {
+    private DtoDefinitionGroup getDtoDefinitionList(@NonNull FluentSheet sheet) {
 
         final DtoDefinitionItemGroup dtoDefinitionItemGroup = RuleInvoker.of(DtoDefinitionItemLoader.of()).invoke();
 
@@ -130,15 +129,15 @@ final class DtoDefinitionCollector implements Command<List<DtoDefinition>> {
         final Matrix baseIndexes = sheet.findCellIndex(baseCellItem);
 
         final List<Map<String, String>> matrixList = sheet.getMatrixList(baseIndexes.getColumn(), baseIndexes.getRow());
-        logger.atInfo().log("マトリクスリスト = (%s)", matrixList);
+        logger.atFinest().log("マトリクスリスト = (%s)", matrixList);
 
-        final List<DtoDefinition> dtoDefinitionList = new ArrayList<>();
+        final DtoDefinitionGroup dtoDefinitionGroup = DtoDefinitionGroup.of();
 
         this.craeteDtoDefinitionRecursively(RecursiveRequiredParameters.of(matrixList, dtoDefinitionItemGroup,
-                dtoDefinitionList, RECURSIVE_START_INDEX, RECURSIVE_BASE_LAYER));
+                dtoDefinitionGroup, RECURSIVE_START_INDEX, RECURSIVE_BASE_LAYER));
 
-        logger.atInfo().log("DTO定義情報群 = (%s)", dtoDefinitionList);
-        return dtoDefinitionList;
+        logger.atFinest().log("DTO定義グループ = (%s)", dtoDefinitionGroup);
+        return dtoDefinitionGroup;
     }
 
     /**
@@ -156,15 +155,15 @@ final class DtoDefinitionCollector implements Command<List<DtoDefinition>> {
 
         final List<Map<String, String>> matrixList = recursiveRequiredParameters.getMatrixList();
         final DtoDefinitionItemGroup dtoDefinitionItemGroup = recursiveRequiredParameters.getDtoDefinitionItemGroup();
-        final List<DtoDefinition> dtoDefinitionList = recursiveRequiredParameters.getDtoDefinitionList();
+        final DtoDefinitionGroup dtoDefinitionGroup = recursiveRequiredParameters.getDtoDefinitionGroup();
         final int startIndex = recursiveRequiredParameters.getStartIndex();
         final int baseItemLayer = recursiveRequiredParameters.getBaseItemLayer();
 
-        logger.atInfo().log("開始インデックス = (%s)", startIndex);
-        logger.atInfo().log("基準項目層 = (%s)", baseItemLayer);
+        logger.atFinest().log("開始インデックス = (%s)", startIndex);
+        logger.atFinest().log("基準項目層 = (%s)", baseItemLayer);
 
         DtoDefinition parentDtoDefinition = new DtoDefinition();
-        List<DtoField> dtoFieldList = new ArrayList<>();
+        DtoFieldGroup dtoFieldGroup = DtoFieldGroup.of();
 
         int recordCounter = 0;
         for (int i = startIndex, size = matrixList.size(); i < size; i++) {
@@ -174,51 +173,51 @@ final class DtoDefinitionCollector implements Command<List<DtoDefinition>> {
                     record.get(this.getItemName(dtoDefinitionItemGroup, DtoItem.LOGICAL_DELETE)));
 
             if (deleted) {
-                logger.atInfo().log("論理削除されたレコードのためスキップします。");
-                logger.atInfo().log("スキップされたレコード = (%s)", record);
+                logger.atFinest().log("論理削除されたレコードのためスキップします。");
+                logger.atFinest().log("スキップされたレコード = (%s)", record);
                 recordCounter++;
                 continue;
             }
 
             final int layer = Integer.parseInt(record.get(this.getItemName(dtoDefinitionItemGroup, DtoItem.LAYER)));
-            logger.atInfo().log("レコードから取得した項目層 = (%s)", layer);
+            logger.atFinest().log("レコードから取得した項目層 = (%s)", layer);
 
             if (layer + 1 < baseItemLayer) {
-                logger.atInfo().log("%s層の処理を終了します。", baseItemLayer);
-                logger.atInfo().log("戻り先の層 = (%s)", baseItemLayer - 2);
+                logger.atFinest().log("%s層の処理を終了します。", baseItemLayer);
+                logger.atFinest().log("戻り先の層 = (%s)", baseItemLayer - 2);
                 break;
             }
 
             if (layer == baseItemLayer - 1 && layer % 2 == 0) {
                 parentDtoDefinition = new DtoDefinition();
-                dtoFieldList = new ArrayList<>();
+                dtoFieldGroup = DtoFieldGroup.of();
 
-                parentDtoDefinition.setDtoFieldList(dtoFieldList);
-                dtoDefinitionList.add(parentDtoDefinition);
+                parentDtoDefinition.setDtoFieldGroup(dtoFieldGroup);
+                dtoDefinitionGroup.add(parentDtoDefinition);
 
                 this.createDtoDefinition(dtoDefinitionItemGroup, record, parentDtoDefinition);
             } else {
                 if (layer > baseItemLayer) {
-                    logger.atInfo().log("子クラス情報を生成するため再帰処理を開始します。");
+                    logger.atFinest().log("子クラス情報を生成するため再帰処理を開始します。");
 
-                    List<DtoDefinition> childDtoDefinitionList = new ArrayList<>();
+                    final DtoDefinitionGroup childDtoDefinitionGroup = DtoDefinitionGroup.of();
                     final int skipCounter = this.craeteDtoDefinitionRecursively(RecursiveRequiredParameters
-                            .of(matrixList, dtoDefinitionItemGroup, childDtoDefinitionList, i, baseItemLayer + 2));
+                            .of(matrixList, dtoDefinitionItemGroup, childDtoDefinitionGroup, i, baseItemLayer + 2));
 
-                    dtoFieldList.get(dtoFieldList.size() - 1).setChildDtoDefinitionList(childDtoDefinitionList);
+                    dtoFieldGroup.get(dtoFieldGroup.size() - 1).setChildDtoDefinitionGroup(childDtoDefinitionGroup);
 
-                    logger.atInfo().log("レコード番号 = (%s)", i);
-                    logger.atInfo().log("スキップ数 = (%s)", skipCounter);
+                    logger.atFinest().log("レコード番号 = (%s)", i);
+                    logger.atFinest().log("スキップ数 = (%s)", skipCounter);
                     i += skipCounter - 1;
                 } else {
-                    this.createDtoField(dtoDefinitionItemGroup, record, dtoFieldList);
+                    this.createDtoField(dtoDefinitionItemGroup, record, dtoFieldGroup);
                 }
             }
 
             recordCounter++;
         }
 
-        logger.atInfo().log("DTO定義情報（途中経過） = (%s)", dtoDefinitionList);
+        logger.atFinest().log("DTO定義グループ（途中経過） = (%s)", dtoDefinitionGroup);
         return recordCounter;
     }
 
@@ -238,7 +237,7 @@ final class DtoDefinitionCollector implements Command<List<DtoDefinition>> {
         dtoDefinition.setClassName(className);
         dtoDefinition.setDescription(description);
 
-        logger.atInfo().log("DTO定義情報 = (%s)", dtoDefinition.toString());
+        logger.atFinest().log("DTO定義 = (%s)", dtoDefinition.toString());
     }
 
     /**
@@ -249,7 +248,7 @@ final class DtoDefinitionCollector implements Command<List<DtoDefinition>> {
      * @param dtoFieldList           DTOフィールドリスト
      */
     private void createDtoField(final DtoDefinitionItemGroup dtoDefinitionItemGroup, Map<String, String> record,
-            List<DtoField> dtoFieldList) {
+            DtoFieldGroup dtoFieldGroup) {
 
         final String variableName = record.get(this.getItemName(dtoDefinitionItemGroup, DtoItem.VARIABLE_NAME));
         final String dataType = record.get(this.getItemName(dtoDefinitionItemGroup, DtoItem.DATA_TYPE));
@@ -258,11 +257,11 @@ final class DtoDefinitionCollector implements Command<List<DtoDefinition>> {
                 .convertStringToBoolean(record.get(this.getItemName(dtoDefinitionItemGroup, DtoItem.INVARIANT)));
         final String description = record.get(this.getItemName(dtoDefinitionItemGroup, DtoItem.DESCRIPTION));
 
-        final DtoField classItemDefinition = new DtoField(variableName, dataType, initialValue, invariant, description);
+        final DtoField classItemDefinition = DtoField.of(variableName, dataType, initialValue, invariant, description);
 
-        dtoFieldList.add(classItemDefinition);
+        dtoFieldGroup.add(classItemDefinition);
 
-        logger.atInfo().log("DTOフィールド = (%s)", classItemDefinition);
+        logger.atFinest().log("DTOフィールド = (%s)", classItemDefinition);
     }
 
     /**
@@ -330,10 +329,10 @@ final class DtoDefinitionCollector implements Command<List<DtoDefinition>> {
         private final DtoDefinitionItemGroup dtoDefinitionItemGroup;
 
         /**
-         * DTO定義情報リスト
+         * DTO定義グループ
          */
         @NonNull
-        private final List<DtoDefinition> dtoDefinitionList;
+        private final DtoDefinitionGroup dtoDefinitionGroup;
 
         /**
          * 探索開始インデックス

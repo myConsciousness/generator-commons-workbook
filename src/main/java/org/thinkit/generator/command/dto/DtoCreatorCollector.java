@@ -13,6 +13,7 @@
 package org.thinkit.generator.command.dto;
 
 import java.util.EnumMap;
+import java.util.Map;
 
 import com.google.common.flogger.FluentLogger;
 
@@ -24,7 +25,6 @@ import org.thinkit.common.util.workbook.Matrix;
 import org.thinkit.generator.common.catalog.dto.DtoItem;
 import org.thinkit.generator.common.vo.dto.DtoCreator;
 import org.thinkit.generator.rule.dto.DtoCreatorItemLoader;
-import org.thinkit.generator.vo.dto.DtoCreatorItemGroup;
 
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
@@ -85,31 +85,29 @@ final class DtoCreatorCollector implements Command<DtoCreator> {
     @Override
     public DtoCreator run() {
 
-        final EnumMap<DtoItem, String> dtoCreator = this.getDtoCreator(this.sheet);
-        final DtoCreator classCreatorDefinition = new DtoCreator(dtoCreator.get(DtoItem.CREATOR),
-                dtoCreator.get(DtoItem.CREATION_TIME), dtoCreator.get(DtoItem.UPDTATE_TIME));
+        final Map<DtoItem, String> dtoCreator = this.getDtoCreator(this.sheet);
 
-        logger.atInfo().log("クラス作成者情報 = (%s)", classCreatorDefinition);
-        return classCreatorDefinition;
+        return DtoCreator.of(dtoCreator.get(DtoItem.CREATOR), dtoCreator.get(DtoItem.CREATION_TIME),
+                dtoCreator.get(DtoItem.UPDTATE_TIME));
     }
 
     /**
-     * セル内に定義された作成者情報を取得し返却します。
+     * セル内に定義されたDTO作成者項目を取得し返却します。
      *
      * @param sheet Sheetオブジェクト
-     * @return セルに定義された作成者情報
+     * @return セルに定義されたDTO作成者項目
      */
-    private EnumMap<DtoItem, String> getDtoCreator(FluentSheet sheet) {
+    private Map<DtoItem, String> getDtoCreator(FluentSheet sheet) {
 
-        final DtoCreatorItemGroup dtoCreatorItemGroup = RuleInvoker.of(DtoCreatorItemLoader.of()).invoke();
-        final EnumMap<DtoItem, String> dtoCreator = new EnumMap<>(DtoItem.class);
+        final Map<DtoItem, String> dtoCreator = new EnumMap<>(DtoItem.class);
 
-        dtoCreatorItemGroup.forEach(dtoCreatorItem -> {
+        RuleInvoker.of(DtoCreatorItemLoader.of()).invoke().forEach(dtoCreatorItem -> {
             final Matrix baseIndexes = sheet.findCellIndex(dtoCreatorItem.getCellItemName());
             final String sequence = sheet.getRegionSequence(baseIndexes.getColumn(), baseIndexes.getRow());
             dtoCreator.put(Catalog.getEnum(DtoItem.class, dtoCreatorItem.getCellItemCode()), sequence);
         });
 
+        logger.atFinest().log("DTO作成者 = (%s)", dtoCreator);
         return dtoCreator;
     }
 }

@@ -12,13 +12,9 @@
 
 package org.thinkit.generator;
 
-import com.google.common.flogger.FluentLogger;
-
-import org.apache.commons.lang3.StringUtils;
 import org.thinkit.common.catalog.Extension;
 import org.thinkit.common.util.file.FluentFile;
 import org.thinkit.generator.command.dto.DtoResourceFacade;
-import org.thinkit.generator.common.vo.dto.DtoResource;
 
 import lombok.NonNull;
 
@@ -32,11 +28,6 @@ import lombok.NonNull;
 public final class DtoGenerator extends AbstractGenerator {
 
     /**
-     * ログ出力オブジェクト
-     */
-    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
-
-    /**
      * コンストラクタ
      *
      * @param definitionPath 生成するパスを管理するオブジェクト
@@ -48,22 +39,9 @@ public final class DtoGenerator extends AbstractGenerator {
     @Override
     protected boolean run() {
 
-        final DtoResource dtoResource = DtoResourceFacade.createResource(super.getFilePath());
-
-        if (dtoResource == null) {
-            logger.atSevere().log("DTOクラスのリソース作成処理が異常終了しました。");
-            return false;
-        }
-
-        final String outputPath = super.getOutputPath(dtoResource.getPackageName());
-
-        if (StringUtils.isEmpty(outputPath)) {
-            logger.atSevere().log("出力先パスの取得処理が異常終了しました。");
-            return false;
-        }
-
-        dtoResource.getResources().forEach((key, value) -> {
-            FluentFile.writerOf(outputPath).write(key, Extension.java(), value);
+        DtoResourceFacade.createResource(super.getFilePath()).forEach(dtoResource -> {
+            FluentFile.writerOf(super.getOutputPath(dtoResource.getPackageName())).write(dtoResource.getResourceName(),
+                    Extension.java(), dtoResource.getResource());
         });
 
         return true;

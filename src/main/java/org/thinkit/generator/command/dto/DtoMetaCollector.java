@@ -25,7 +25,6 @@ import org.thinkit.common.util.workbook.Matrix;
 import org.thinkit.generator.common.catalog.dto.DtoItem;
 import org.thinkit.generator.common.vo.dto.DtoMeta;
 import org.thinkit.generator.rule.dto.DtoMetaItemLoader;
-import org.thinkit.generator.vo.dto.DtoMetaItemGroup;
 
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
@@ -86,13 +85,11 @@ final class DtoMetaCollector implements Command<DtoMeta> {
     @Override
     public DtoMeta run() {
 
-        final Map<DtoItem, String> definitions = this.getNameDefinitions(this.sheet);
-        final DtoMeta dtoMeta = new DtoMeta(definitions.get(DtoItem.VERSION), definitions.get(DtoItem.PROJECT_NAME),
-                definitions.get(DtoItem.PACKAGE_NAME), definitions.get(DtoItem.PHYSICAL_NAME),
-                definitions.get(DtoItem.LOGICAL_NAME), definitions.get(DtoItem.DESCRIPTION));
+        final Map<DtoItem, String> dtoMeta = this.getDtoMeta(this.sheet);
 
-        logger.atInfo().log("DTOメタ = (%s)", dtoMeta);
-        return dtoMeta;
+        return DtoMeta.of(dtoMeta.get(DtoItem.VERSION), dtoMeta.get(DtoItem.PROJECT_NAME),
+                dtoMeta.get(DtoItem.PACKAGE_NAME), dtoMeta.get(DtoItem.PHYSICAL_NAME),
+                dtoMeta.get(DtoItem.LOGICAL_NAME), dtoMeta.get(DtoItem.DESCRIPTION));
     }
 
     /**
@@ -103,17 +100,17 @@ final class DtoMetaCollector implements Command<DtoMeta> {
      *
      * @exception NullPointerException 引数として {@code null} が渡された場合
      */
-    private EnumMap<DtoItem, String> getNameDefinitions(@NonNull FluentSheet sheet) {
+    private Map<DtoItem, String> getDtoMeta(@NonNull FluentSheet sheet) {
 
-        final DtoMetaItemGroup dtoMetaItemGroup = RuleInvoker.of(DtoMetaItemLoader.of()).invoke();
-        final EnumMap<DtoItem, String> classNameDefinitions = new EnumMap<>(DtoItem.class);
+        final Map<DtoItem, String> dtoMeta = new EnumMap<>(DtoItem.class);
 
-        dtoMetaItemGroup.forEach(dtoMetaItem -> {
+        RuleInvoker.of(DtoMetaItemLoader.of()).invoke().forEach(dtoMetaItem -> {
             final Matrix baseIndexes = sheet.findCellIndex(dtoMetaItem.getCellItemName());
             final String sequence = sheet.getRegionSequence(baseIndexes.getColumn(), baseIndexes.getRow());
-            classNameDefinitions.put(Catalog.getEnum(DtoItem.class, dtoMetaItem.getCellItemCode()), sequence);
+            dtoMeta.put(Catalog.getEnum(DtoItem.class, dtoMetaItem.getCellItemCode()), sequence);
         });
 
-        return classNameDefinitions;
+        logger.atInfo().log("DTOメタ = (%s)", dtoMeta);
+        return dtoMeta;
     }
 }
