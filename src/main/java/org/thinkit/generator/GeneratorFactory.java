@@ -57,12 +57,10 @@ final class GeneratorFactory extends AbstractGeneratorFactory {
     protected Generator createGenerator(@NonNull GeneratorDivision generatorDivision,
             @NonNull DefinitionPath definitionPath) {
 
-        Generator generator = null;
-
-        if (generatorDivision == GeneratorDivision.DTO_DEFINITION) {
-            generator = new DtoGenerator(definitionPath);
-        }
-
-        return generator;
+        return switch (generatorDivision) {
+            case DTO_DEFINITION -> new DtoGenerator(definitionPath);
+            case CONTENT_DEFINITION -> new ContentGenerator(definitionPath);
+            default -> null;
+        };
     }
 }
