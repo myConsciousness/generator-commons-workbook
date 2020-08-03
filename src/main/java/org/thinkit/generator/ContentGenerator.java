@@ -41,7 +41,7 @@ public final class ContentGenerator extends AbstractGenerator {
 
         DtoResourceFacade.createResource(super.getFilePath()).forEach(dtoResource -> {
             FluentFile.writerOf(super.getOutputPath(dtoResource.getPackageName())).write(dtoResource.getResourceName(),
-                    Extension.java(), dtoResource.getResource());
+                    Extension.json(), dtoResource.getResource());
         });
 
         return true;
