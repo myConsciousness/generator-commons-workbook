@@ -94,8 +94,7 @@ public final class DtoCreatorItem implements Serializable {
      * 引数として渡された {@code dtoCreatorItem} オブジェクトの情報を基に {@link DtoCreatorItem}
      * クラスの新しいインスタンスを生成し返却します。
      *
-     * @param cellItemCode セル項目コード
-     * @param cellItemName セル項目名
+     * @param dtoCreatorItem DTO作成者項目
      * @return {@link DtoCreatorItem} クラスの新しいインスタンス
      *
      * @exception NullPointerException 引数として {@code null} が渡された場合
