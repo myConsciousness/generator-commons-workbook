@@ -22,7 +22,7 @@ import org.thinkit.generator.common.vo.dto.DtoResourceGroup;
 import lombok.NonNull;
 
 /**
- * DTOクラスのリソースを生成する処理を集約したファサードクラスです。 DTOクラスのリソースを生成する際には
+ * DTOクラスのリソースを生成する処理を集約したファサードクラスです。DTOクラスのリソースを生成する際には
  * {@link #createResource(String)} を呼び出してください。
  * <p>
  * {@link #createResource(String)}

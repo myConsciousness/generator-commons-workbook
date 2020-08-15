@@ -25,7 +25,7 @@ import lombok.NonNull;
 import lombok.ToString;
 
 /**
- * プログラム実行時のプラットフォームに応じた既定出力先を取得する処理を定義したコマンドクラスです。
+ * プログラム実行時のプラットフォームに応じた既定出力先を取得する処理を定義したルールクラスです。
  *
  * @author Kato Shinya
  * @since 1.0

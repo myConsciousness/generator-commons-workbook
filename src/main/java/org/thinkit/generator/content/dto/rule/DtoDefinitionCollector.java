@@ -41,7 +41,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 /**
- * Excelに記載されたDTO定義のクラス本体部分の情報を読み取る処理を定義したコマンドクラスです。
+ * Excelに記載されたDTO定義のクラス本体部分の情報を読み取る処理を定義したルールクラスです。
  *
  * @author Kato Shinya
  * @since 1.0

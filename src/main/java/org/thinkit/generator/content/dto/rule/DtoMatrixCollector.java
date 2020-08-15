@@ -29,7 +29,7 @@ import lombok.NonNull;
 import lombok.ToString;
 
 /**
- * Excelに記述された定義書シートからクラス定義情報を読み取る処理を定義したコマンドクラスです。
+ * Excelに記述された定義書シートからクラス定義情報を読み取る処理を定義したルールクラスです。
  *
  * @author Kato Shinya
  * @since 1.0
