@@ -29,7 +29,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
- * コンテンツ「クラス定義セル」の情報をロードするルールクラスです。
+ * コンテンツ「クラス定義セル」の情報をロードするコンテンツクラスです。
  *
  * @author Kato Shinya
  * @since 1.0

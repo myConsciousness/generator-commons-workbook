@@ -29,7 +29,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
- * コンテンツ「DTO作成者項目」の情報をロードするルールクラスです。
+ * コンテンツ「DTO作成者項目」の情報をロードするコンテンツクラスです。
  *
  * @author Kato Shinya
  * @since 1.0
