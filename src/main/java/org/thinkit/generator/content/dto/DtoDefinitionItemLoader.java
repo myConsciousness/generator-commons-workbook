@@ -9,18 +9,18 @@
  * This source code or any portion thereof must not be<br>
  * reproduced or used in any manner whatsoever.
  */
-package org.thinkit.generator.rule.dto;
+package org.thinkit.generator.content.dto;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.thinkit.common.rule.Attribute;
-import org.thinkit.common.rule.Condition;
-import org.thinkit.common.rule.Content;
-import org.thinkit.common.rule.Rule;
-import org.thinkit.generator.vo.dto.DtoDefinitionItem;
-import org.thinkit.generator.vo.dto.DtoDefinitionItemGroup;
+import org.thinkit.framework.content.Attribute;
+import org.thinkit.framework.content.Condition;
+import org.thinkit.framework.content.Content;
+import org.thinkit.framework.content.annotation.ContentMapping;
+import org.thinkit.generator.content.dto.entity.DtoDefinitionItem;
+import org.thinkit.generator.content.dto.entity.DtoDefinitionItemGroup;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -34,7 +34,8 @@ import lombok.ToString;
  */
 @ToString
 @EqualsAndHashCode
-public final class DtoDefinitionItemLoader implements Rule<DtoDefinitionItemGroup> {
+@ContentMapping(content = "DTO定義項目")
+public final class DtoDefinitionItemLoader implements Content<DtoDefinitionItemGroup> {
 
     /**
      * デフォルトコンストラクタ
@@ -47,20 +48,8 @@ public final class DtoDefinitionItemLoader implements Rule<DtoDefinitionItemGrou
      *
      * @return {@link DtoDefinitionItemLoader} クラスの新しいインスタンス
      */
-    public static Rule<DtoDefinitionItemGroup> of() {
+    public static Content<DtoDefinitionItemGroup> of() {
         return new DtoDefinitionItemLoader();
-    }
-
-    /**
-     * コンテンツ名定数
-     */
-    private enum ContentName implements Content {
-        DTO定義項目;
-
-        @Override
-        public String getString() {
-            return this.name();
-        }
     }
 
     /**
@@ -80,7 +69,7 @@ public final class DtoDefinitionItemLoader implements Rule<DtoDefinitionItemGrou
 
         final DtoDefinitionItemGroup dtoDefinitionItemGroup = DtoDefinitionItemGroup.of();
 
-        loadContent(ContentName.DTO定義項目).forEach(content -> {
+        loadContent(this.getClass()).forEach(content -> {
             dtoDefinitionItemGroup
                     .add(DtoDefinitionItem.of(Integer.parseInt(content.get(ContentAttribute.セル項目コード.getString())),
                             content.get(ContentAttribute.セル項目名.getString())));

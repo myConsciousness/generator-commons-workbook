@@ -10,18 +10,18 @@
  * reproduced or used in any manner whatsoever.
  */
 
-package org.thinkit.generator.rule.dto;
+package org.thinkit.generator.content.dto;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.thinkit.common.rule.Attribute;
-import org.thinkit.common.rule.Condition;
-import org.thinkit.common.rule.Content;
-import org.thinkit.common.rule.Rule;
-import org.thinkit.generator.vo.dto.DtoCreatorItem;
-import org.thinkit.generator.vo.dto.DtoCreatorItemGroup;
+import org.thinkit.framework.content.Attribute;
+import org.thinkit.framework.content.Condition;
+import org.thinkit.framework.content.Content;
+import org.thinkit.framework.content.annotation.ContentMapping;
+import org.thinkit.generator.content.dto.entity.DtoCreatorItem;
+import org.thinkit.generator.content.dto.entity.DtoCreatorItemGroup;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -35,7 +35,8 @@ import lombok.ToString;
  */
 @ToString
 @EqualsAndHashCode
-public final class DtoCreatorItemLoader implements Rule<DtoCreatorItemGroup> {
+@ContentMapping(content = "DTO作成者項目")
+public final class DtoCreatorItemLoader implements Content<DtoCreatorItemGroup> {
 
     /**
      * デフォルトコンストラクタ
@@ -48,20 +49,8 @@ public final class DtoCreatorItemLoader implements Rule<DtoCreatorItemGroup> {
      *
      * @return {@link DtoCreatorItemLoader} クラスの新しいインスタンス
      */
-    public static Rule<DtoCreatorItemGroup> of() {
+    public static Content<DtoCreatorItemGroup> of() {
         return new DtoCreatorItemLoader();
-    }
-
-    /**
-     * コンテンツ名定数
-     */
-    private enum ContentName implements Content {
-        DTO作成者項目;
-
-        @Override
-        public String getString() {
-            return this.name();
-        }
     }
 
     /**
@@ -81,7 +70,7 @@ public final class DtoCreatorItemLoader implements Rule<DtoCreatorItemGroup> {
 
         final DtoCreatorItemGroup dtoCreatorItemGroup = DtoCreatorItemGroup.of();
 
-        loadContent(ContentName.DTO作成者項目).forEach(content -> {
+        loadContent(this.getClass()).forEach(content -> {
             dtoCreatorItemGroup
                     .add(DtoCreatorItem.of(Integer.parseInt(content.get(ContentAttribute.セル項目コード.getString())),
                             content.get(ContentAttribute.セル項目名.getString())));

@@ -10,7 +10,7 @@
  * reproduced or used in any manner whatsoever.
  */
 
-package org.thinkit.generator.command.dto;
+package org.thinkit.generator.content.dto.rule;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -18,13 +18,13 @@ import java.util.Map;
 import com.google.common.flogger.FluentLogger;
 
 import org.thinkit.common.catalog.Catalog;
-import org.thinkit.common.command.Command;
-import org.thinkit.common.rule.RuleInvoker;
 import org.thinkit.common.util.workbook.FluentSheet;
 import org.thinkit.common.util.workbook.Matrix;
+import org.thinkit.framework.content.ContentInvoker;
+import org.thinkit.framework.content.rule.Rule;
 import org.thinkit.generator.common.catalog.dto.DtoItem;
 import org.thinkit.generator.common.vo.dto.DtoCreator;
-import org.thinkit.generator.rule.dto.DtoCreatorItemLoader;
+import org.thinkit.generator.content.dto.DtoCreatorItemLoader;
 
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
@@ -39,7 +39,7 @@ import lombok.ToString;
  */
 @ToString
 @EqualsAndHashCode
-final class DtoCreatorCollector implements Command<DtoCreator> {
+final class DtoCreatorCollector implements Rule<DtoCreator> {
 
     /**
      * ログ出力オブジェクト
@@ -78,12 +78,12 @@ final class DtoCreatorCollector implements Command<DtoCreator> {
      * @exception NullPointerException 引数として {@code null} が渡された場合
      * @see FluentSheet
      */
-    public static Command<DtoCreator> from(@NonNull FluentSheet sheet) {
+    public static Rule<DtoCreator> from(@NonNull FluentSheet sheet) {
         return new DtoCreatorCollector(sheet);
     }
 
     @Override
-    public DtoCreator run() {
+    public DtoCreator execute() {
 
         final Map<DtoItem, String> dtoCreator = this.getDtoCreator(this.sheet);
 
@@ -101,7 +101,7 @@ final class DtoCreatorCollector implements Command<DtoCreator> {
 
         final Map<DtoItem, String> dtoCreator = new EnumMap<>(DtoItem.class);
 
-        RuleInvoker.of(DtoCreatorItemLoader.of()).invoke().forEach(dtoCreatorItem -> {
+        ContentInvoker.of(DtoCreatorItemLoader.of()).invoke().forEach(dtoCreatorItem -> {
             final Matrix baseIndexes = sheet.findCellIndex(dtoCreatorItem.getCellItemName());
             final String sequence = sheet.getRegionSequence(baseIndexes.getColumn(), baseIndexes.getRow());
             dtoCreator.put(Catalog.getEnum(DtoItem.class, dtoCreatorItem.getCellItemCode()), sequence);

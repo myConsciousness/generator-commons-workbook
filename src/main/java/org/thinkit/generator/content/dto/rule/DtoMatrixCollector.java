@@ -10,16 +10,16 @@
  * reproduced or used in any manner whatsoever.
  */
 
-package org.thinkit.generator.command.dto;
+package org.thinkit.generator.content.dto.rule;
 
 import com.google.common.flogger.FluentLogger;
 
 import org.apache.commons.lang3.StringUtils;
-import org.thinkit.common.command.Command;
-import org.thinkit.common.command.CommandInvoker;
 import org.thinkit.common.util.workbook.FluentSheet;
 import org.thinkit.common.util.workbook.FluentWorkbook;
-import org.thinkit.generator.command.Sheet;
+import org.thinkit.framework.content.rule.Rule;
+import org.thinkit.framework.content.rule.RuleInvoker;
+import org.thinkit.generator.Sheet;
 import org.thinkit.generator.common.vo.dto.DtoMatrix;
 
 import lombok.EqualsAndHashCode;
@@ -35,7 +35,7 @@ import lombok.ToString;
  */
 @ToString
 @EqualsAndHashCode
-final class DtoMatrixCollector implements Command<DtoMatrix> {
+final class DtoMatrixCollector implements Rule<DtoMatrix> {
 
     /**
      * ログ出力オブジェクト
@@ -79,7 +79,7 @@ final class DtoMatrixCollector implements Command<DtoMatrix> {
      * @exception NullPointerException 引数として {@code null} が渡された場合
      * @throws IllegalArgumentException ファイルパスが空文字列の場合
      */
-    public static Command<DtoMatrix> from(@NonNull String filePath) {
+    public static Rule<DtoMatrix> from(@NonNull String filePath) {
         return new DtoMatrixCollector(filePath);
     }
 
@@ -96,14 +96,14 @@ final class DtoMatrixCollector implements Command<DtoMatrix> {
     }
 
     @Override
-    public DtoMatrix run() {
+    public DtoMatrix execute() {
 
         final FluentWorkbook workbook = FluentWorkbook.builder().fromFile(this.filePath).build();
         final FluentSheet sheet = workbook.sheet(SheetName.定義書.name());
 
-        final DtoMatrix dtoMatrix = DtoMatrix.of(CommandInvoker.of(DtoMetaCollector.from(sheet)).invoke(),
-                CommandInvoker.of(DtoCreatorCollector.from(sheet)).invoke(),
-                CommandInvoker.of(DtoDefinitionCollector.from(sheet)).invoke());
+        final DtoMatrix dtoMatrix = DtoMatrix.of(RuleInvoker.of(DtoMetaCollector.from(sheet)).invoke(),
+                RuleInvoker.of(DtoCreatorCollector.from(sheet)).invoke(),
+                RuleInvoker.of(DtoDefinitionCollector.from(sheet)).invoke());
 
         logger.atFinest().log("DTOマトリクス = (%s)", dtoMatrix);
         return dtoMatrix;

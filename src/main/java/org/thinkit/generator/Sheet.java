@@ -9,7 +9,7 @@
  * This source code or any portion thereof must not be<br>
  * reproduced or used in any manner whatsoever.
  */
-package org.thinkit.generator.command;
+package org.thinkit.generator;
 
 /**
  * シート要素のEnum定数で必須となる処理を定義したインターフェースです。</br>

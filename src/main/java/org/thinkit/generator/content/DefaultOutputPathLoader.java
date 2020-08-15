@@ -10,7 +10,7 @@
  * reproduced or used in any manner whatsoever.
  */
 
-package org.thinkit.generator.rule;
+package org.thinkit.generator.content;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,11 +18,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.thinkit.common.catalog.Platform;
-import org.thinkit.common.rule.Attribute;
-import org.thinkit.common.rule.Condition;
-import org.thinkit.common.rule.Content;
-import org.thinkit.common.rule.Rule;
-import org.thinkit.generator.vo.DefaultOutputPath;
+import org.thinkit.framework.content.Attribute;
+import org.thinkit.framework.content.Condition;
+import org.thinkit.framework.content.Content;
+import org.thinkit.framework.content.annotation.ContentMapping;
+import org.thinkit.generator.content.entity.DefaultOutputPath;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -43,7 +43,8 @@ import lombok.ToString;
  */
 @ToString
 @EqualsAndHashCode
-public final class DefaultOutputPathLoader implements Rule<DefaultOutputPath> {
+@ContentMapping(content = "既定出力先")
+public final class DefaultOutputPathLoader implements Content<DefaultOutputPath> {
 
     /**
      * プログラム実行時のプラットフォーム要素
@@ -77,20 +78,8 @@ public final class DefaultOutputPathLoader implements Rule<DefaultOutputPath> {
      * @exception NullPointerException 引数として {@code null} が渡された場合
      * @see Platform
      */
-    public static Rule<DefaultOutputPath> of(@NonNull Platform platform) {
+    public static Content<DefaultOutputPath> of(@NonNull Platform platform) {
         return new DefaultOutputPathLoader(platform);
-    }
-
-    /**
-     * コンテンツ名定数
-     */
-    private enum ContentName implements Content {
-        既定出力先;
-
-        @Override
-        public String getString() {
-            return this.name();
-        }
     }
 
     /**
@@ -120,7 +109,7 @@ public final class DefaultOutputPathLoader implements Rule<DefaultOutputPath> {
     @Override
     public DefaultOutputPath execute() {
 
-        final Map<String, String> content = loadContent(ContentName.既定出力先).get(0);
+        final Map<String, String> content = loadContent(this.getClass()).get(0);
 
         return DefaultOutputPath.of(content.get(ContentAttribute.環境変数名.getString()),
                 content.get(ContentAttribute.出力先ディレクトリ.getString()));

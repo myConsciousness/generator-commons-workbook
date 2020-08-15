@@ -10,7 +10,7 @@
  * reproduced or used in any manner whatsoever.
  */
 
-package org.thinkit.generator.vo.dto;
+package org.thinkit.generator.content.dto.entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 
 import org.thinkit.common.util.iterator.FluentIterator;
 import org.thinkit.common.util.iterator.IterableNode;
+import org.thinkit.framework.content.entity.ContentEntity;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -47,7 +48,7 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 public final class DtoDefinitionItemGroup
-        implements Iterable<DtoDefinitionItem>, IterableNode<DtoDefinitionItem>, Serializable {
+        implements ContentEntity, Iterable<DtoDefinitionItem>, IterableNode<DtoDefinitionItem>, Serializable {
 
     /**
      * シリアルバージョンUID

@@ -10,13 +10,13 @@
  * reproduced or used in any manner whatsoever.
  */
 
-package org.thinkit.generator.command;
+package org.thinkit.generator.content.rule;
 
 import org.thinkit.common.catalog.Platform;
-import org.thinkit.common.command.Command;
-import org.thinkit.common.rule.RuleInvoker;
-import org.thinkit.generator.rule.DefaultOutputPathLoader;
-import org.thinkit.generator.vo.DefaultOutputPath;
+import org.thinkit.framework.content.ContentInvoker;
+import org.thinkit.framework.content.rule.Rule;
+import org.thinkit.generator.content.DefaultOutputPathLoader;
+import org.thinkit.generator.content.entity.DefaultOutputPath;
 
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
@@ -31,7 +31,7 @@ import lombok.ToString;
  */
 @ToString
 @EqualsAndHashCode
-public final class DefaultOutputPathCollector implements Command<DefaultOutputPath> {
+public final class DefaultOutputPathCollector implements Rule<DefaultOutputPath> {
 
     /**
      * プログラム実行時のプラットフォーム要素
@@ -64,12 +64,12 @@ public final class DefaultOutputPathCollector implements Command<DefaultOutputPa
      * @exception NullPointerException 引数として {@code null} が渡された場合
      * @see Platform
      */
-    public static Command<DefaultOutputPath> of(@NonNull Platform platform) {
+    public static Rule<DefaultOutputPath> of(@NonNull Platform platform) {
         return new DefaultOutputPathCollector(platform);
     }
 
     @Override
-    public DefaultOutputPath run() {
-        return RuleInvoker.of(DefaultOutputPathLoader.of(platform)).invoke();
+    public DefaultOutputPath execute() {
+        return ContentInvoker.of(DefaultOutputPathLoader.of(platform)).invoke();
     }
 }

@@ -14,7 +14,7 @@ package org.thinkit.generator;
 
 import org.thinkit.common.catalog.Extension;
 import org.thinkit.common.util.file.FluentFile;
-import org.thinkit.generator.command.dto.DtoResourceFacade;
+import org.thinkit.generator.content.dto.rule.DtoResourceFacade;
 
 import lombok.NonNull;
 

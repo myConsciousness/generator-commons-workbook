@@ -10,7 +10,7 @@
  * reproduced or used in any manner whatsoever.
  */
 
-package org.thinkit.generator.command.dto;
+package org.thinkit.generator.content.dto.rule;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -18,13 +18,13 @@ import java.util.Map;
 import com.google.common.flogger.FluentLogger;
 
 import org.thinkit.common.catalog.Catalog;
-import org.thinkit.common.command.Command;
-import org.thinkit.common.rule.RuleInvoker;
 import org.thinkit.common.util.workbook.FluentSheet;
 import org.thinkit.common.util.workbook.Matrix;
+import org.thinkit.framework.content.ContentInvoker;
+import org.thinkit.framework.content.rule.Rule;
 import org.thinkit.generator.common.catalog.dto.DtoItem;
 import org.thinkit.generator.common.vo.dto.DtoMeta;
-import org.thinkit.generator.rule.dto.DtoMetaItemLoader;
+import org.thinkit.generator.content.dto.DtoMetaItemLoader;
 
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
@@ -39,7 +39,7 @@ import lombok.ToString;
  */
 @ToString
 @EqualsAndHashCode
-final class DtoMetaCollector implements Command<DtoMeta> {
+final class DtoMetaCollector implements Rule<DtoMeta> {
 
     /**
      * ログ出力オブジェクト
@@ -78,12 +78,12 @@ final class DtoMetaCollector implements Command<DtoMeta> {
      * @exception NullPointerException 引数として {@code null} が渡された場合
      * @see FluentSheet
      */
-    public static Command<DtoMeta> from(@NonNull FluentSheet sheet) {
+    public static Rule<DtoMeta> from(@NonNull FluentSheet sheet) {
         return new DtoMetaCollector(sheet);
     }
 
     @Override
-    public DtoMeta run() {
+    public DtoMeta execute() {
 
         final Map<DtoItem, String> dtoMeta = this.getDtoMeta(this.sheet);
 
@@ -104,7 +104,7 @@ final class DtoMetaCollector implements Command<DtoMeta> {
 
         final Map<DtoItem, String> dtoMeta = new EnumMap<>(DtoItem.class);
 
-        RuleInvoker.of(DtoMetaItemLoader.of()).invoke().forEach(dtoMetaItem -> {
+        ContentInvoker.of(DtoMetaItemLoader.of()).invoke().forEach(dtoMetaItem -> {
             final Matrix baseIndexes = sheet.findCellIndex(dtoMetaItem.getCellItemName());
             final String sequence = sheet.getRegionSequence(baseIndexes.getColumn(), baseIndexes.getRow());
             dtoMeta.put(Catalog.getEnum(DtoItem.class, dtoMetaItem.getCellItemCode()), sequence);

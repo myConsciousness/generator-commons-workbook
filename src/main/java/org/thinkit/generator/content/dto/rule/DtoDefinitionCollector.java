@@ -10,7 +10,7 @@
  * reproduced or used in any manner whatsoever.
  */
 
-package org.thinkit.generator.command.dto;
+package org.thinkit.generator.content.dto.rule;
 
 import java.io.Serializable;
 import java.util.List;
@@ -19,18 +19,18 @@ import java.util.Map;
 import com.google.common.flogger.FluentLogger;
 
 import org.apache.commons.lang3.StringUtils;
-import org.thinkit.common.command.Command;
-import org.thinkit.common.rule.RuleInvoker;
 import org.thinkit.common.util.workbook.FluentSheet;
 import org.thinkit.common.util.workbook.Matrix;
+import org.thinkit.framework.content.ContentInvoker;
+import org.thinkit.framework.content.rule.Rule;
 import org.thinkit.generator.common.catalog.dto.DtoItem;
 import org.thinkit.generator.common.vo.dto.DtoDefinition;
 import org.thinkit.generator.common.vo.dto.DtoDefinitionGroup;
 import org.thinkit.generator.common.vo.dto.DtoField;
 import org.thinkit.generator.common.vo.dto.DtoFieldGroup;
-import org.thinkit.generator.rule.dto.DtoDefinitionItemLoader;
-import org.thinkit.generator.vo.dto.DtoDefinitionItem;
-import org.thinkit.generator.vo.dto.DtoDefinitionItemGroup;
+import org.thinkit.generator.content.dto.DtoDefinitionItemLoader;
+import org.thinkit.generator.content.dto.entity.DtoDefinitionItem;
+import org.thinkit.generator.content.dto.entity.DtoDefinitionItemGroup;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -47,7 +47,7 @@ import lombok.ToString;
  */
 @ToString
 @EqualsAndHashCode
-final class DtoDefinitionCollector implements Command<DtoDefinitionGroup> {
+final class DtoDefinitionCollector implements Rule<DtoDefinitionGroup> {
 
     /**
      * ログ出力オブジェクト
@@ -96,12 +96,12 @@ final class DtoDefinitionCollector implements Command<DtoDefinitionGroup> {
      * @exception NullPointerException 引数として {@code null} が渡された場合
      * @see FluentSheet
      */
-    public static Command<DtoDefinitionGroup> from(@NonNull FluentSheet sheet) {
+    public static Rule<DtoDefinitionGroup> from(@NonNull FluentSheet sheet) {
         return new DtoDefinitionCollector(sheet);
     }
 
     @Override
-    public DtoDefinitionGroup run() {
+    public DtoDefinitionGroup execute() {
 
         final DtoDefinitionGroup dtoDefinitionGroup = this.getDtoDefinitionList(this.sheet);
 
@@ -123,7 +123,7 @@ final class DtoDefinitionCollector implements Command<DtoDefinitionGroup> {
      */
     private DtoDefinitionGroup getDtoDefinitionList(@NonNull FluentSheet sheet) {
 
-        final DtoDefinitionItemGroup dtoDefinitionItemGroup = RuleInvoker.of(DtoDefinitionItemLoader.of()).invoke();
+        final DtoDefinitionItemGroup dtoDefinitionItemGroup = ContentInvoker.of(DtoDefinitionItemLoader.of()).invoke();
 
         final String baseCellItem = this.getItemName(dtoDefinitionItemGroup, DtoItem.LOGICAL_DELETE);
         final Matrix baseIndexes = sheet.findCellIndex(baseCellItem);

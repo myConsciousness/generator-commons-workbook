@@ -10,9 +10,11 @@
  * reproduced or used in any manner whatsoever.
  */
 
-package org.thinkit.generator.vo.dto;
+package org.thinkit.generator.content.dto.entity;
 
 import java.io.Serializable;
+
+import org.thinkit.framework.content.entity.ContentEntity;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -29,7 +31,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @EqualsAndHashCode
-public final class DtoMetaItem implements Serializable {
+public final class DtoMetaItem implements ContentEntity, Serializable {
 
     /**
      * シリアルバージョンUID

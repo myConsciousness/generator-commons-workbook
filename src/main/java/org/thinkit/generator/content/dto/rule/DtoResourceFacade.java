@@ -10,9 +10,9 @@
  * reproduced or used in any manner whatsoever.
  */
 
-package org.thinkit.generator.command.dto;
+package org.thinkit.generator.content.dto.rule;
 
-import org.thinkit.common.command.CommandInvoker;
+import org.thinkit.framework.content.rule.RuleInvoker;
 import org.thinkit.generator.common.command.dto.DtoResourceFormatter;
 import org.thinkit.generator.common.vo.dto.DtoMatrix;
 import org.thinkit.generator.common.vo.dto.DtoResourceGroup;
@@ -49,7 +49,7 @@ public final class DtoResourceFacade {
      * @exception NullPointerException 引数として {@code null} が渡された場合
      */
     public static DtoResourceGroup createResource(@NonNull String filePath) {
-        final DtoMatrix dtoMatrix = CommandInvoker.of(DtoMatrixCollector.from(filePath)).invoke();
-        return CommandInvoker.of(DtoResourceFormatter.of(dtoMatrix)).invoke();
+        final DtoMatrix dtoMatrix = RuleInvoker.of(DtoMatrixCollector.from(filePath)).invoke();
+        return DtoResourceFormatter.of(dtoMatrix).execute();
     }
 }

@@ -16,11 +16,12 @@ package org.thinkit.generator;
 import com.google.common.flogger.FluentLogger;
 
 import org.apache.commons.lang3.StringUtils;
+import org.thinkit.common.Precondition;
 import org.thinkit.common.catalog.Platform;
-import org.thinkit.common.command.CommandInvoker;
 import org.thinkit.common.util.file.FluentFile;
-import org.thinkit.generator.command.DefaultOutputPathCollector;
-import org.thinkit.generator.vo.DefaultOutputPath;
+import org.thinkit.framework.content.rule.RuleInvoker;
+import org.thinkit.generator.content.entity.DefaultOutputPath;
+import org.thinkit.generator.content.rule.DefaultOutputPathCollector;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -102,11 +103,7 @@ public final class DefinitionPath {
      * @throws IllegalArgumentException ファイルパスが空文字列の場合
      */
     private DefinitionPath(@NonNull String filePath, @NonNull String outputPath) {
-
-        if (StringUtils.isBlank(filePath)) {
-            logger.atSevere().log("処理を実行するためには有効なファイルパスを指定する必要があります。");
-            throw new IllegalArgumentException("File path is required.");
-        }
+        Precondition.requireNonBlank(filePath);
 
         this.filePath = filePath;
 
@@ -170,14 +167,10 @@ public final class DefinitionPath {
     private String getDefaultOutputPath() {
 
         final Platform platform = Platform.getPlatform();
+        Precondition.requireNonNull(platform);
         logger.atInfo().log("プログラム実行時のプラットフォーム = (%s)", platform);
 
-        if (platform == null) {
-            logger.atSevere().log("未対応のプラットフォームでプログラムが実行されました。");
-            return "";
-        }
-
-        final DefaultOutputPath defaultOutputPath = CommandInvoker.of(DefaultOutputPathCollector.of(platform)).invoke();
+        final DefaultOutputPath defaultOutputPath = RuleInvoker.of(DefaultOutputPathCollector.of(platform)).invoke();
 
         final StringBuilder outputPath = new StringBuilder();
         outputPath.append(System.getenv(defaultOutputPath.getEnvironmentVariableName()))

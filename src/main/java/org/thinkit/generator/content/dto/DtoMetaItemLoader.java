@@ -9,18 +9,18 @@
  * This source code or any portion thereof must not be<br>
  * reproduced or used in any manner whatsoever.
  */
-package org.thinkit.generator.rule.dto;
+package org.thinkit.generator.content.dto;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.thinkit.common.rule.Attribute;
-import org.thinkit.common.rule.Condition;
-import org.thinkit.common.rule.Content;
-import org.thinkit.common.rule.Rule;
-import org.thinkit.generator.vo.dto.DtoMetaItem;
-import org.thinkit.generator.vo.dto.DtoMetaItemGroup;
+import org.thinkit.framework.content.Attribute;
+import org.thinkit.framework.content.Condition;
+import org.thinkit.framework.content.Content;
+import org.thinkit.framework.content.annotation.ContentMapping;
+import org.thinkit.generator.content.dto.entity.DtoMetaItem;
+import org.thinkit.generator.content.dto.entity.DtoMetaItemGroup;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -34,7 +34,8 @@ import lombok.ToString;
  */
 @ToString
 @EqualsAndHashCode
-public final class DtoMetaItemLoader implements Rule<DtoMetaItemGroup> {
+@ContentMapping(content = "DTOメタ項目")
+public final class DtoMetaItemLoader implements Content<DtoMetaItemGroup> {
 
     /**
      * デフォルトコンストラクタ
@@ -47,20 +48,8 @@ public final class DtoMetaItemLoader implements Rule<DtoMetaItemGroup> {
      *
      * @return {@link DtoMetaItemLoader} クラスの新しいインスタンス
      */
-    public static Rule<DtoMetaItemGroup> of() {
+    public static Content<DtoMetaItemGroup> of() {
         return new DtoMetaItemLoader();
-    }
-
-    /**
-     * コンテンツ名定数
-     */
-    private enum ContentName implements Content {
-        DTOメタ項目;
-
-        @Override
-        public String getString() {
-            return this.name();
-        }
     }
 
     /**
@@ -80,7 +69,7 @@ public final class DtoMetaItemLoader implements Rule<DtoMetaItemGroup> {
 
         final DtoMetaItemGroup dtoMetaItemGroup = DtoMetaItemGroup.of();
 
-        loadContent(ContentName.DTOメタ項目).forEach(content -> {
+        loadContent(this.getClass()).forEach(content -> {
             dtoMetaItemGroup.add(DtoMetaItem.of(Integer.parseInt(content.get(ContentAttribute.セル項目コード.getString())),
                     content.get(ContentAttribute.セル項目名.getString())));
         });
