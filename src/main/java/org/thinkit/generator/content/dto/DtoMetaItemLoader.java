@@ -34,7 +34,7 @@ import lombok.ToString;
  */
 @ToString
 @EqualsAndHashCode
-@ContentMapping(content = "DTOメタ項目")
+@ContentMapping(content = "dto/DTOメタ項目")
 public final class DtoMetaItemLoader implements Content<DtoMetaItemGroup> {
 
     /**
