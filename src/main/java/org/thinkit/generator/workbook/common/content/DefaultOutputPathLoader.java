@@ -24,7 +24,7 @@ import org.thinkit.framework.content.Attribute;
 import org.thinkit.framework.content.Condition;
 import org.thinkit.framework.content.Content;
 import org.thinkit.framework.content.annotation.ContentMapping;
-import org.thinkit.generator.workbook.commons.content.entity.DefaultOutputPath;
+import org.thinkit.generator.workbook.common.content.entity.DefaultOutputPath;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
