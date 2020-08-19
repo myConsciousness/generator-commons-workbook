@@ -12,13 +12,13 @@
  * the License.
  */
 
-package org.thinkit.generator.content.rule;
+package org.thinkit.generator.workbook.common.content.rule;
 
 import org.thinkit.common.catalog.Platform;
 import org.thinkit.framework.content.ContentInvoker;
 import org.thinkit.framework.content.rule.Rule;
-import org.thinkit.generator.content.DefaultOutputPathLoader;
-import org.thinkit.generator.content.entity.DefaultOutputPath;
+import org.thinkit.generator.workbook.common.content.DefaultOutputPathLoader;
+import org.thinkit.generator.workbook.common.content.entity.DefaultOutputPath;
 
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;

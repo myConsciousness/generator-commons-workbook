@@ -12,7 +12,7 @@
  * the License.
  */
 
-package org.thinkit.generator.content.entity;
+package org.thinkit.generator.workbook.common.content.entity;
 
 import java.io.Serializable;
 

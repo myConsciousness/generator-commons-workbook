@@ -21,8 +21,8 @@ import org.thinkit.common.Precondition;
 import org.thinkit.common.catalog.Platform;
 import org.thinkit.common.util.file.FluentFile;
 import org.thinkit.framework.content.rule.RuleInvoker;
-import org.thinkit.generator.content.entity.DefaultOutputPath;
-import org.thinkit.generator.content.rule.DefaultOutputPathCollector;
+import org.thinkit.generator.workbook.common.content.entity.DefaultOutputPath;
+import org.thinkit.generator.workbook.common.content.rule.DefaultOutputPathCollector;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
