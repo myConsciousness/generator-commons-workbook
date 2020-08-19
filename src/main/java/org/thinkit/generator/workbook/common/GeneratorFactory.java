@@ -12,7 +12,7 @@
  * the License.
  */
 
-package org.thinkit.generator;
+package org.thinkit.generator.workbook.common;
 
 import org.thinkit.generator.common.Generator;
 import org.thinkit.generator.common.catalog.GeneratorDivision;
@@ -59,10 +59,13 @@ final class GeneratorFactory extends AbstractGeneratorFactory {
     protected Generator createGenerator(@NonNull GeneratorDivision generatorDivision,
             @NonNull DefinitionPath definitionPath) {
 
-        return switch (generatorDivision) {
-            case DTO_DEFINITION -> new DtoGenerator(definitionPath);
-            case CONTENT_DEFINITION -> new ContentGenerator(definitionPath);
-            default -> null;
-        };
+                // TODO: このロジックを引き続き使用するかは要検討
+        // return switch (generatorDivision) {
+        //     case DTO_DEFINITION -> new DtoGenerator(definitionPath);
+        //     case CONTENT_DEFINITION -> new ContentGenerator(definitionPath);
+        //     default -> null;
+        // };
+
+        return null;
     }
 }

@@ -12,7 +12,7 @@
  * the License.
  */
 
-package org.thinkit.generator;
+package org.thinkit.generator.workbook.common;
 
 /**
  * シート要素のEnum定数で必須となる処理を定義したインターフェースです。</br>

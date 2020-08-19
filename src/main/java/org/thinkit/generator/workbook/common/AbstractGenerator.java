@@ -12,7 +12,7 @@
  * the License.
  */
 
-package org.thinkit.generator;
+package org.thinkit.generator.workbook.common;
 
 import com.google.common.flogger.FluentLogger;
 
