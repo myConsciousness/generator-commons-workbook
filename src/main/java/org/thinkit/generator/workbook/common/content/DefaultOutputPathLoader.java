@@ -45,7 +45,7 @@ import lombok.ToString;
  */
 @ToString
 @EqualsAndHashCode
-@ContentMapping(content = "generator/workbook/既定出力先")
+@ContentMapping(content = "generator/workbook/DefaultOutputPath")
 public final class DefaultOutputPathLoader implements Content<DefaultOutputPath> {
 
     /**
