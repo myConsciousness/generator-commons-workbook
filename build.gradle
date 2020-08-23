@@ -1,5 +1,4 @@
-
- /*
+/*
  * Copyright 2020 Kato Shinya.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
@@ -77,9 +76,9 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.12'
 	annotationProcessor 'org.projectlombok:lombok:1.18.12'
 
-    implementation 'org.thinkit.common:dev-utils:v1.0.0'
-    implementation 'org.thinkit.framework.content:content-framework:v1.0.0-24-gbc0561c'
-    implementation 'org.thinkit.generator.common:generator-commons:v1.0.0-1-ga27f61f'
+    implementation 'org.thinkit.common:dev-utils:v1.0.0-5-g7db55aa'
+    implementation 'org.thinkit.framework.content:content-framework:v1.0.1'
+    implementation 'org.thinkit.generator.common:generator-commons:v1.0.0-5-gcabe9e1'
 }
 
 test {
